@@ -316,18 +316,17 @@ Bei Zielkonflikten gilt ausschließlich das **Prioritätsmodell in Abschnitt 29*
 
 ## 12. Phase 9 — Nach Balanceänderung alles erneut prüfen
 
-Nach echter Ride-Height-/Corner-Weight-Änderung:
+Nach echter Ride-Height- oder Corner-Weight-Änderung gilt **Abschnitt 27**
+dieses Workflows. Dort steht zeilenweise, was eine Änderung nach sich zieht
+und ob der betroffene Wert neu zu messen oder nur mitzumessen ist.
 
-- Ride Height
-- Panhard-Lage
-- Hinterachs-Lateralposition
-- Castor
-- Camber
-- Toe
+Diese Phase führt die Liste bewusst nicht erneut auf: sie wäre eine zweite,
+unvollständige Fassung derselben Tabelle und liefe über kurz oder lang gegen
+sie. Phase 9 ist der **Zeitpunkt**, an dem die Matrix angewandt wird — nicht
+ihr Inhalt.
 
-gegebenenfalls auch:
-- Pinion-/Driveline-Winkel
-- Bump Stop Clearance
+Daraus folgt auch, dass diese Phase keinen eigenen Messwert erzeugt. Sie kann
+abgeschlossen sein oder nicht, aber sie kann nicht veralten.
 
 ---
 
@@ -654,20 +653,47 @@ Nicht aussagekräftig ist ein valides Ergebnis und darf dokumentiert werden.
 
 ## 27. Was wann erneut geprüft werden muss
 
-| Änderung | Danach erneut prüfen |
-|---|---|
-| Ride Height | Corner Weight, Camber, Toe, Panhard, ggf. Castor/Bump Steer |
-| Corner Weight | Ride Height, Alignment |
-| Castor | Camber, Toe, Freigängigkeit |
-| Camber | Toe, ggf. Radlasten |
-| Tie-Rod-Höhe | gesamte Bump-Steer-Kurve, Toe |
-| Toe | Steering Center |
-| Blattfeder | Ride Height, Cross, Thrust, Panhard, Pinion |
-| Panhard-Länge | Achszentrierung |
-| Panhard-Höhe | Rear Roll Geometry, lateral position prüfen |
-| Wedge | Pinion/U-Joint-Winkel, U-Bolt-Klemmung |
-| Reifen/Druck | Ride Height, Trackdaten |
-| Stabilisator/Endlink | ARB-Preload, Radlasten |
+Die Spalte **Wirkung** unterscheidet zwei Fälle, die nicht dasselbe bedeuten:
+
+- **neu messen** — der notierte Wert gilt nicht mehr. Er beschreibt einen
+  Fahrzeugzustand, den es so nicht mehr gibt. Beispiel: wer Camber verstellt,
+  verändert Toe über die Achsgeometrie mit, ohne die Spurstange anzufassen.
+  Der alte Toe-Wert ist damit eine Zahl ohne Deckung.
+- **mitmessen** — die Größe verschiebt sich, wird aber nicht ungültig.
+  Beispiel: 0,2 bar mehr Reifendruck heben die Fahrhöhe um etwa einen
+  Millimeter. Beim nächsten Messdurchgang mitnehmen, aber keine eigene
+  Werkstattfahrt wert.
+
+Der Unterschied ist nicht nur sprachlich: **neu messen pflanzt sich fort**
+(Blattfeder → Ride Height → Corner Weight → Alignment), **mitmessen bleibt
+stehen**, wo es auftritt. Ohne diese Trennung würde eine Druckkorrektur über
+die Kette Reifen → Ride Height → Corner Weight → Alignment das halbe Setup als
+ungültig markieren - und eine Anzeige, die das zweimal behauptet, glaubt
+niemand mehr.
+
+| Änderung | Danach erneut prüfen | Wirkung |
+|---|---|---|
+| Ride Height | Corner Weight, Camber, Toe, Panhard, ggf. Castor/Bump Steer | neu messen |
+| Corner Weight | Ride Height | mitmessen |
+| Corner Weight | Alignment | neu messen |
+| Castor | Camber, Toe, Freigängigkeit | neu messen |
+| Camber | Toe, ggf. Radlasten | neu messen |
+| Tie-Rod-Höhe | gesamte Bump-Steer-Kurve, Toe | neu messen |
+| Toe | Steering Center | neu messen |
+| Blattfeder | Ride Height, Cross, Thrust, Panhard, Pinion | neu messen |
+| Panhard-Länge | Achszentrierung | neu messen |
+| Panhard-Höhe | Rear Roll Geometry, lateral position prüfen | neu messen |
+| Wedge | Pinion/U-Joint-Winkel, U-Bolt-Klemmung | neu messen |
+| Reifen/Druck | Ride Height, Trackdaten | mitmessen |
+| Stabilisator/Endlink | ARB-Preload, Radlasten | neu messen |
+
+Das vorangestellte **ggf.** markiert eine dritte, schwächere Stufe: die Größe
+*kann* betroffen sein, muss es aber nicht. Sie erzeugt einen Hinweis, keinen
+Prüfauftrag, und pflanzt sich ebenfalls nicht fort.
+
+Diese Tabelle ist die einzige Quelle der Abhängigkeiten. `recheck.js` schreibt
+sie Zeile für Zeile ab, und `tests/recheck.test.mjs` prüft beide Richtungen -
+jede Zeile hier kommt dort vor und umgekehrt.
 
 ---
 

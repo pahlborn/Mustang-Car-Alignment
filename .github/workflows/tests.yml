@@ -34,6 +34,9 @@ jobs:
       - name: UI-Tests (Version, Seitengeruest)
         run: node tests/ui.test.mjs
 
+      - name: Recheck-Matrix (Abhaengigkeiten, Kaskade, Phasen)
+        run: node tests/recheck.test.mjs
+
   # Wer eine ausgelieferte Datei aendert, zaehlt die Version hoch. Sonst gehen
   # zwei verschiedene Staende unter derselben Nummer raus - genau so ist es in
   # gt40-engine bei v54 und in jerico bei v13 passiert, dort zwoelf Minuten

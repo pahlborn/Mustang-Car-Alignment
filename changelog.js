@@ -12,6 +12,19 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v2',
+      date: '2026-10-09',
+      time: '15:16',
+      title: 'Was nach einer Aenderung erneut zu pruefen ist',
+      changes: [
+        { type: 'neu', text: 'recheck.js rechnet aus, welche Werkstattphasen nach einer Aenderung erneut zu absolvieren sind. Wer Camber nachstellt, entwertet damit Toe - die Messung gilt dann fuer ein Fahrzeug, das es so nicht mehr gibt. Die Kette wird ueber beliebig viele Stufen verfolgt: ein Federwechsel erreicht ueber Ride Height und Corner Weight am Ende auch das Alignment.' },
+        { type: 'neu', text: 'Abschnitt 27 des Workflows hat eine dritte Spalte "Wirkung" bekommen. Sie unterscheidet "neu messen" (der Wert gilt nicht mehr) von "mitmessen" (er verschiebt sich, bleibt aber brauchbar). Ohne diese Trennung entwertete eine Reifendruckkorrektur ueber die Kette Reifen - Ride Height - Corner Weight - Alignment neun von siebzehn Phasen. Eine Anzeige, die das zweimal behauptet, glaubt niemand mehr.' },
+        { type: 'intern', text: 'Die Abhaengigkeitstabelle steht weiterhin nur im Handbuch. recheck.js schreibt sie ab, und der neue Test prueft beide Richtungen - jede Zeile dort kommt hier vor und umgekehrt, bei gleicher Zeilenzahl. Verfahren aus dem belege-Mechanismus des Schwesterprojekts jerico uebernommen.' },
+        { type: 'fix', text: 'Die Panhard-Lateralposition stand unter zwei Namen da: als panhard_lage in der Phasenzuordnung und als lateral_position in der Matrix. Dadurch lief eine Panhard-Hoehenaenderung ins Leere - sie entwertete eine Groesse, die keine Phase liefert. Aufgefallen durch den Test, der jede Matrix-Groesse auf Wirkung prueft.' },
+        { type: 'intern', text: 'Der Zyklus Ride Height - Corner Weight ist mit der dritten Spalte verschwunden, weil die Rueckrichtung nicht mehr propagiert. Ein Test haelt die Zyklenfreiheit jetzt ausdruecklich fest: entsteht spaeter einer, laeuft die Kaskade nicht falsch, sondern gar nicht mehr zurueck - und ein haengender Test sieht aus wie ein langsamer.' }
+      ]
+    },
+    {
       version: 'v1',
       date: '2026-10-09',
       time: '10:00',
