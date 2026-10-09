@@ -223,6 +223,33 @@ await test('jede Phase hat eine eindeutige Kennung', async () => {
   assertEqual(doppelt, [], 'Doppelte Phasenkennung');
 });
 
+await test('jede Messgroesse kommt im Handbuch vor', async () => {
+  // Nach dem Vorfall mit den erfundenen Evidenzklassen (v6): eine Kennung,
+  // die nirgends im Handbuch steht, ist eine Behauptung ohne Quelle. Die
+  // Matrix wird wortgleich geprueft, PHASE_LIEFERT bisher nicht - dort
+  // stehen zwoelf Groessen, die in keiner Matrixzeile vorkommen.
+  //
+  // Geprueft wird locker: Unterstriche zu Leerzeichen, Gross/Klein egal.
+  // Eine Kennung ist eine Verkuerzung, keine Zitatstelle - aber der Begriff
+  // dahinter muss im Handbuch auftauchen.
+  const dateien = fs.readdirSync(path.join(REPO_ROOT, 'handbuch'))
+    .filter((f) => f.endsWith('.md'));
+  const text = dateien
+    .map((f) => fs.readFileSync(path.join(REPO_ROOT, 'handbuch', f), 'utf8'))
+    .join('\n')
+    .toLowerCase()
+    .replace(/[\u00e4]/g, 'ae').replace(/[\u00f6]/g, 'oe').replace(/[\u00fc]/g, 'ue');
+
+  const fehlend = R.alleGroessen().filter((g) => {
+    if (R.SAMMEL[g]) return false;                 // Sammelbegriff, siehe oben
+    const wort = g.replace(/_/g, ' ');
+    const ohneUnterstrich = g.replace(/_/g, '');
+    return !text.includes(wort) && !text.includes(ohneUnterstrich)
+        && !text.includes(g.split('_')[0]);
+  });
+  assertEqual(fehlend, [], 'Messgroesse ohne Entsprechung im Handbuch');
+});
+
 await test('jede Phase kommt in 02_WORKFLOW.md vor', async () => {
   // Die Titel sind verkuerzt; geprueft wird die Phasennummer in einer
   // Ueberschrift - "## 13. Phase 10 - Bump Steer".

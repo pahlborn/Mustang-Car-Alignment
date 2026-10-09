@@ -92,9 +92,10 @@ nicht kennen.
 ## 5. Kein Sollwert ohne Quelle
 
 Messwerte, Winkel und Drehmomente stehen nur mit Beleg da. Ist keiner da, wird
-der Wert als **offen gekennzeichnet, nicht geraten**. Die Evidenzklassen A bis
-F sind in `handbuch/CONVENTIONS.md` 16 definiert und tragen im Markup die
-Klassen `.src-a` bis `.src-f`.
+der Wert als **offen gekennzeichnet, nicht geraten**. Die Evidenzgrade A bis D
+stehen in `handbuch/CONVENTIONS.md` 16 und tragen im Markup `.src-a` bis
+`.src-d`; der Verifizierungsstatus aus Abschnitt 17 ist eine andere Frage und
+hat eigene Klassen `.vs-*`.
 
 Das ist in diesem Projekt keine Formalie. Die Baseline (Castor +3,0 Grad,
 Camber -2,0 Grad, Toe +1,6 mm in) hat bis heute **keine belegte Herkunft** und
@@ -102,6 +103,37 @@ ist als solche markiert. Wer sie benutzt, muss das sehen.
 
 **Nicht uebernommen werden:** Forenzahlen, Haendlerangaben ohne Datenblatt,
 Werte aus Oval-Setups ohne Pruefung der Uebertragbarkeit.
+
+### 5a. Die Regel gilt auch fuer das, was der Code behauptet
+
+**Vierter eigener Vorfall, v6 - und der schwerste.** Im Stylesheet standen
+seit v1 sechs Evidenzklassen `A` bis `F` mit frei erfundenen Bedeutungen:
+"Ist-Befund am Fahrzeug", "eigener Messwert", "noch zu belegen". Das Handbuch
+kennt **vier** Grade, und zwar mit anderer Bedeutung - Primaerquelle,
+Fachliteratur, technische Sekundaerquelle, Erfahrungswert.
+
+Fuenf Versionen lang trug das Markup Kuerzel, die nichts belegten. Am
+Messblatt stand `C` fuer ein Messmittel; nach Handbuch heisst C
+"Sekundaerquelle". An einer Diagnosehypothese stand `F`, das es gar nicht
+gibt.
+
+**Diese Datei selbst hat den Fehler getragen:** hier stand "Die Evidenzklassen
+A bis F sind in CONVENTIONS.md 16 definiert". Wer das las, musste es glauben.
+
+Aufgefallen ist es erst, als die Nachschlagekarte die Klassen gegen
+CONVENTIONS.md belegen musste - sechs Zeilen trugen denselben Beleg, ein Test
+meldete "belegt nichts Einzelnes", und beim Nachsehen stand dort etwas
+anderes.
+
+**Die Lehre:** eine Klassifikation, eine Einheit oder ein Schwellwert im Code
+ist genauso belegpflichtig wie eine Zahl im Text. Wer etwas benennt, das wie
+eine Konvention aussieht, muss die Stelle nennen koennen, an der sie steht.
+
+**Seitdem geprueft:** `tests/recheck.test.mjs` fordert fuer jede Messgroesse
+eine Entsprechung im Handbuch, `tests/nachschlagen.test.mjs` vergleicht die
+Evidenzgrade mit CONVENTIONS 16 und verbietet, sie als Statusfarbe zu
+benutzen. Die uebrigen Angaben - Shimgrenzen, Messmittel, Phasentitel,
+Symptomcodes - wurden bei dieser Gelegenheit nachgeprueft und sind belegt.
 
 ## 6. Nichts aufnehmen, was nicht umgesetzt werden kann
 
