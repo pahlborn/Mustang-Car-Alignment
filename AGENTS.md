@@ -3,13 +3,11 @@
 Gilt fuer alle, die hier etwas aendern - Menschen wie Agenten.
 
 Die Schwesterprojekte `gt40-engine` und `jerico-dog-box-assembly-manual` haben
-eigene Fassungen. Dort steht hinter jeder Regel ein Vorfall aus dem eigenen
-Projekt. Hier noch nicht: dieses Repository ist bei v1. Die Regeln stehen
-trotzdem schon da, weil sie nachtraeglich nichts geschuetzt haetten - sie
-nennen vorerst den Vorfall aus dem Schwesterprojekt, aus dem sie stammen.
+eigene Fassungen. Wo eine Regel noch keinen eigenen Vorfall hat, nennt sie den
+aus dem Schwesterprojekt, aus dem sie stammt.
 
-Passiert hier etwas Eigenes, wird es hier eingetragen. Das ist der Zweck
-dieser Datei: sie ist ein Unfallregister, keine Stilfibel.
+Diese Datei ist ein Unfallregister, keine Stilfibel. Was hier passiert, wird
+hier eingetragen.
 
 ## 1. Jede Aenderung an einer ausgelieferten Datei zaehlt die Version hoch
 
@@ -61,10 +59,20 @@ Fuer dieses Projekt heisst das konkret:
 | Fahrzeugdaten, Hardware | `handbuch/00_PROJECT.md`, spaeter `befund.js` |
 | Vorzeichen, Einheiten, IDs, Symptomcodes | `handbuch/CONVENTIONS.md`, spaeter `reference.js` |
 | Begriffe | `handbuch/GLOSSAR.md`, spaeter `glossar.js` |
-| Abhaengigkeiten zwischen Messgroessen | `handbuch/02_WORKFLOW.md` 27, spaeter `recheck.js` |
+| Abhaengigkeiten zwischen Messgroessen | `handbuch/02_WORKFLOW.md` 27, abgeschrieben in `recheck.js` |
 | Browserstart und Testkontext | `tests/helpers.mjs` |
 
 Und jede dieser Stellen bekommt einen Test, der rot wird, wenn sie divergiert.
+
+**Erster eigener Vorfall, v2:** die Panhard-Lateralposition stand unter zwei
+Namen da - `panhard_lage` in der Phasenzuordnung, `lateral_position` in der
+Matrix. Eine Panhard-Hoehenaenderung entwertete damit eine Groesse, die keine
+Phase liefert, und lief ins Leere. Gefunden hat es nicht das Nachlesen, sondern
+der Test, der jede Matrix-Groesse auf Wirkung prueft.
+
+**Die Lehre daraus:** ein zweiter Name ist dasselbe wie ein zweiter Ort. Wer
+eine Groesse benennt, prueft vorher, ob sie schon einen Namen hat -
+`Recheck.alleGroessen()` listet sie auf.
 
 ## 5. Kein Sollwert ohne Quelle
 
@@ -113,6 +121,20 @@ Datei in `sw.js`, `APP_BUILT` abweichend, `new Date()` in `formatBuilt`,
 Changelog-Typ ohne Beschriftung, und der Release-Guard gegen einen Commit ohne
 Versionssprung. Alle sechs wurden rot, jeder aus dem richtigen Grund.
 
+**Zweiter eigener Vorfall, v2 - ein Test, der nichts prueft.** Die Pruefung
+"der Zyklus laesst die Kaskade nicht haengen" blieb in der Gegenprobe gruen,
+obwohl der Zyklusschutz ausgebaut war. Grund: mit der dritten Spalte in der
+Matrix propagiert `Corner Weight -> Ride Height` nicht mehr, der Zyklus war
+verschwunden. Der Test behauptete etwas, das es nicht mehr gab - und haette
+jede kuenftige Rueckkopplung durchgelassen.
+
+Ersetzt durch eine echte Zyklussuche ueber den Graphen. Gegenprobe: Zyklus
+eingebaut, Test rot.
+
+**Besonderheit bei Endlosschleifen:** ein haengender Test sieht aus wie ein
+langsamer. Die Gegenprobe muss deshalb mit Zeitgrenze laufen, sonst wartet man
+auf ein Ergebnis, das nie kommt, und haelt es fuer ein Werkzeugproblem.
+
 ## 8. Eingetragene Werte muessen wirken
 
 Ein Eingabefeld, dessen Wert nirgends erscheint, ist eine Falle. Wer misst und
@@ -144,13 +166,24 @@ und haben Abnahmekriterien. Dafuer gibt es einen Fortschrittsbalken.
 Die Streckenphasen 19-22 sind ein Regelkreis ohne Ende. Dafuer gibt es keinen.
 
 **Und dazwischen liegt die Falle:** ein Motor, der zusammengebaut ist, bleibt
-zusammengebaut. Ein Fahrwerk nicht. Wer Camber verstellt, entwertet damit Toe
-und Radlasten - die Recheck-Matrix in `02_WORKFLOW.md` 27 sagt genau, was
-wonach erneut zu pruefen ist. Der vierte Status `veraltet` bildet das ab.
+zusammengebaut. Ein Fahrwerk nicht. Wer Camber verstellt, macht damit die
+Toe-Messung ungueltig - die Recheck-Matrix in `02_WORKFLOW.md` 27 sagt genau,
+was wonach erneut zu pruefen ist. Der vierte Status `veraltet` bildet das ab.
 
 Ein Balken, der nach einer Camber-Aenderung auf 100 Prozent stehen bliebe,
 wuerde luegen - und zwar bei der einzigen Frage, auf die es ankommt: ist das
 Fahrzeug rennstreckenbereit.
+
+**Aber auch das Gegenteil ist ein Fehler, und zwar der gefaehrlichere.** In v2
+entwertete eine Reifendruckkorrektur ueber die Kette Reifen - Ride Height -
+Corner Weight - Alignment neun von siebzehn Phasen. Fachlich liess sich jede
+einzelne Kante begruenden; das Ergebnis war trotzdem unbrauchbar. Wer zweimal
+einen halben Messnachmittag fuer nichts aufwendet, schaut beim dritten Mal nicht
+mehr hin - und dann schuetzt die Anzeige gar nichts.
+
+Darum unterscheidet die Matrix seit v2 **neu messen** von **mitmessen**, und
+nur das erste pflanzt sich fort. Eine Warnung, der niemand glaubt, ist
+schlechter als keine.
 
 ## 11. Kein Rueckblick im Seitentext
 

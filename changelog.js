@@ -12,6 +12,24 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v3',
+      date: '2026-10-09',
+      time: '15:41',
+      title: 'Werkstattseite und ein Fortschritt, der zurueckfallen kann',
+      changes: [
+        { type: 'neu', text: 'Die Werkstattseite zeigt alle neunzehn Phasen mit dreistufigem Status. Die Liste kommt aus recheck.js, nicht aus dem Markup - dieselbe Quelle, die auch die Abhaengigkeiten traegt.' },
+        { type: 'neu', text: 'Die Startseite beantwortet die Frage, wegen der es diese Anzeige gibt: ist das Fahrzeug rennstreckenbereit. Ist es das nicht, steht da auch warum, und jede genannte Phase ist anklickbar. Eine Anzeige, die nur mahnt, hilft in der Box nicht weiter.' },
+        { type: 'neu', text: 'Der Fortschrittsbalken kann zurueckfallen. Wer Camber nachstellt, macht damit die Toe-Messung ungueltig - drei Phasen gelten danach als veraltet, der Balken faellt von hundert auf vierundachtzig Prozent und faerbt sich violett. Nach dem Neumessen ist das Fahrzeug wieder bereit.' },
+        { type: 'neu', text: 'Zwei Wege, eine Aenderung zu melden: in der Werkstatt meldet ein Eingabefeld seine Groesse selbst, an der Strecke gibt es den Knopf "Aenderung eintragen". Ohne den zweiten Weg waere das Journal genau dort blind, wo die meisten Eingriffe passieren.' },
+        { type: 'neu', text: 'Vor dem Eintragen zeigt eine Vorschau, welche Phasen betroffen sein werden. Ohne sie waere der Knopf eine Blackbox - man traegt etwas ein und sieht erst danach, dass zehn Phasen umschlagen.' },
+        { type: 'neu', text: 'Eintraege im Journal lassen sich zuruecknehmen. Sie werden dabei als Grabstein markiert, nicht geloescht - sonst bringt das zweite Geraet eine korrigierte Fehleingabe zurueck.' },
+        { type: 'fix', text: 'Eine Aenderung, die in derselben Millisekunde wie der Abschluss einer Phase eingetragen wurde, zaehlte nicht. Wer neunzehn Phasen abhakt und direkt danach einen Eingriff eintraegt, erzeugt genau diesen Fall - die Phase blieb gueltig, obwohl sie es nicht war. Gefunden hat das der Browser-Test, wo beides wirklich gleichzeitig laeuft.' },
+        { type: 'fix', text: 'Eine aufgeklappte Phase klappte beim Setzen ihres Status wieder zu - ausgerechnet die, an der man gerade arbeitet. Zwei Ursachen: der Statusknopf liegt im anklickbaren Kopf der Sektion, und das Neuzeichnen baute die Liste vollstaendig neu auf. Beide behoben.' },
+        { type: 'intern', text: 'Der vierte Zustand veraltet wird nicht gespeichert, sondern aus Status und Journal gerechnet. Gespeichert waere er ein Wert an zwei Orten und liefe gegen das Journal, sobald ein Eintrag zurueckgenommen wird.' },
+        { type: 'intern', text: 'Die erste Fassung des Klapptests prueft eine geschlossene Phase und blieb deshalb gruen, obwohl beide Fehler darin steckten. Ersetzt durch zwei Pruefungen: eine auf den sichtbaren Zustand, eine auf den Vorgang selbst - ob toggleSection ueberhaupt mitlaeuft.' }
+      ]
+    },
+    {
       version: 'v2',
       date: '2026-10-09',
       time: '15:16',

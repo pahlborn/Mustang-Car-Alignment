@@ -10,7 +10,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
-    <title>&Uuml;bersicht &ndash; Mustang 1966 Chassis Setup</title>
+    <title>Werkstatt &ndash; Mustang 1966 Chassis Setup</title>
     <link rel="stylesheet" href="styles.css">
     <script src="version.js"></script>
     <script src="changelog.js"></script>
@@ -29,8 +29,8 @@
             <span class="ht-name">Mustang Chassis<span class="ht-sub">1966 &middot; Rundstrecke</span></span>
             <span class="ht-meta" onclick="openChangelog()" title="Release-Dokumentation"><span class="ht-version" id="appVersion"></span><span class="ht-built"></span></span>
         </a>
-        <a class="nav-item active" href="index.html" title="&Uuml;bersicht"><span class="nav-icon">&#128202;</span><span class="nav-label">&Uuml;bersicht</span></a>
-        <a class="nav-item" href="werkstatt.html" title="Werkstatt"><span class="nav-icon">&#128295;</span><span class="nav-label">Werkstatt</span></a>
+        <a class="nav-item" href="index.html" title="&Uuml;bersicht"><span class="nav-icon">&#128202;</span><span class="nav-label">&Uuml;bersicht</span></a>
+        <a class="nav-item active" href="werkstatt.html" title="Werkstatt"><span class="nav-icon">&#128295;</span><span class="nav-label">Werkstatt</span></a>
         <div style="position:relative;">
             <button class="header-gear" onclick="toggleToolMenu()" id="toolMenuBtn" title="Werkzeuge">&#9881;</button>
             <div id="toolMenu" class="tool-menu">
@@ -53,74 +53,48 @@
 
 <div class="container" id="mainContent">
 
-    <div class="group-divider" id="grp-status">
-        <span>Status</span>
-        <button class="group-toggle" type="button" onclick="toggleGroup(this, 'grp-status')">Alles einklappen</button>
-    </div>
-
-    <div class="section" id="sec-bereit">
+    <div class="section" id="sec-eingriff">
         <div class="section-header" onclick="toggleSection(this)">
-            <span class="section-icon">&#127937;</span>
-            <h2>Rennstreckenbereitschaft</h2>
+            <span class="section-icon">&#128736;</span>
+            <h2>&Auml;nderung eintragen</h2>
         </div>
         <div class="section-body">
-            <div id="bereitAussage"></div>
-
-            <div class="overall-progress" style="margin:0.8rem 0;">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="overallFill" style="width:0%"></div>
+            <p style="font-size:0.8rem;color:var(--text-light);margin-bottom:0.6rem;">
+                Was am Fahrzeug verstellt wurde. Die betroffenen Phasen werden
+                danach automatisch als <em>veraltet</em> markiert.
+            </p>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:flex-end;">
+                <div style="flex:1 1 180px;">
+                    <label for="eingriffGroesse" style="display:block;font-size:0.72rem;color:var(--text-light);">Gr&ouml;&szlig;e</label>
+                    <select id="eingriffGroesse" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:6px;background:var(--input-bg);font-size:0.82rem;min-height:40px;"></select>
                 </div>
-                <div class="progress-text" id="overallText" style="margin-top:0.3rem;"></div>
+                <div style="flex:1 1 180px;">
+                    <label for="eingriffNotiz" style="display:block;font-size:0.72rem;color:var(--text-light);">Notiz</label>
+                    <input type="text" id="eingriffNotiz" placeholder="z.B. Platte 2, LF" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:6px;background:var(--input-bg);font-size:0.82rem;min-height:40px;">
+                </div>
+                <button type="button" class="btn-primary" id="eingriffBtn" onclick="eingriffEintragen()"
+                        style="flex:0 0 auto;min-height:40px;padding:0 1rem;border:none;border-radius:6px;font-size:0.82rem;cursor:pointer;touch-action:manipulation;">Eintragen</button>
             </div>
-
-            <div id="veraltetListe"></div>
-
-            <div class="info-box">
-                Gez&auml;hlt werden die Werkstattphasen&nbsp;0&ndash;18, die einen Endzustand haben
-                (<em>Phase&nbsp;18 &ndash; Werkstatt-Baseline einfrieren</em>). Die
-                Streckenphasen&nbsp;19&ndash;22 sind ein Regelkreis und bekommen keinen
-                Fortschrittsbalken.
-            </div>
+            <div id="eingriffWirkung" class="info-box" style="display:none;"></div>
         </div>
     </div>
 
-    <div class="section" id="sec-aufbau">
+    <div class="section" id="sec-journal">
         <div class="section-header" onclick="toggleSection(this)">
-            <span class="section-icon">&#129520;</span>
-            <h2>Aufbau dieser Ausgabe</h2>
+            <span class="section-icon">&#128203;</span>
+            <h2>&Auml;nderungsjournal</h2>
         </div>
         <div class="section-body">
-            <p style="font-size:0.82rem;margin-bottom:0.6rem;">
-                Diese Ausgabe enth&auml;lt nur das Ger&uuml;st: Versionsbuchf&uuml;hrung,
-                Datenabgleich, Fehlerprotokoll und den Testrahmen. Das Handbuch selbst liegt
-                als 29 Markdown-Dateien unter <code>handbuch/</code> und wird schrittweise
-                &uuml;berf&uuml;hrt.
-            </p>
-            <div class="spec-item"><span class="spec-label">Fahrzeug</span><span class="spec-value">Ford Mustang 1966<span class="src src-b" title="Ist-Befund am Fahrzeug">B</span></span></div>
-            <div class="spec-item"><span class="spec-label">Einsatz</span><span class="spec-value">Rundstrecke Europa</span></div>
-            <div class="spec-item"><span class="spec-label">Kapitel im Handbuch</span><span class="spec-value">29</span></div>
-            <div class="spec-item"><span class="spec-label">Gespiegelte Quellen</span><span class="spec-value">30</span></div>
-            <div class="info-box">
-                Die Phasen und ihr Status stehen in der <a href="werkstatt.html">Werkstatt</a>.
-            </div>
+            <div id="journalListe"></div>
         </div>
     </div>
 
-    <div class="section" id="sec-geraet">
-        <div class="section-header" onclick="toggleSection(this)">
-            <span class="section-icon">&#128241;</span>
-            <h2>Ger&auml;t</h2>
-        </div>
-        <div class="section-body">
-            <label style="display:block;font-size:0.75rem;color:var(--text-light);">Name dieses Ger&auml;ts</label>
-            <input type="text" data-field="geraet_name" placeholder="z.B. iPad Box" oninput="autoSave()"
-                   style="width:100%;padding:0.5rem;margin-top:0.2rem;border:1px solid var(--border);border-radius:6px;background:var(--input-bg);font-size:0.82rem;">
-            <p class="hint" style="font-size:0.7rem;color:var(--text-light);margin-top:0.4rem;">
-                Erscheint im Abgleich, damit erkennbar bleibt, von welchem Ger&auml;t ein
-                Messwert stammt.
-            </p>
-        </div>
+    <div class="group-divider" id="grp-phasen">
+        <span>Werkstattphasen 0&ndash;18</span>
+        <button class="group-toggle" type="button" onclick="toggleGroup(this, 'grp-phasen')">Alles einklappen</button>
     </div>
+
+    <div id="phasenListe"></div>
 
 </div>
 
@@ -131,8 +105,7 @@
         <label for="ghToken">GitHub Personal Access Token</label>
         <input type="password" id="ghToken" placeholder="ghp_...">
         <p class="hint">
-            Braucht den Bereich <code>gist</code>. Der Token bleibt auf diesem Ger&auml;t und
-            wird mit den Schwesterprojekten geteilt.
+            Braucht den Bereich <code>gist</code>. Der Token bleibt auf diesem Ger&auml;t.
         </p>
         <div class="btn-row">
             <button type="button" class="btn-danger" onclick="disconnectGist()">Trennen</button>
@@ -142,7 +115,7 @@
     </div>
 </div>
 
-<script src="uebersicht.js"></script>
+<script src="werkstatt.js"></script>
 
 </body>
 </html>
