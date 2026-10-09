@@ -191,20 +191,48 @@ body {
 .status-warn { border-color: var(--warning) !important; }
 .status-error { border-color: var(--danger) !important; }
 
-/* Quellenklassen nach CONVENTIONS.md 16. "Kein Sollwert ohne Quelle" ist in
-   diesem Projekt eine Leitregel, nicht eine Formalie - darum traegt jeder
-   Wert sein Kuerzel sichtbar. */
+/* Evidenzgrade nach CONVENTIONS.md 16 - vier, nicht sechs.
+   "Kein Sollwert ohne Quelle" ist in diesem Projekt eine Leitregel, nicht
+   eine Formalie, darum traegt jeder Wert sein Kuerzel sichtbar.
+
+   In v1 standen hier sechs Klassen A bis F mit frei erfundenen Bedeutungen
+   ("Ist-Befund", "eigener Messwert"). Das Handbuch kennt vier Grade mit
+   anderer Bedeutung. Aufgefallen ist es erst in v6, als die Nachschlagekarte
+   sie gegen CONVENTIONS.md belegen musste. */
 .src {
     display: inline-block; font-size: 0.62rem; line-height: 1.5;
     padding: 0 0.3rem; border-radius: 3px; margin-left: 0.3rem;
     font-weight: 600; cursor: help; vertical-align: middle;
 }
-.src-a { background: #c6f6d5; color: #22543d; }  /* Herstellerangabe */
-.src-b { background: #bee3f8; color: #2a4365; }  /* Ist-Befund am Fahrzeug */
-.src-c { background: #e9d8fd; color: #44337a; }  /* eigener Messwert */
-.src-d { background: #feebc8; color: #7b341e; }  /* Ableitung, gerechnet */
-.src-e { background: #e2e8f0; color: #4a5568; }  /* Sekundaerquelle */
-.src-f { background: #fed7d7; color: #822727; }  /* noch zu belegen */
+.src-a { background: #c6f6d5; color: #22543d; }  /* Primaerquelle */
+.src-b { background: #bee3f8; color: #2a4365; }  /* Fachliteratur */
+.src-c { background: #e9d8fd; color: #44337a; }  /* technische Sekundaerquelle */
+.src-d { background: #feebc8; color: #7b341e; }  /* Erfahrungswert, nur unterstuetzend */
+
+/* Verifizierungsstatus nach CONVENTIONS.md 17 - eine andere Frage als der
+   Evidenzgrad: nicht woher der Wert stammt, sondern ob er am Fahrzeug
+   geprueft wurde. */
+.vs-verifiziert { background: #c6f6d5; color: #22543d; }
+.vs-projekt     { background: #e2e8f0; color: #4a5568; }
+.vs-legacy      { background: #feebc8; color: #7b341e; }
+.vs-offen       { background: #fed7d7; color: #822727; }
+
+/* Allgemeine Zustandsmarke - gleiche Form wie .src, aber ohne fachliche
+   Bedeutung. Die Evidenzgrade sind eine Aussage ueber die Quelle eines
+   Wertes; sie als Farbtopf fuer Statusanzeigen zu benutzen, verwaessert
+   genau das. Bis v5 stand an einer offenen Diagnosehypothese ein "F" und an
+   einem Messmittel ein "C" - beides Grade, die etwas anderes bedeuten. */
+.marke {
+    display: inline-block; font-size: 0.62rem; line-height: 1.5;
+    padding: 0 0.3rem; border-radius: 3px; margin-left: 0.3rem;
+    font-weight: 600; vertical-align: middle;
+}
+.marke-stopp   { background: #fed7d7; color: #822727; }
+.marke-wartet  { background: #feebc8; color: #7b341e; }
+.marke-bereit  { background: #bee3f8; color: #2a4365; }
+.marke-fertig  { background: #c6f6d5; color: #22543d; }
+.marke-info    { background: #e2e8f0; color: #4a5568; }
+.marke-veraltet { background: #e9d8fd; color: #44337a; }
 
 /* ===========================================================================
    Fortschritt
@@ -407,6 +435,114 @@ body {
     border-radius: 6px; padding: 0.5rem; overflow-x: auto;
     font-size: var(--fs-sm); white-space: pre-wrap; word-break: break-word;
 }
+
+/* ===========================================================================
+   Knopfstapel unten rechts
+   ---------------------------------------------------------------------------
+   Farbcodiert, weil zwei runde Knoepfe uebereinander sonst nicht
+   auseinanderzuhalten sind.
+   =========================================================================== */
+
+.fab-stack {
+    position: fixed; right: 0.8rem; bottom: 0.8rem;
+    display: flex; flex-direction: column; gap: 0.5rem; z-index: 900;
+}
+.fab-btn {
+    width: 48px; height: 48px; border-radius: 50%; border: none;
+    background: var(--primary-light); color: white; font-size: 1.3rem;
+    cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    touch-action: manipulation;
+    display: flex; align-items: center; justify-content: center;
+}
+.fab-btn.glossar { background: var(--accent); }
+.fab-btn.referenz { background: #2c5282; }
+.fab-btn:active { transform: scale(0.94); }
+
+/* Solange ein Overlay offen ist, schweben die Knoepfe sonst mitten in der
+   Tabelle - sie liegen mit z-index 900 ueber dem Overlay mit 500. */
+body.overlay-offen .fab-stack { display: none; }
+
+/* ===========================================================================
+   Glossar
+   =========================================================================== */
+
+.glossar-leiste {
+    position: sticky; top: 0; z-index: 2;
+    background: var(--bg); padding: 0.5rem 0 0.4rem;
+    border-bottom: 1px solid var(--border);
+}
+.glossar-leiste input[type="search"] {
+    width: 100%; padding: 0.5rem; min-height: 40px;
+    border: 1px solid var(--border); border-radius: 6px;
+    background: white; font-size: var(--fs-base);
+    touch-action: manipulation;
+}
+.glossar-kategorien {
+    display: flex; gap: 0.3rem; margin-top: 0.4rem;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+.glossar-kategorien::-webkit-scrollbar { display: none; }
+.glossar-kat {
+    flex-shrink: 0; border: 1px solid var(--border); background: white;
+    border-radius: 12px; padding: 0.2rem 0.6rem;
+    font-size: 0.72rem; color: var(--text-light);
+    cursor: pointer; touch-action: manipulation; white-space: nowrap;
+}
+.glossar-kat.aktiv {
+    background: var(--primary); color: white; border-color: var(--primary);
+}
+.glossar-zahl { font-size: var(--fs-xs); color: var(--text-light); margin-top: 0.3rem; }
+
+.glossar-eintrag {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.7rem 0.9rem; margin: 0.6rem 0;
+}
+.glossar-eintrag h3 {
+    font-size: 0.92rem; color: var(--primary); margin-bottom: 0.1rem;
+}
+.glossar-kat-marke {
+    font-size: 0.65rem; color: var(--text-light);
+    margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.04em;
+}
+.glossar-eintrag p { font-size: 0.8rem; line-height: 1.55; margin: 0.35rem 0; }
+.glossar-eintrag code {
+    background: var(--input-bg); padding: 0 0.25rem;
+    border-radius: 3px; font-size: 0.92em;
+}
+
+/* ===========================================================================
+   Nachschlagekarte
+   =========================================================================== */
+
+.ref-gruppe { margin: 1rem 0; }
+.ref-gruppe h3 { font-size: 0.88rem; color: var(--primary); margin-bottom: 0.3rem; }
+.ref-gruppe .data-table { font-size: var(--fs-sm); }
+
+/* ===========================================================================
+   Suche
+   =========================================================================== */
+
+.search-bar {
+    display: flex; align-items: center; gap: 0.3rem;
+    padding: 0.25rem 0.6rem 0.35rem; position: relative;
+}
+.search-bar input {
+    flex: 1; padding: 0.35rem 0.5rem; min-height: 32px;
+    border: none; border-radius: 6px;
+    background: rgba(255,255,255,0.92); font-size: 0.78rem;
+}
+.search-bar input:focus { outline: 2px solid var(--accent); }
+.search-nav { display: none; align-items: center; gap: 0.2rem; }
+.search-nav button {
+    min-height: 28px; min-width: 28px; border: none; border-radius: 4px;
+    background: rgba(255,255,255,0.2); color: white;
+    cursor: pointer; font-size: 0.7rem; touch-action: manipulation;
+}
+.search-count { font-size: 0.68rem; color: white; opacity: 0.9; white-space: nowrap; }
+
+mark.suche-treffer { background: #fefcbf; color: inherit; padding: 0 1px; }
+mark.suche-treffer.aktiv { background: var(--accent); color: white; }
 
 /* ===========================================================================
    Breakpoints

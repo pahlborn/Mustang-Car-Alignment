@@ -182,10 +182,10 @@
         var erlaubt = Diagnose.darfAendern(h.id);
 
         var marke = '';
-        if (h.stopp) marke = '<span class="src src-f">Stop</span>';
-        else if (!erlaubt.erlaubt) marke = '<span class="src src-d">' + esc(erlaubt.offen.join('')) + '</span>';
-        else if (!h.ergebnis) marke = '<span class="src src-c">bereit</span>';
-        else marke = '<span class="src src-a">' + esc(h.ergebnis) + '</span>';
+        if (h.stopp) marke = '<span class="marke marke-stopp">Stop</span>';
+        else if (!erlaubt.erlaubt) marke = '<span class="marke marke-wartet">' + esc(erlaubt.offen.join('')) + '</span>';
+        else if (!h.ergebnis) marke = '<span class="marke marke-bereit">bereit</span>';
+        else marke = '<span class="marke marke-fertig">' + esc(h.ergebnis) + '</span>';
 
         var flags = h.flags.length
             ? '<div class="spec-item"><span class="spec-label">Flags</span>'

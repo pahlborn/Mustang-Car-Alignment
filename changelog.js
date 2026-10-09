@@ -12,6 +12,22 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v6',
+      date: '2026-10-09',
+      time: '19:28',
+      title: 'Glossar, Nachschlagekarte und Suche',
+      changes: [
+        { type: 'neu', text: 'Das Glossar mit 51 Begriffen in acht Kategorien ist von jeder Seite erreichbar. Es wird zur Laufzeit aus GLOSSAR.md gelesen, nicht abgeschrieben - die Pflegeregel des Handbuchs lautet "Ein Begriff, eine Definition, ein Ort", und 51 Eintraege von Hand zu uebertragen hiesse, sie bei jeder Ergaenzung erneut zu uebertragen.' },
+        { type: 'neu', text: 'Die Nachschlagekarte fasst die Konventionen zusammen: Vorzeichen, Toe-Formeln, die sechs Radlastprozente, Evidenzgrade, Verifizierungsstatus, Kennungen und die A/B-Begriffe. Jede Zeile traegt einen Beleg, der in CONVENTIONS.md vorkommen muss.' },
+        { type: 'neu', text: 'Suche auf der Seite mit Strg+F. Treffer werden hervorgehoben, eingeklappte Abschnitte klappen dabei auf - sonst springt man ins Nichts.' },
+        { type: 'fix', text: 'Die Evidenzklassen waren erfunden. Seit v1 standen im Stylesheet sechs Klassen A bis F mit Bedeutungen wie "Ist-Befund am Fahrzeug" und "eigener Messwert". Das Handbuch kennt vier Grade A bis D, und zwar mit anderer Bedeutung: Primaerquelle, Fachliteratur, technische Sekundaerquelle, Erfahrungswert. Fuenf Versionen lang trug das Markup Kuerzel, die nichts belegten. Aufgefallen ist es erst, als die Nachschlagekarte sie gegen CONVENTIONS.md belegen musste.' },
+        { type: 'fix', text: 'Evidenzgrade wurden als Farbtopf fuer Statusanzeigen benutzt - an einer offenen Diagnosehypothese stand ein "F", an einem Messmittel ein "C". Ein Grad ist eine Aussage ueber die Quelle eines Wertes; dafuer gibt es jetzt eigene Marken ohne fachliche Bedeutung.' },
+        { type: 'neu', text: 'Der Verifizierungsstatus aus CONVENTIONS 17 steht jetzt ebenfalls auf der Karte. Er beantwortet eine andere Frage als der Evidenzgrad: nicht woher ein Wert stammt, sondern ob er am Fahrzeug geprueft wurde.' },
+        { type: 'intern', text: 'Zwei Gegenproben blieben gruen und haben dabei je einen eigenen Fehler aufgedeckt. Die eine: ein Beleg liess sich verfaelschen, weil die falsche Fassung als Teil einer laengeren Zeile ebenfalls im Handbuch steht. Die andere: die Pruefung auf Skripte suchte in einem Bereich, in dem gar keine stehen - sie war auch ohne Filter gruen.' },
+        { type: 'intern', text: 'Eine Namensliste im Glossar-Parser sollte die erklaerenden Abschnitte ueberspringen. Sie war wirkungslos: leere Kategorien entfallen ohnehin am Ende. Entfernt - sie haette bei einer Umbenennung im Handbuch stillschweigend ins Leere gegriffen.' }
+      ]
+    },
+    {
       version: 'v5',
       date: '2026-10-09',
       time: '16:29',

@@ -80,8 +80,8 @@
                 + esc(f.einheit) + '</span>');
         }
         if (f.messmittel) {
-            teile.push('<span class="src src-c" title="' + esc(f.messmittel)
-                + '">C</span>');
+            teile.push('<span class="marke marke-info" title="Messmittel: '
+                + esc(f.messmittel) + '">M</span>');
         }
         if (f.grenze) {
             teile.push('<br><span style="color:var(--text-light);font-size:0.68rem;">'

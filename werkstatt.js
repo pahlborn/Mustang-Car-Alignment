@@ -148,9 +148,9 @@
         ziel.innerHTML = Status.uebersicht().map(function (p) {
             var marke = '';
             if (p.veraltet) {
-                marke = '<span class="src" style="background:#e9d8fd;color:#44337a;">veraltet</span>';
+                marke = '<span class="marke marke-veraltet">veraltet</span>';
             } else if (p.mitmessen) {
-                marke = '<span class="src src-d">mitmessen</span>';
+                marke = '<span class="marke marke-wartet">mitmessen</span>';
             }
 
             // event.stopPropagation() im onclick, nicht als nachtraeglich

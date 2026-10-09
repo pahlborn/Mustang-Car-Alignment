@@ -74,6 +74,21 @@ der Test, der jede Matrix-Groesse auf Wirkung prueft.
 eine Groesse benennt, prueft vorher, ob sie schon einen Namen hat -
 `Recheck.alleGroessen()` listet sie auf.
 
+## 4a. Ein Mechanismus gehoert dorthin, wo seine Funktion liegt
+
+Nicht dorthin, wo er zuerst gebraucht wurde. Sonst funktioniert er an seinem
+Platz tadellos und fehlt ueberall sonst.
+
+**Warum, v5:** der Lauscher, ueber den sich ein Messfeld selbst meldet, lag
+seit v3 in `werkstatt.js` - dort entstand er. Als die Messfelder eine eigene
+Seite bekamen, meldeten sie nichts: das Attribut war gesetzt, der Lauscher
+fehlte. Er gehoert zu `Status.ausFeld()` und steht jetzt in `status.js`.
+
+**Die Probe:** laesst sich die Funktion auf einer zweiten Seite gebrauchen?
+Dann gehoert sie nicht in die Datei der ersten. Wo eine Seite danach etwas
+nachziehen muss, geschieht das ueber ein Ereignis - das Modul muss die Seiten
+nicht kennen.
+
 ## 5. Kein Sollwert ohne Quelle
 
 Messwerte, Winkel und Drehmomente stehen nur mit Beleg da. Ist keiner da, wird

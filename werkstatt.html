@@ -19,6 +19,8 @@
     <script src="errorlog.js"></script>
     <script src="recheck.js"></script>
     <script src="status.js"></script>
+    <script src="glossar.js"></script>
+    <script src="referenz.js"></script>
     <script src="app.js"></script>
 </head>
 <body>
@@ -50,7 +52,15 @@
         </div>
         <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
     </div>
-    <div class="save-status"><span id="syncBadge"></span><span id="saveTime"></span></div>
+    <div class="search-bar">
+        <input type="search" id="sucheFeld" placeholder="Suchen... (Strg+F)" oninput="sucheEingabe()" onkeydown="sucheTaste(event)" autocomplete="off">
+        <div class="search-nav" id="sucheNav">
+            <button type="button" onclick="sucheSpringen(-1)" title="Zur&uuml;ck">&#9650;</button>
+            <span class="search-count" id="sucheZahl"></span>
+            <button type="button" onclick="sucheSpringen(1)" title="Weiter">&#9660;</button>
+            <button type="button" onclick="sucheLeeren()" title="Schliessen">&#10005;</button>
+        </div>
+    </div>    <div class="save-status"><span id="syncBadge"></span><span id="saveTime"></span></div>
 </div>
 
 <div class="container" id="mainContent">
@@ -118,6 +128,8 @@
 </div>
 
 <script src="werkstatt.js"></script>
+
+<script src="nachschlagen.js"></script>
 
 </body>
 </html>

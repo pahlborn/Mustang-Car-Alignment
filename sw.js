@@ -1,4 +1,4 @@
-var CACHE_NAME = 'chassis-v5';
+var CACHE_NAME = 'chassis-v6';
 // Relativ, nicht absolut: GitHub Pages unterscheidet Gross- und Kleinschreibung
 // im Pfad. Ein absoluter Pfad in der falschen Schreibweise laesst cache.addAll
 // scheitern - und damit die gesamte Installation des Service Workers, also den
@@ -24,6 +24,12 @@ var urlsToCache = [
   './diagnose-ui.js',
   './messwerte.js',
   './messblatt.js',
+  './glossar.js',
+  './referenz.js',
+  './nachschlagen.js',
+  // Das Glossar wird zur Laufzeit gelesen, nicht abgeschrieben - also muss
+  // die Datei offline mit dabei sein.
+  './handbuch/GLOSSAR.md',
   './errorlog.js',
   './field-sync.js',
   './validation.js',
