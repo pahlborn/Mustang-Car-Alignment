@@ -368,6 +368,30 @@
 
   laden();
 
+  // ==== Felder melden ihre Groesse selbst ====
+  //
+  // Ein Eingabefeld traegt data-groesse="camber". Wird es geaendert, gilt die
+  // Groesse als neu erfasst - ohne dass jemand daran denken muss. Dasselbe
+  // Ereignis wie ein Eingriff, nur ohne eigenen Knopf.
+  //
+  // Der Lauscher steht hier und nicht in einer Seitendatei: er gehoert zu
+  // ausFeld(). In v3 lag er in werkstatt.js, und als die Messfelder auf einer
+  // anderen Seite dazukamen, meldeten sie nichts - der Mechanismus war da,
+  // aber nicht dort, wo er gebraucht wurde.
+  //
+  // Danach ein Ereignis, damit jede Seite ihre Anzeige nachziehen kann, ohne
+  // dass dieses Modul die Seiten kennen muss.
+  if (typeof document !== 'undefined') {
+    document.addEventListener('change', function (e) {
+      var el = e.target;
+      if (!el || !el.dataset || !el.dataset.groesse) return;
+      ausFeld(el.dataset.groesse);
+      document.dispatchEvent(new CustomEvent('status-geaendert', {
+        detail: { groesse: el.dataset.groesse, feld: el.dataset.field || '' }
+      }));
+    });
+  }
+
   global.Status = {
     STUFEN: STUFEN,
     STUFEN_LABEL: STUFEN_LABEL,

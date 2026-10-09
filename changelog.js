@@ -12,6 +12,22 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v5',
+      date: '2026-10-09',
+      time: '16:29',
+      title: 'Messblatt - eingetragene Werte wirken',
+      changes: [
+        { type: 'neu', text: 'Das Messblatt mit 55 Feldern in acht Gruppen: Kopfdaten, Stellgroessen der Vorderachse, Alignment, Toe, Ride Height, Radlasten, Reifendruck und Pyrometer. Die Felder kommen aus messwerte.js, nicht aus dem Markup - eine zweite Liste im HTML liefe gegen die erste.' },
+        { type: 'neu', text: 'Stellgroessen und Messgroessen sind getrennt gefuehrt. Plattennummer, Shimdicke und Umdrehungen am Heim-Gelenk machen das Setup reproduzierbar, sind aber keine Winkelangaben - der erreichte Winkel wird eigens gemessen. Das Alignment Sheet trennt beides ausdruecklich, die Seite jetzt auch.' },
+        { type: 'neu', text: 'Abgeleitete Werte haben kein Eingabefeld, sondern werden gerechnet: Total Toe, der Winkel daraus, die L/R-Differenzen, alle sechs Radlastprozente und die Pyrometer-Auswertung. Wer sie eintragen koennte, koennte sie auch falsch eintragen.' },
+        { type: 'neu', text: 'Ohne dokumentierte Messbasis gibt es keinen Toe-Winkel, sondern einen Hinweis. Die Konventionen sagen "Keine Winkelumrechnung ohne definierte Geometrie" - ein Naeherungswert ohne D waere geraten.' },
+        { type: 'neu', text: 'Die drei Pyrometerpunkte je Reifen werden als zwei getrennte Kennzahlen ausgewiesen: das Innen-Aussen-Gefaelle deutet auf den Camber, die Woelbung Mitte gegen Schultern auf den Druck. Eine einzelne Zahl waere schon die halbe Diagnose, und zwar eine ungepruefte.' },
+        { type: 'fix', text: 'Der Lauscher, ueber den sich ein Messfeld selbst meldet, lag seit v3 in werkstatt.js. Als die Messfelder auf einer eigenen Seite dazukamen, meldeten sie nichts - der Mechanismus war da, aber nicht dort, wo er gebraucht wurde. Er steht jetzt in status.js, wo auch ausFeld() liegt.' },
+        { type: 'intern', text: 'Die Formeln sind aus den Konventionen abgeschrieben und werden dagegen geprueft: Total Toe als R minus F, der Winkel als atan(Delta durch D), die sechs Radlastprozente mit Cross als RF plus LR. Eine Vertauschung der Diagonalen waere nicht auffaellig und wuerde jede Betrachtung umkehren.' },
+        { type: 'intern', text: 'Der erste Testfall fuer die Diagonalen taugte nichts: bei 400/300/300/200 ergeben beide dieselbe Summe, eine Vertauschung waere durchgegangen. Die Assertion, die das meldet, stand bereits im Test - sie hat sich selbst gefangen.' }
+      ]
+    },
+    {
       version: 'v4',
       date: '2026-10-09',
       time: '16:01',

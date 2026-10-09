@@ -174,6 +174,24 @@ Stempel seitdem hoch, wenn die Uhr stehenbleibt.
 Modultest stelle ich die Uhr von Hand - genau der Fall, der schiefgeht, kommt
 dort nie vor. Wo die Zeit eine Rolle spielt, braucht es beides.
 
+## 7c. Eine gruene Gegenprobe ist noch kein Urteil
+
+Bleibt ein Test gruen, obwohl der Fehler eingebaut wurde, heisst das zweierlei
+und man weiss zunaechst nicht, welches:
+
+1. der Test prueft nichts - dann gehoert er ersetzt
+2. der Eingriff hat nicht gegriffen - dann war die Gegenprobe zu schwach
+
+**Warum, v4:** die Pruefung des Klappzustands auf der Diagnoseseite blieb
+gruen, obwohl eine Zeile der Wiederherstellung ausgeschaltet war. Die zweite
+Zeile daneben hielt die Karte weiterhin offen. Erst das Ausschalten der
+ganzen Schleife zeigte, dass der Test sehr wohl greift.
+
+**Die Regel:** bei gruener Gegenprobe erst nachsehen, ob der Eingriff im
+laufenden Code ueberhaupt angekommen ist. Eine kleine Messung am lebenden
+Objekt kostet zwei Minuten und verhindert, dass ein brauchbarer Test
+weggeworfen wird.
+
 ## 8. Eingetragene Werte muessen wirken
 
 Ein Eingabefeld, dessen Wert nirgends erscheint, ist eine Falle. Wer misst und

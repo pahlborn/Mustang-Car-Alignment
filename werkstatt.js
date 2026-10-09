@@ -208,17 +208,10 @@
         zeichnePhasen();
     }
 
-    // ==== Felder melden ihre Groesse selbst ====
-    //
-    // Ein Eingabefeld traegt data-groesse="camber". Wird es geaendert, gilt
-    // die Groesse als neu erfasst - ohne dass jemand daran denken muss.
-    // Dasselbe Ereignis wie ein Eingriff, nur ohne eigenen Knopf.
-    document.addEventListener('change', function (e) {
-        var el = e.target;
-        if (!el || !el.dataset || !el.dataset.groesse) return;
-        Status.ausFeld(el.dataset.groesse);
-        zeichneAlles();
-    });
+    // Felder melden ihre Groesse selbst - der Lauscher dazu steht in
+    // status.js, weil er zu ausFeld() gehoert und nicht zu dieser Seite.
+    // Hier wird nur die Anzeige nachgezogen.
+    document.addEventListener('status-geaendert', zeichneAlles);
 
     function init() {
         if (typeof Recheck === 'undefined' || typeof Status === 'undefined') return;
