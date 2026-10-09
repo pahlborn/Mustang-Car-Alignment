@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a365d">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <title>&Uuml;bersicht &ndash; Mustang 1966 Chassis Setup</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="version.js"></script>
+    <script src="changelog.js"></script>
+    <script src="field-sync.js"></script>
+    <script src="validation.js"></script>
+    <script src="errorlog.js"></script>
+    <script src="app.js"></script>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-row">
+        <a href="index.html" class="header-title">
+            <span class="ht-name">Mustang Chassis<span class="ht-sub">1966 &middot; Rundstrecke</span></span>
+            <span class="ht-meta" onclick="openChangelog()" title="Release-Dokumentation"><span class="ht-version" id="appVersion"></span><span class="ht-built"></span></span>
+        </a>
+        <a class="nav-item active" href="index.html" title="&Uuml;bersicht"><span class="nav-icon">&#128202;</span><span class="nav-label">&Uuml;bersicht</span></a>
+        <div style="position:relative;">
+            <button class="header-gear" onclick="toggleToolMenu()" id="toolMenuBtn" title="Werkzeuge">&#9881;</button>
+            <div id="toolMenu" class="tool-menu">
+                <button type="button" onclick="openSettings();closeToolMenu()">&#9729; Cloud-Sync</button>
+                <button type="button" onclick="syncFromCloud();closeToolMenu()">&#8635; Jetzt abgleichen</button>
+                <hr>
+                <button type="button" onclick="saveData();closeToolMenu()">&#128190; Speichern</button>
+                <button type="button" onclick="exportJSON();closeToolMenu()">&#128229; Export</button>
+                <button type="button" onclick="document.getElementById('importFile').click();closeToolMenu()">&#128228; Import</button>
+                <button type="button" onclick="window.print();closeToolMenu()">&#128424; Drucken</button>
+                <hr>
+                <button type="button" onclick="showErrorLog();closeToolMenu()">&#128203; Fehlerprotokoll</button>
+                <button type="button" class="menu-version" onclick="openChangelog();closeToolMenu()" title="Release-Dokumentation">Version <span class="app-version"></span><span class="app-built"></span> &rsaquo;</button>
+            </div>
+        </div>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
+    </div>
+    <div class="save-status"><span id="syncBadge"></span><span id="saveTime"></span></div>
+</div>
+
+<div class="container" id="mainContent">
+
+    <div class="group-divider" id="grp-status">
+        <span>Status</span>
+        <button class="group-toggle" type="button" onclick="toggleGroup(this, 'grp-status')">Alles einklappen</button>
+    </div>
+
+    <div class="section" id="sec-bereit">
+        <div class="section-header" onclick="toggleSection(this)">
+            <span class="section-icon">&#127937;</span>
+            <h2>Rennstreckenbereitschaft</h2>
+        </div>
+        <div class="section-body">
+            <div class="warning-box">
+                <strong>Noch keine Aussage m&ouml;glich.</strong> Der Fortschritt &uuml;ber die
+                Werkstattphasen&nbsp;0&ndash;18 wird erst berechnet, wenn die Phasen als Seite
+                vorliegen. Bis dahin zeigt diese Karte bewusst nichts an &ndash; ein Balken ohne
+                Datengrundlage w&uuml;rde eine Bereitschaft behaupten, die niemand gepr&uuml;ft hat.
+            </div>
+            <div class="info-box">
+                Die Werkstattphasen haben einen Endzustand
+                (<em>Phase&nbsp;18 &ndash; Werkstatt-Baseline einfrieren</em>). Die Streckenphasen
+                19&ndash;22 sind ein Regelkreis und bekommen keinen Fortschrittsbalken, sondern
+                eine Liste offener Hypothesen.
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="sec-aufbau">
+        <div class="section-header" onclick="toggleSection(this)">
+            <span class="section-icon">&#129520;</span>
+            <h2>Aufbau dieser Ausgabe</h2>
+        </div>
+        <div class="section-body">
+            <p style="font-size:0.82rem;margin-bottom:0.6rem;">
+                Diese Ausgabe enth&auml;lt nur das Ger&uuml;st: Versionsbuchf&uuml;hrung,
+                Datenabgleich, Fehlerprotokoll und den Testrahmen. Das Handbuch selbst liegt
+                als 29 Markdown-Dateien unter <code>handbuch/</code> und wird schrittweise
+                &uuml;berf&uuml;hrt.
+            </p>
+            <div class="spec-item"><span class="spec-label">Fahrzeug</span><span class="spec-value">Ford Mustang 1966<span class="src src-b" title="Ist-Befund am Fahrzeug">B</span></span></div>
+            <div class="spec-item"><span class="spec-label">Einsatz</span><span class="spec-value">Rundstrecke Europa</span></div>
+            <div class="spec-item"><span class="spec-label">Kapitel im Handbuch</span><span class="spec-value">29</span></div>
+            <div class="spec-item"><span class="spec-label">Gespiegelte Quellen</span><span class="spec-value">30</span></div>
+        </div>
+    </div>
+
+    <div class="section" id="sec-geraet">
+        <div class="section-header" onclick="toggleSection(this)">
+            <span class="section-icon">&#128241;</span>
+            <h2>Ger&auml;t</h2>
+        </div>
+        <div class="section-body">
+            <label style="display:block;font-size:0.75rem;color:var(--text-light);">Name dieses Ger&auml;ts</label>
+            <input type="text" data-field="geraet_name" placeholder="z.B. iPad Box" oninput="autoSave()"
+                   style="width:100%;padding:0.5rem;margin-top:0.2rem;border:1px solid var(--border);border-radius:6px;background:var(--input-bg);font-size:0.82rem;">
+            <p class="hint" style="font-size:0.7rem;color:var(--text-light);margin-top:0.4rem;">
+                Erscheint im Abgleich, damit erkennbar bleibt, von welchem Ger&auml;t ein
+                Messwert stammt.
+            </p>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal-overlay" id="settingsModal">
+    <div class="modal" role="dialog" aria-label="Cloud-Sync einrichten">
+        <h3>Cloud-Sync</h3>
+        <div class="status-line" id="connectionStatus">Nicht verbunden</div>
+        <label for="ghToken">GitHub Personal Access Token</label>
+        <input type="password" id="ghToken" placeholder="ghp_...">
+        <p class="hint">
+            Braucht den Bereich <code>gist</code>. Der Token bleibt auf diesem Ger&auml;t und
+            wird mit den Schwesterprojekten geteilt.
+        </p>
+        <div class="btn-row">
+            <button type="button" class="btn-danger" onclick="disconnectGist()">Trennen</button>
+            <button type="button" class="btn-secondary" onclick="closeSettings()">Abbrechen</button>
+            <button type="button" class="btn-primary" onclick="saveSettings()">Verbinden</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

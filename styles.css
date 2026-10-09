@@ -1,0 +1,419 @@
+/* ===========================================================================
+   Mustang Track Chassis Setup - Stylesheet
+   ---------------------------------------------------------------------------
+   Eine Datei fuer alle Seiten. Das Schwesterprojekt gt40-engine traegt
+   dieselben Regeln dreifach in den <style>-Bloecken seiner drei Seiten; jerico
+   hat sie herausgeloest, aber erst nachtraeglich - dort stehen .fab-btn,
+   .fab-stack und .guide-overlay bis heute doppelt, mit abweichenden Werten.
+   Hier steht alles von Anfang an zentral.
+
+   Schriftgroessen laufen ueber --fs-*. jerico hat rund 25 verschiedene Werte
+   frei verstreut; wer dort eine Stufe aendern will, muss sie suchen.
+   =========================================================================== */
+
+:root {
+    /* ---- Farbe ---- */
+    --primary: #1a365d;          /* Header, Ueberschriften, Tabellenkopf */
+    --primary-light: #2b6cb0;    /* Verlauf, Fokus, Links */
+    --accent: #ed8936;           /* Suchtreffer, Hervorhebung */
+    --bg: #f7fafc;
+    --card-bg: #ffffff;
+    --border: #e2e8f0;
+    --text: #2d3748;
+    --text-light: #718096;
+    --success: #38a169;          /* erledigt, Fortschrittsfuellung */
+    --warning: #d69e2e;          /* in Arbeit, Hinweis */
+    --danger: #e53e3e;           /* Fehler, Loeschen */
+    --stale: #805ad5;            /* veraltet - siehe unten */
+    --input-bg: #edf2f7;
+    --calc-bg: #ebf8ff;          /* gerechnetes, nicht eingegebenes Feld.
+                                    In jerico wird die Variable benutzt, aber
+                                    nie definiert - der Hintergrund faellt dort
+                                    auf transparent zurueck. */
+
+    /* ---- Schrift ---- */
+    --fs-xs: 0.68rem;
+    --fs-sm: 0.75rem;
+    --fs-base: 0.82rem;
+    --fs-md: 0.9rem;
+    --fs-lg: 1rem;
+    --fs-xl: 1.15rem;
+
+    /* ---- Beruehrflaechen ---- */
+    --touch: 44px;               /* Apple HIG Minimum */
+    --touch-sm: 36px;            /* sekundaer, in einer hohen Zeile */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding-bottom: 2rem;
+}
+
+/* ===========================================================================
+   Kopfzeile
+   =========================================================================== */
+
+.header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.header-row { display: flex; align-items: stretch; height: var(--touch); }
+
+.header-title {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 0 0.6rem; text-decoration: none; color: white; flex-shrink: 0;
+}
+.ht-name { font-size: var(--fs-sm); font-weight: 700; line-height: 1.15; }
+.ht-sub { display: block; font-size: 0.62rem; font-weight: 400; opacity: 0.75; }
+.ht-meta { display: flex; align-items: baseline; gap: 0.3rem; cursor: pointer; }
+.ht-version { font-size: 0.58rem; opacity: 0.85; line-height: 1.1; }
+.ht-version:hover { opacity: 1; text-decoration: underline; }
+.ht-built { font-size: 0.55rem; opacity: 0.6; line-height: 1.1; }
+/* Ohne das stuende bei fehlendem Zeitstempel ein einsamer Trennpunkt da. */
+.ht-built:empty { display: none; }
+.ht-built:not(:empty)::before { content: '\00b7\00a0'; }
+
+.nav-item {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: white; text-decoration: none; font-size: var(--fs-xs);
+    border-left: 1px solid rgba(255,255,255,0.15);
+    user-select: none; touch-action: manipulation;
+}
+.nav-item.active { background: rgba(255,255,255,0.14); }
+.nav-icon { font-size: var(--fs-lg); }
+.nav-label { font-size: 0.6rem; opacity: 0.9; }
+
+.header-gear {
+    width: var(--touch); min-width: var(--touch);
+    border: none; background: none; color: white;
+    font-size: var(--fs-xl); cursor: pointer;
+    border-left: 1px solid rgba(255,255,255,0.15);
+    touch-action: manipulation;
+}
+
+.save-status {
+    display: flex; align-items: center; gap: 0.4rem;
+    padding: 0.15rem 0.6rem; font-size: 0.65rem;
+    background: rgba(0,0,0,0.12);
+}
+
+.sync-badge {
+    display: inline-flex; align-items: center; gap: 0.25rem;
+    font-size: 0.62rem; padding: 0.05rem 0.4rem; border-radius: 10px;
+}
+.sync-badge.online { background: rgba(56,161,105,0.25); }
+.sync-badge.offline { background: rgba(229,62,62,0.25); }
+.sync-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+/* ===========================================================================
+   Seitenaufbau
+   =========================================================================== */
+
+.container { max-width: 900px; margin: 0 auto; padding: 0.75rem; }
+
+.section {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.section-header {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.7rem 0.9rem;
+    border-bottom: 2px solid var(--primary);
+    cursor: pointer; user-select: none;
+}
+.section-header h2 { font-size: var(--fs-lg); color: var(--primary); flex: 1; }
+.section-header::after {
+    content: '\25bc'; font-size: 0.6rem; color: var(--text-light);
+    transition: transform 0.2s;
+}
+.section-header.collapsed::after { transform: rotate(-90deg); }
+.section-body { padding: 0.9rem; }
+.section-body.collapsed { display: none; }
+
+.group-divider {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin: 1.2rem 0 0.5rem; font-size: 0.7rem;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--text-light); user-select: none;
+}
+.group-divider span { flex-shrink: 0; }
+.group-divider::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+}
+.group-toggle {
+    border: none; background: none; color: var(--primary-light);
+    font-size: 0.65rem; cursor: pointer; touch-action: manipulation;
+}
+
+/* ===========================================================================
+   Werte, Status, Quellen
+   =========================================================================== */
+
+.spec-item {
+    display: flex; justify-content: space-between; gap: 0.75rem;
+    padding: 0.35rem 0; border-bottom: 1px solid var(--border);
+    font-size: var(--fs-base);
+}
+.spec-item:last-child { border-bottom: none; }
+.spec-label { color: var(--text-light); }
+.spec-value { font-weight: 600; text-align: right; }
+
+.info-box {
+    background: #fffaf0; border-left: 3px solid var(--warning);
+    border-radius: 0 6px 6px 0; padding: 0.5rem 0.7rem;
+    font-size: 0.8rem; margin: 0.6rem 0;
+}
+.warning-box {
+    background: #fff5f5; border: 1px solid var(--danger);
+    border-radius: 6px; padding: 0.5rem 0.7rem;
+    font-size: 0.8rem; margin: 0.6rem 0;
+}
+
+/* Validierungszustand eines Eingabefeldes. !important, weil die Regeln den
+   :focus-Rahmen ueberschreiben muessen. Gesetzt von validation.js. */
+.status-ok { border-color: var(--success) !important; }
+.status-warn { border-color: var(--warning) !important; }
+.status-error { border-color: var(--danger) !important; }
+
+/* Quellenklassen nach CONVENTIONS.md 16. "Kein Sollwert ohne Quelle" ist in
+   diesem Projekt eine Leitregel, nicht eine Formalie - darum traegt jeder
+   Wert sein Kuerzel sichtbar. */
+.src {
+    display: inline-block; font-size: 0.62rem; line-height: 1.5;
+    padding: 0 0.3rem; border-radius: 3px; margin-left: 0.3rem;
+    font-weight: 600; cursor: help; vertical-align: middle;
+}
+.src-a { background: #c6f6d5; color: #22543d; }  /* Herstellerangabe */
+.src-b { background: #bee3f8; color: #2a4365; }  /* Ist-Befund am Fahrzeug */
+.src-c { background: #e9d8fd; color: #44337a; }  /* eigener Messwert */
+.src-d { background: #feebc8; color: #7b341e; }  /* Ableitung, gerechnet */
+.src-e { background: #e2e8f0; color: #4a5568; }  /* Sekundaerquelle */
+.src-f { background: #fed7d7; color: #822727; }  /* noch zu belegen */
+
+/* ===========================================================================
+   Fortschritt
+   ---------------------------------------------------------------------------
+   Gilt fuer die Werkstattphasen 0-18, die einen Endzustand haben
+   (02_WORKFLOW.md 21, "Werkstatt-Baseline einfrieren"). Die Streckenphasen
+   19-22 sind ein Regelkreis ohne Ende und bekommen keinen Balken.
+
+   Vierter Zustand gegenueber den Schwesterprojekten: "veraltet". Ein Motor,
+   der zusammengebaut ist, bleibt zusammengebaut. Ein Fahrwerk nicht - wer
+   Camber verstellt, entwertet damit Toe und Radlasten
+   (Recheck-Matrix, 02_WORKFLOW.md 27). Ein Balken, der danach auf 100 %
+   stehen bliebe, wuerde luegen.
+   =========================================================================== */
+
+.progress-bar {
+    background: var(--border); height: 8px;
+    border-radius: 10px; overflow: hidden;
+}
+.progress-fill {
+    height: 100%; background: var(--success);
+    border-radius: 10px; transition: width 0.3s;
+}
+.progress-text { font-size: var(--fs-xs); color: var(--text-light); }
+
+.progress-stale { background: var(--stale); }
+.stale-note { font-size: var(--fs-xs); color: var(--stale); font-weight: 600; }
+
+/* ===========================================================================
+   Toast
+   =========================================================================== */
+
+.toast {
+    position: fixed; bottom: 1.2rem; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--primary); color: white;
+    padding: 0.6rem 1rem; border-radius: 8px;
+    font-size: var(--fs-base); max-width: 90vw;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    z-index: 10000; transition: transform 0.3s;
+    display: flex; align-items: center; gap: 0.6rem;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast-error { background: #c53030; }
+.toast-close {
+    border: none; background: none; color: inherit;
+    font-size: 1.2rem; line-height: 1; cursor: pointer; padding: 0 0.2rem;
+}
+
+/* ===========================================================================
+   Werkzeugmenue und Dialoge
+   =========================================================================== */
+
+.tool-menu {
+    display: none; position: absolute; right: 0; top: 100%;
+    margin-top: 2px; background: white; border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    min-width: 190px; z-index: 200; overflow: hidden;
+}
+.tool-menu button {
+    display: block; width: 100%; text-align: left;
+    padding: 0.5rem 0.75rem; border: none; background: none;
+    color: var(--text); font-size: 0.78rem; cursor: pointer;
+}
+.tool-menu button:hover { background: var(--bg); }
+.tool-menu hr { height: 1px; background: var(--border); border: none; margin: 0.2rem 0; }
+.menu-version { color: var(--text-light) !important; font-size: var(--fs-xs) !important; }
+.menu-version:hover { color: var(--primary-light) !important; }
+
+.modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    display: none; align-items: center; justify-content: center;
+    padding: 1rem; z-index: 9999;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+    background: white; border-radius: 10px; padding: 1rem;
+    width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto;
+}
+.modal h3 { font-size: 1.05rem; color: var(--primary); margin-bottom: 0.6rem; }
+.modal label { display: block; font-size: var(--fs-sm); color: var(--text-light); margin-top: 0.6rem; }
+.modal input {
+    width: 100%; padding: 0.5rem; margin-top: 0.2rem;
+    border: 1px solid var(--border); border-radius: 6px;
+    background: var(--input-bg); font-size: var(--fs-base);
+}
+.modal input[type="password"] { font-family: monospace; }
+.modal .hint { font-size: 0.7rem; color: var(--text-light); line-height: 1.4; margin-top: 0.4rem; }
+.modal .status-line { font-size: var(--fs-sm); margin: 0.5rem 0; }
+.btn-row { display: flex; gap: 0.5rem; margin-top: 1rem; }
+.btn-row button {
+    flex: 1; min-height: 40px; border: none; border-radius: 6px;
+    font-size: var(--fs-base); cursor: pointer; touch-action: manipulation;
+}
+.btn-primary { background: var(--primary-light); color: white; }
+.btn-secondary { background: var(--border); color: var(--text); }
+.btn-danger { background: var(--danger); color: white; }
+
+/* ===========================================================================
+   Release-Dokumentation (changelog.js)
+   =========================================================================== */
+
+.changelog-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1003;
+    display: none; align-items: flex-start; justify-content: center; padding: 3vh 1rem;
+}
+.changelog-overlay.show { display: flex; }
+.changelog-overlay .cl-panel {
+    background: #fff; border-radius: 10px; width: 100%; max-width: 680px;
+    max-height: 94vh; display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+}
+.changelog-overlay .cl-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.7rem 1rem; border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.changelog-overlay .cl-head h3 { margin: 0; font-size: var(--fs-md); color: var(--primary); }
+.changelog-overlay .cl-close {
+    border: none; background: none; font-size: 1.6rem; line-height: 1;
+    cursor: pointer; color: var(--text-light); padding: 0 0.3rem;
+}
+.changelog-overlay .cl-close:hover { color: #1a202c; }
+.changelog-overlay .cl-body { overflow-y: auto; padding: 0.4rem 1rem 1rem; }
+.changelog-overlay .cl-rel { padding: 0.8rem 0; border-bottom: 1px solid #edf2f7; }
+.changelog-overlay .cl-rel:last-child { border-bottom: none; }
+.changelog-overlay .cl-rel h4 {
+    margin: 0 0 0.15rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;
+}
+.changelog-overlay .cl-ver { font-size: var(--fs-lg); font-weight: 700; color: var(--primary); }
+.changelog-overlay .cl-rel.current .cl-ver { color: var(--primary-light); }
+.changelog-overlay .cl-badge {
+    font-size: 0.65rem; font-weight: 600; padding: 0.1rem 0.45rem; border-radius: 10px;
+    background: #bee3f8; color: #2a4365;
+}
+.changelog-overlay .cl-date { margin-left: auto; font-size: 0.7rem; color: #a0aec0; font-weight: 400; }
+.changelog-overlay .cl-title { margin: 0 0 0.45rem; font-size: var(--fs-base); color: #4a5568; font-weight: 600; }
+.changelog-overlay .cl-rel ul { margin: 0; padding-left: 0; list-style: none; }
+.changelog-overlay .cl-rel li {
+    font-size: 0.79rem; line-height: 1.45; color: var(--text);
+    padding: 0.22rem 0; display: flex; gap: 0.5rem; align-items: baseline;
+}
+.changelog-overlay .cl-type {
+    flex-shrink: 0; font-size: 0.64rem; font-weight: 600; padding: 0.08rem 0.4rem;
+    border-radius: 10px; min-width: 52px; text-align: center;
+}
+.changelog-overlay .cl-type.neu { background: #c6f6d5; color: #22543d; }
+.changelog-overlay .cl-type.fix { background: #fed7d7; color: #822727; }
+.changelog-overlay .cl-type.intern { background: #edf2f7; color: #4a5568; }
+.changelog-overlay .cl-type.verbessert { background: #bee3f8; color: #2a4365; }
+
+/* ===========================================================================
+   Fehlerprotokoll-Overlay (errorlog.js)
+   =========================================================================== */
+
+.guide-overlay {
+    position: fixed; inset: 0; background: var(--bg);
+    z-index: 500; display: none; overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.guide-overlay.show { display: block; }
+.guide-header {
+    position: sticky; top: 0; z-index: 501;
+    background: var(--primary); color: white;
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.6rem 0.9rem;
+}
+.guide-header h2 { font-size: var(--fs-lg); flex: 1; }
+.guide-back {
+    border: none; background: none; color: white;
+    font-size: var(--fs-xl); cursor: pointer; touch-action: manipulation;
+}
+.guide-content { padding: 0.9rem; }
+.guide-content p, .guide-content li { font-size: 0.85rem; line-height: 1.6; }
+.guide-content pre {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 0.5rem; overflow-x: auto;
+    font-size: var(--fs-sm); white-space: pre-wrap; word-break: break-word;
+}
+
+/* ===========================================================================
+   Breakpoints
+   ---------------------------------------------------------------------------
+   Bei Platzmangel weichen die Navigationsbeschriftungen, nicht der Titel.
+   gt40 blendet mit `.header-title span { display: none }` pauschal alles aus -
+   damit verschwinden auf dem Telefon auch Version und Freigabezeitpunkt, und
+   die Kopfzeile besteht nur noch aus Symbolen. jerico hat das in v20
+   umgedreht: ein Symbol bleibt erkennbar, eine namenlose Seite nicht.
+   =========================================================================== */
+
+@media (max-width: 600px) {
+    .ht-name { font-size: 0.7rem; }
+    .nav-label { display: none; }
+    .nav-icon { font-size: 1.05rem; }
+}
+
+@media (max-width: 520px) {
+    .ht-name { font-size: 0.66rem; }
+    .ht-sub { display: none; }
+    .container { padding: 0.4rem; }
+    .section-body { padding: 0.75rem; }
+}
+
+@media print {
+    .header, .tool-menu, .save-status, .toast,
+    .changelog-overlay, .guide-overlay { display: none !important; }
+    body { background: white; padding: 0; }
+    .section {
+        break-inside: avoid; box-shadow: none;
+        border: 1px solid #ccc; margin-bottom: 0.5rem;
+    }
+    .section-body.collapsed { display: block; }  /* gedruckt wird alles */
+}

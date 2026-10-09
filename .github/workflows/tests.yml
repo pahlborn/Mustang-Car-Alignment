@@ -1,0 +1,59 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  browser-tests:
+    name: Browser-Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Abhaengigkeiten installieren
+        run: npm install --no-audit --no-fund
+
+      - name: Chromium installieren
+        run: npx playwright install --with-deps chromium
+
+      # Zuerst: ein kaputtes Workflow-YAML scheitert vor jedem Job und erzeugt
+      # keine Check-Runs - das sieht aus wie "noch nicht gestartet". Im
+      # Schwesterprojekt gt40-engine blieb das vier Pushes lang unbemerkt.
+      - name: Workflow-Struktur
+        run: node tests/workflow.test.mjs
+
+      - name: UI-Tests (Version, Seitengeruest)
+        run: node tests/ui.test.mjs
+
+  # Wer eine ausgelieferte Datei aendert, zaehlt die Version hoch. Sonst gehen
+  # zwei verschiedene Staende unter derselben Nummer raus - genau so ist es in
+  # gt40-engine bei v54 und in jerico bei v13 passiert, dort zwoelf Minuten
+  # auseinander und beide mit demselben Cache-Namen.
+  # Braucht die Historie, deshalb fetch-depth: 0. Eigener Job, weil er keinen
+  # Browser braucht und damit auch dann noch etwas sagt, wenn die Browser-
+  # Tests an der Installation scheitern.
+  versionsdisziplin:
+    name: Versionsdisziplin
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Version passt zum ausgelieferten Stand
+        run: node tests/release-guard.test.mjs
