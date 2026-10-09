@@ -135,6 +135,45 @@ eingebaut, Test rot.
 langsamer. Die Gegenprobe muss deshalb mit Zeitgrenze laufen, sonst wartet man
 auf ein Ergebnis, das nie kommt, und haelt es fuer ein Werkzeugproblem.
 
+**Dritter eigener Vorfall, v3 - der Test prueft den harmlosen Fall.** Die
+Pruefung "der Statusknopf klappt die Sektion nicht mit auf" nahm eine
+geschlossene Phase. Die bleibt geschlossen, ob der Fehler da ist oder nicht.
+Tatsaechlich klappte eine *aufgeklappte* Phase beim Abhaken zu - und zwar aus
+zwei Gruenden gleichzeitig. Beide lagen offen zutage, und der Test war gruen.
+
+**Die Lehre:** ein Zustandstest muss im Zustand laufen, in dem der Fehler
+sichtbar waere. Bei Umschaltern heisst das: beide Richtungen, nicht nur die
+bequeme.
+
+## 7a. Zwei Mechanismen fuer dieselbe Sache sind einer zu viel
+
+Faengt ein zweiter Mechanismus den Schaden des ersten auf, faellt dessen
+Ausfall nicht mehr auf. Die Gegenprobe wird gruen, obwohl etwas kaputt ist.
+
+**Warum, v3:** gegen das Zuklappen beim Abhaken standen `stopPropagation` am
+Knopf *und* das Sichern des Klappzustands beim Neuzeichnen. `stopPropagation`
+liess sich entfernen, ohne dass ein Test rot wurde - die zweite Sicherung
+deckte es zu. Erst eine Messung des Vorgangs selbst zeigte, dass
+`toggleSection` weiterhin mitlief.
+
+**Die Regel:** die Ursache beheben, nicht die Wirkung. Und wo zwei Sicherungen
+noetig sind, bekommt jede ihren eigenen Test - einen auf den sichtbaren
+Zustand, einen auf den Vorgang.
+
+## 7b. Zeitstempel aus Date.now() sind nicht eindeutig
+
+Wer mehrere Dinge nacheinander stempelt, bekommt leicht denselben Wert.
+Vergleiche der Form "liegt A nach B" entscheiden dann willkuerlich.
+
+**Warum, v3:** neunzehn Phasen abhaken und direkt danach eine Aenderung
+eintragen passiert innerhalb einer Millisekunde. Der Vergleich entschied gegen
+die Aenderung, die Phase galt weiter als gueltig. `status.js` zaehlt den
+Stempel seitdem hoch, wenn die Uhr stehenbleibt.
+
+**Und wer es gefunden hat:** der Browser-Test, nicht der Modultest. Im
+Modultest stelle ich die Uhr von Hand - genau der Fall, der schiefgeht, kommt
+dort nie vor. Wo die Zeit eine Rolle spielt, braucht es beides.
+
 ## 8. Eingetragene Werte muessen wirken
 
 Ein Eingabefeld, dessen Wert nirgends erscheint, ist eine Falle. Wer misst und

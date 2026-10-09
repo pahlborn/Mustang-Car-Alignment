@@ -43,6 +43,12 @@ jobs:
       - name: Werkstattseite und Fortschrittsanzeige
         run: node tests/werkstatt.test.mjs
 
+      - name: Diagnose (Symptomcodes, Hierarchie, Change Impact Sheet)
+        run: node tests/diagnose.test.mjs
+
+      - name: Diagnoseseite
+        run: node tests/diagnose-ui.test.mjs
+
   # Wer eine ausgelieferte Datei aendert, zaehlt die Version hoch. Sonst gehen
   # zwei verschiedene Staende unter derselben Nummer raus - genau so ist es in
   # gt40-engine bei v54 und in jerico bei v13 passiert, dort zwoelf Minuten

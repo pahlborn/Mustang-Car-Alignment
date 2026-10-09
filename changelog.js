@@ -12,6 +12,23 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v4',
+      date: '2026-10-09',
+      time: '16:01',
+      title: 'Diagnose: Symptom, Hierarchie, eine Aenderung',
+      changes: [
+        { type: 'neu', text: 'Die Diagnoseseite deckt die Streckenphasen 20 bis 22 ab. Anders als die Werkstatt hat sie keinen Fortschrittsbalken - dieser Teil ist ein Regelkreis ohne Endzustand und bekommt stattdessen eine Liste offener Hypothesen.' },
+        { type: 'neu', text: 'Zehn Symptomcodes aus den Konventionen, dazu die beiden Beobachtungsflags. Der Code beschreibt, was das Auto tut, nicht woran es liegt - kein Code nennt ein Bauteil, und ein Test prueft das.' },
+        { type: 'neu', text: 'Die Diagnosehierarchie A bis E wird erzwungen, nicht nur beschrieben. Solange eine Stufe offen ist, bleibt das Change Impact Sheet gesperrt. Geometrie ist Stufe D - wer dort anfaengt, stellt Fahrwerk an einem Auto ein, dessen Reifen vielleicht nur zu kalt sind.' },
+        { type: 'neu', text: 'Die Stop-Regel steht ueber allem: bei Spiel, Reifenschaden, Druckverlust, Bremsproblem, loser Hardware oder nicht reproduzierbaren Messdaten sperrt sie auch dann, wenn die Hierarchie vollstaendig abgearbeitet ist.' },
+        { type: 'neu', text: 'Vor dem Anlegen zeigt die Entscheidungsmatrix alle drei Spalten - zuerst pruefen, danach pruefen, und vor allem: nicht sofort aendern. Die dritte nennt den naheliegenden Griff, der die Ursache nur verdeckt.' },
+        { type: 'neu', text: 'Das Change Impact Sheet mit zwoelf Pflichtfeldern. "Messgroesse fuer Erfolg" ist das wichtigste: ohne sie ist der naechste Stint nicht auswertbar, egal wie er ausgeht. Beim A/B-Ergebnis steht "nicht aussagekraeftig" als eigener Eintrag, nicht im Freitext - es ist ein vollwertiges Ergebnis.' },
+        { type: 'fix', text: 'In der Entscheidungsmatrix stand "Daempfer" statt "Dämpfer" - eine Abweichung von der Vorlage im Handbuch. Gefunden vom Test, der jede Zelle wortgleich vergleicht.' },
+        { type: 'intern', text: 'Alle vier Abschriften - Symptomcodes, Hierarchie, Entscheidungsmatrix und Change Impact Sheet - werden in beide Richtungen gegen die Markdown-Dateien geprueft. Dasselbe Verfahren wie bei der Recheck-Matrix in v2.' },
+        { type: 'intern', text: 'Die Gegenprobe zum Klappzustand war zuerst zu schwach: sie schaltete nur eine von zwei Zeilen aus, die zweite hielt die Karte weiter offen. Erst das Ausschalten der ganzen Schleife zeigte, dass die Pruefung greift.' }
+      ]
+    },
+    {
       version: 'v3',
       date: '2026-10-09',
       time: '15:41',
