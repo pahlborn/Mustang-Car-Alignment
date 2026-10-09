@@ -148,6 +148,37 @@ await test('der Freigabezeitpunkt sieht in jeder Zeitzone gleich aus', async () 
 });
 
 // ---------------------------------------------------------------------------
+suite('Abhaengigkeiten sind auch ausserhalb des Firmennetzes erreichbar');
+
+await test('package-lock.json nennt keine interne Registry', async () => {
+  // Auf dem Arbeitsrechner steht npm auf die Artifactory-Spiegelung
+  // jfrog.cgm.ag. Ein dort erzeugter Lockfile traegt diese URL in jedem
+  // "resolved"-Feld - und GitHub Actions kommt da nicht hin. Der Lauf
+  // scheitert dann in "Abhaengigkeiten installieren", also bevor ein
+  // einziger Test laeuft, und die Browser-Tests gelten als uebersprungen
+  // statt als rot. Genau so ist der erste CI-Lauf dieses Repos gescheitert.
+  //
+  // Die Spiegelung liefert dieselben Pakete; nur die Adresse darf nicht
+  // mitwandern. Geprueft wird auf jede Nicht-npmjs-Quelle, nicht nur auf
+  // jfrog - der naechste Spiegel heisst anders.
+  const lock = lies('package-lock.json');
+  const quellen = [...lock.matchAll(/"resolved":\s*"([^"]+)"/g)].map((m) => m[1]);
+  assert(quellen.length > 0, 'Keine resolved-Eintraege im Lockfile gefunden');
+  const intern = quellen.filter((u) => !u.startsWith('https://registry.npmjs.org/'));
+  assertEqual(intern, [], 'Nicht oeffentlich erreichbare Paketquelle im Lockfile');
+});
+
+await test('die Testabhaengigkeit ist auf eine Version festgenagelt', async () => {
+  // Ohne Pinning zieht CI irgendwann eine neuere Playwright-Fassung, die einen
+  // anderen Chromium-Build erwartet - und der Lauf scheitert an etwas, das mit
+  // dem Code nichts zu tun hat.
+  const pkg = JSON.parse(lies('package.json'));
+  const v = (pkg.devDependencies || {}).playwright;
+  assert(v, 'playwright fehlt in devDependencies');
+  assert(/^\d+\.\d+\.\d+$/.test(v), 'playwright ist nicht exakt festgelegt: ' + v);
+});
+
+// ---------------------------------------------------------------------------
 suite('Seitengeruest');
 
 await test('sw.js listet nur Dateien, die es gibt', async () => {
