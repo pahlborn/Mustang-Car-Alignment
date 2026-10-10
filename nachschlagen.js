@@ -22,32 +22,23 @@
       .replace(/&/g, '&amp;').replace(/</g, '&lt;')
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
-
   // ===========================================================================
-  // Markdown, soweit das Glossar es benutzt
+  // Markdown
   // ---------------------------------------------------------------------------
-  // Kein vollstaendiger Parser: fett, Code, Links und Absaetze reichen fuer
-  // das Schema, das GLOSSAR.md durchhaelt. Was er nicht kennt, bleibt Text -
-  // das ist besser als eine Bibliothek, die alles kann und niemand prueft.
+  // Der Renderer steht in markdown.js und wird von der Handbuchseite mit
+  // benutzt. Hier stand zuerst eine eigene, kleinere Fassung - zwei Renderer
+  // fuer dasselbe Format waeren zwei Orte fuer dieselbe Entscheidung, und
+  // der eine haette Tabellen gekonnt, der andere nicht.
   // ===========================================================================
   function markdown(text) {
-    var html = esc(text);
-
-    // Links auf Kapiteldateien zeigen ins Handbuch; sie sind hier nicht
-    // erreichbar und werden darum entschaerft, nicht entfernt - der
-    // Dateiname bleibt als Hinweis lesbar.
-    html = html.replace(/\[`([^`]+)`\]\([^)]+\)/g, '<code>$1</code>');
-    html = html.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
-
-    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-
-    return html.split(/\n\s*\n/)
-      .map(function (p) { return p.trim(); })
-      .filter(Boolean)
-      .map(function (p) { return '<p>' + p.replace(/\n/g, '<br>') + '</p>'; })
-      .join('');
+    if (typeof Markdown === 'undefined') return esc(text);
+    return Markdown.rendern(text, {
+      kapitelLink: function (datei) {
+        return 'handbuch.html?d=' + encodeURIComponent(datei);
+      }
+    });
   }
+
 
   // ===========================================================================
   // Overlay-Gerüst

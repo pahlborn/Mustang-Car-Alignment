@@ -545,6 +545,99 @@ mark.suche-treffer { background: #fefcbf; color: inherit; padding: 0 1px; }
 mark.suche-treffer.aktiv { background: var(--accent); color: white; }
 
 /* ===========================================================================
+   Handbuch
+   =========================================================================== */
+
+.hb-frage {
+    font-size: var(--fs-sm); color: var(--text-light);
+    font-style: italic; margin-bottom: 0.6rem;
+}
+.hb-eintrag {
+    display: block; padding: 0.5rem 0.6rem; margin-bottom: 0.3rem;
+    background: var(--bg); border-radius: 6px;
+    text-decoration: none; color: var(--text);
+    border-left: 3px solid var(--border);
+    touch-action: manipulation;
+}
+.hb-eintrag:active { background: var(--input-bg); }
+.hb-titel { display: block; font-size: var(--fs-base); font-weight: 600; color: var(--primary); }
+.hb-rolle { display: block; font-size: 0.72rem; color: var(--text-light); margin-top: 0.1rem; }
+
+.hb-kopf { margin-bottom: 0.8rem; }
+.hb-kopf h1 { font-size: 1.1rem; color: var(--primary); margin: 0.3rem 0 0.2rem; }
+.hb-pfad {
+    font-size: var(--fs-xs); color: var(--text-light);
+    text-transform: uppercase; letter-spacing: 0.04em;
+}
+.hb-zurueck {
+    display: inline-block; font-size: var(--fs-sm);
+    color: var(--primary-light); text-decoration: none;
+    padding: 0.3rem 0; min-height: var(--touch-sm);
+    touch-action: manipulation;
+}
+.hb-fuss { margin-top: 1.2rem; padding-top: 0.6rem; border-top: 1px solid var(--border); }
+
+.hb-toc {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.5rem 0.8rem; margin-bottom: 0.8rem;
+}
+.hb-toc summary {
+    cursor: pointer; font-size: var(--fs-sm); color: var(--primary);
+    font-weight: 600; touch-action: manipulation;
+}
+.hb-toc ul { margin: 0.4rem 0 0 1rem; }
+.hb-toc li { font-size: 0.78rem; margin: 0.15rem 0; }
+.hb-toc a { color: var(--text); text-decoration: none; }
+
+/* Der gerenderte Kapiteltext. Etwas groesser als die Formularschrift -
+   hier wird gelesen, nicht eingetragen. */
+.hb-text {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 0.9rem;
+    font-size: 0.84rem; line-height: 1.65;
+}
+.hb-text h2 {
+    font-size: 0.98rem; color: var(--primary);
+    margin: 1.1rem 0 0.4rem; padding-bottom: 0.2rem;
+    border-bottom: 1px solid var(--border);
+}
+.hb-text h3 { font-size: 0.88rem; color: var(--primary-light); margin: 0.9rem 0 0.3rem; }
+.hb-text h4, .hb-text h5, .hb-text h6 {
+    font-size: var(--fs-base); color: var(--text); margin: 0.7rem 0 0.2rem;
+}
+.hb-text p { margin: 0.5rem 0; }
+.hb-text ul, .hb-text ol { margin: 0.5rem 0 0.5rem 1.2rem; }
+.hb-text li { margin: 0.2rem 0; }
+.hb-text code {
+    background: var(--input-bg); padding: 0 0.25rem;
+    border-radius: 3px; font-size: 0.92em;
+}
+.hb-text pre {
+    background: var(--input-bg); border-radius: 6px;
+    padding: 0.6rem; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    font-size: 0.72rem; line-height: 1.45;
+}
+.hb-text pre code { background: none; padding: 0; }
+.hb-text hr { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+.hb-text a { color: var(--primary-light); }
+
+/* Blockzitate tragen im Handbuch die Warnungen und Merksaetze - sie sind
+   keine Nebenbemerkung, sondern oft der wichtigste Satz des Abschnitts. */
+.hb-text blockquote {
+    margin: 0.6rem 0; padding: 0.5rem 0.7rem;
+    background: #fffaf0; border-left: 3px solid var(--warning);
+    border-radius: 0 6px 6px 0;
+}
+.hb-text blockquote p { margin: 0.3rem 0; font-size: 0.8rem; }
+.hb-text blockquote blockquote { background: #fff; }
+
+/* Tabellen waagerecht scrollen lassen statt umbrechen - auf dem Telefon
+   sind fuenf Spalten sonst unlesbar. */
+.md-tabelle { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0.6rem 0; }
+.md-tabelle table { min-width: 100%; }
+.md-tabelle .data-table td, .md-tabelle .data-table th { white-space: normal; }
+
+/* ===========================================================================
    Breakpoints
    ---------------------------------------------------------------------------
    Bei Platzmangel weichen die Navigationsbeschriftungen, nicht der Titel.

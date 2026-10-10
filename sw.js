@@ -1,4 +1,4 @@
-var CACHE_NAME = 'chassis-v7';
+var CACHE_NAME = 'chassis-v8';
 // Relativ, nicht absolut: GitHub Pages unterscheidet Gross- und Kleinschreibung
 // im Pfad. Ein absoluter Pfad in der falschen Schreibweise laesst cache.addAll
 // scheitern - und damit die gesamte Installation des Service Workers, also den
@@ -13,6 +13,7 @@ var urlsToCache = [
   './diagnose.html',
   './messblatt.html',
   './bumpsteer.html',
+  './handbuch.html',
   './styles.css',
   './app.js',
   './version.js',
@@ -28,12 +29,43 @@ var urlsToCache = [
   './bumpsteer.js',
   './bumpsteer-chart.js',
   './bumpsteer-ui.js',
+  './kapitel.js',
+  './markdown.js',
+  './handbuch-ui.js',
   './glossar.js',
   './referenz.js',
   './nachschlagen.js',
-  // Das Glossar wird zur Laufzeit gelesen, nicht abgeschrieben - also muss
-  // die Datei offline mit dabei sein.
+  // Die Kapitel werden zur Laufzeit gelesen, nicht abgeschrieben - also
+  // muessen sie offline mit dabei sein. Zusammen rund 440 KB.
+  './handbuch/00_PROJECT.md',
+  './handbuch/01_ARCHITECTURE.md',
+  './handbuch/02_WORKFLOW.md',
+  './handbuch/CHAPTER_BALANCE_CORNER_WEIGHT.md',
+  './handbuch/CHAPTER_BIND_DIAGNOSIS.md',
+  './handbuch/CHAPTER_BUMP_STEER.md',
+  './handbuch/CHAPTER_FRONT_ADJUSTMENT_UCA_LCA.md',
+  './handbuch/CHAPTER_FRONT_GEOMETRY_CAMBER_CASTER_KPI.md',
+  './handbuch/CHAPTER_HANDLING_DIAGNOSIS_DECISION_TREE.md',
+  './handbuch/CHAPTER_REAR_SUSPENSION_PANHARD_PINION.md',
+  './handbuch/CHAPTER_SETUP_PAD_RIDE_HEIGHT.md',
+  './handbuch/CHAPTER_SPRINGS_ROLL_STIFFNESS.md',
+  './handbuch/CHAPTER_TIRE_MECHANICS.md',
+  './handbuch/CHAPTER_TOE_ACKERMANN_THRUST.md',
+  './handbuch/CHAPTER_TRACKS.md',
+  './handbuch/CHAPTER_TRACK_VALIDATION_TIRES.md',
+  './handbuch/CHAPTER_VEHICLE_DYNAMICS.md',
+  './handbuch/CONVENTIONS.md',
+  './handbuch/DECISION_LEAF_SPRINGS.md',
   './handbuch/GLOSSAR.md',
+  './handbuch/LEGACY_REAR_AXLE_LEAF_SPRINGS_PINION.md',
+  './handbuch/MIGRATION_1-3.md',
+  './handbuch/TEMPLATE_ALIGNMENT_SHEET.md',
+  './handbuch/TEMPLATE_BUMP_STEER_SHEET.md',
+  './handbuch/TEMPLATE_CHANGE_LOG.md',
+  './handbuch/TEMPLATE_MASTER_SETUP_SHEET.md',
+  './handbuch/TEMPLATE_SCALE_SHEET.md',
+  './handbuch/TEMPLATE_SETUP_SHEET.md',
+  './handbuch/TEMPLATE_TRACK_SESSION_SHEET.md',
   './errorlog.js',
   './field-sync.js',
   './validation.js',

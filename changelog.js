@@ -12,6 +12,23 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v8',
+      date: '2026-10-10',
+      time: '08:25',
+      title: 'Das Handbuch auf der Seite',
+      changes: [
+        { type: 'neu', text: 'Alle neunundzwanzig Kapitel sind lesbar, geordnet nach dem Ebenenmodell: Grundlagen, Fahrzeuggeometrie, Messen und Diagnose, Arbeiten. Jede Ebene traegt ihre Leitfrage aus dem Handbuch - und den Hinweis, dass die Leserichtung nicht zwingend von oben nach unten geht.' },
+        { type: 'neu', text: 'Die drei Autoritaeten zeigen ihren Rang. Bei Widerspruch gilt CONVENTIONS vor 00_PROJECT vor 02_WORKFLOW; wer eine davon oeffnet, sieht das.' },
+        { type: 'neu', text: 'Die beiden historischen Dokumente warnen beim Oeffnen, dass sie einen frueheren oder voruebergehenden Stand beschreiben - nicht das heutige Fahrzeug.' },
+        { type: 'neu', text: 'Querverweise zwischen Kapiteln fuehren ins naechste Kapitel statt aus der Anwendung heraus. Verweise auf Dateien, die es auf der Seite nicht gibt, bleiben Text - ein toter Link ist schlechter als keiner.' },
+        { type: 'neu', text: 'Laengere Kapitel bekommen ein aufklappbares Inhaltsverzeichnis. Bei vier Abschnitten waere es laenger als nuetzlich, darum erst ab fuenf.' },
+        { type: 'neu', text: 'Alle Kapitel liegen im Offline-Speicher, zusammen rund 440 KB. Sie werden zur Laufzeit gelesen, nicht abgeschrieben - ohne Cache waere das Handbuch in der Box nicht da.' },
+        { type: 'intern', text: 'Titel und Dokumentrolle stehen nicht in der Registry, sondern werden aus der Datei gelesen. Abgeschrieben liefen sie beim ersten Umbenennen auseinander. Ein Test verbietet ausdruecklich, sie dort einzutragen.' },
+        { type: 'intern', text: 'Der Markdown-Renderer steht jetzt einmal in markdown.js und wird vom Glossar mitbenutzt. Dort stand zuvor eine eigene, kleinere Fassung - zwei Renderer fuer dasselbe Format waeren zwei Orte fuer dieselbe Entscheidung gewesen, und der eine haette Tabellen gekonnt, der andere nicht.' },
+        { type: 'intern', text: 'Die Einordnung der Kapitel wird gegen das Ebenenmodell in 01_ARCHITECTURE geprueft, ebenso die Raenge der Autoritaeten und die Leitfragen. Ein verschobenes Kapitel oder ein vertauschter Rang wird rot.' }
+      ]
+    },
+    {
       version: 'v7',
       date: '2026-10-10',
       time: '07:09',
