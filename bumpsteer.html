@@ -10,7 +10,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
-    <title>Diagnose &ndash; Mustang 1966 Chassis Setup</title>
+    <title>Bump Steer &ndash; Mustang 1966 Chassis Setup</title>
     <link rel="stylesheet" href="styles.css">
     <script src="version.js"></script>
     <script src="changelog.js"></script>
@@ -19,7 +19,8 @@
     <script src="errorlog.js"></script>
     <script src="recheck.js"></script>
     <script src="status.js"></script>
-    <script src="diagnose.js"></script>
+    <script src="bumpsteer.js"></script>
+    <script src="bumpsteer-chart.js"></script>
     <script src="glossar.js"></script>
     <script src="referenz.js"></script>
     <script src="app.js"></script>
@@ -35,8 +36,8 @@
         <a class="nav-item" href="index.html" title="&Uuml;bersicht"><span class="nav-icon">&#128202;</span><span class="nav-label">&Uuml;bersicht</span></a>
         <a class="nav-item" href="werkstatt.html" title="Werkstatt"><span class="nav-icon">&#128295;</span><span class="nav-label">Werkstatt</span></a>
         <a class="nav-item" href="messblatt.html" title="Messblatt"><span class="nav-icon">&#128207;</span><span class="nav-label">Messblatt</span></a>
-        <a class="nav-item" href="bumpsteer.html" title="Bump Steer"><span class="nav-icon">&#128200;</span><span class="nav-label">Bump Steer</span></a>
-        <a class="nav-item active" href="diagnose.html" title="Diagnose"><span class="nav-icon">&#127937;</span><span class="nav-label">Diagnose</span></a>
+        <a class="nav-item active" href="bumpsteer.html" title="Bump Steer"><span class="nav-icon">&#128200;</span><span class="nav-label">Bump Steer</span></a>
+        <a class="nav-item" href="diagnose.html" title="Diagnose"><span class="nav-icon">&#127937;</span><span class="nav-label">Diagnose</span></a>
         <div style="position:relative;">
             <button class="header-gear" onclick="toggleToolMenu()" id="toolMenuBtn" title="Werkzeuge">&#9881;</button>
             <div id="toolMenu" class="tool-menu">
@@ -67,45 +68,13 @@
 
 <div class="container" id="mainContent">
 
-    <div class="section" id="sec-neu">
-        <div class="section-header" onclick="toggleSection(this)">
-            <span class="section-icon">&#128269;</span>
-            <h2>Symptom erfassen</h2>
-        </div>
-        <div class="section-body">
-            <p style="font-size:0.8rem;color:var(--text-light);margin-bottom:0.6rem;">
-                Der Code beschreibt, <em>was das Auto tut</em> &ndash; nicht, woran es liegt.
-                Die Ursache ergibt sich aus der Pr&uuml;fung, nicht aus der Benennung.
-            </p>
-            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:flex-end;">
-                <div style="flex:1 1 220px;">
-                    <label for="symptomWahl" style="display:block;font-size:0.72rem;color:var(--text-light);">Symptom</label>
-                    <select id="symptomWahl" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:6px;background:var(--input-bg);font-size:0.82rem;min-height:40px;"></select>
-                </div>
-                <button type="button" class="btn-primary" onclick="hypotheseAnlegen()"
-                        style="flex:0 0 auto;min-height:40px;padding:0 1rem;border:none;border-radius:6px;font-size:0.82rem;cursor:pointer;touch-action:manipulation;">Anlegen</button>
-            </div>
-            <div id="flagWahl" style="margin-top:0.6rem;"></div>
-            <div id="symptomVorschau" class="info-box" style="display:none;"></div>
-        </div>
+    <div class="info-box">
+        Messmittel: <strong>B-G Racing BGR310</strong> &middot; Genauigkeit 0,1 mm,
+        Aufl&ouml;sung 0,01 mm. Lochkreis des Mustang 5&times;114,3 mm liegt im
+        Ger&auml;tebereich 5&times;100&ndash;130 mm.
     </div>
 
-    <div class="group-divider" id="grp-offen">
-        <span>Offene Hypothesen</span>
-        <button class="group-toggle" type="button" onclick="toggleGroup(this, 'grp-offen')">Alles einklappen</button>
-    </div>
-
-    <div id="hypothesenListe"></div>
-
-    <div class="section" id="sec-abgeschlossen">
-        <div class="section-header collapsed" onclick="toggleSection(this)">
-            <span class="section-icon">&#128230;</span>
-            <h2>Abgeschlossen</h2>
-        </div>
-        <div class="section-body collapsed">
-            <div id="abgeschlossenListe"></div>
-        </div>
-    </div>
+    <div id="bsListe"></div>
 
 </div>
 
@@ -124,7 +93,7 @@
     </div>
 </div>
 
-<script src="diagnose-ui.js"></script>
+<script src="bumpsteer-ui.js"></script>
 
 <script src="nachschlagen.js"></script>
 

@@ -242,6 +242,21 @@
       var e = eintraege[i];
       if (e.zeit <= seit) continue;                // aelter als der Abschluss
 
+      // Eine Phase, die diese Groesse selbst liefert, ist durch ihre
+      // Neuerfassung ueberholt - ohne Umweg ueber die Matrix.
+      //
+      // Das betrifft reine Messgroessen: Bump Steer steht in der Matrix nur
+      // rechts, weil man nicht "Bump Steer" verstellt, sondern die
+      // Tie-Rod-Hoehe. Trotzdem entwertet eine neue Bump-Steer-Messung die
+      // alte - sonst meldete sich ein Messfeld, ohne dass irgendetwas
+      // geschaehe.
+      if (p.liefert.indexOf(e.groesse) > -1) {
+        veraltet = true;
+        wegen.push({ groesse: e.groesse, zeit: e.zeit, art: 'neu erfasst',
+                     felder: [e.groesse] });
+        continue;
+      }
+
       var folge = Recheck.phasenNach(e.groesse);
       var alt = folge.veraltet.filter(function (x) { return x.id === phaseId; });
       if (alt.length) {

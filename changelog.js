@@ -12,6 +12,22 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v7',
+      date: '2026-10-10',
+      time: '07:09',
+      title: 'Bump Steer - Messreihe und Kurve',
+      changes: [
+        { type: 'neu', text: 'Das Bump-Steer-Messblatt mit siebzehn Federwegstufen je Seite, davon vier feine um die Fahrhoehe. Die Kurve zeigt LF und RF in einem Diagramm - so wird die Symmetrie sofort sichtbar.' },
+        { type: 'neu', text: 'Die Pruefpunkte stehen vor der Messreihe, nicht daneben. A5 - die Pruefung der Arretierung - entscheidet, ob die ganze Reihe verwertbar ist. Am Mustang reicht eine Arretierung am Lenkrad nicht: zwischen Lenkrad und Spurstange liegen Lenksaeule, Lenkgetriebe, Pitman, Center Link und Idler.' },
+        { type: 'neu', text: 'Die Seite prueft die Messung, nicht das Fahrwerk. Fehlt die A5-Bestaetigung oder steht der Nullpunkt nach dem Durchfahren nicht wieder auf null, erscheint ein Hinweis, dass die Reihe nicht verwertbar ist. Eine Abweichung unter 0,1 mm gilt als Geraetetoleranz des BGR310.' },
+        { type: 'neu', text: 'Kennwerte je Seite: groesster Toe-in und Toe-out, Gesamtausschlag, Monotonie, Steigung um die Fahrhoehe und Nulldurchgang. Dazu die groesste Differenz zwischen den Seiten - Asymmetrie ist ein eigener Befund.' },
+        { type: 'neu', text: 'Ein Arbeitsfenster begrenzt die Auswertung auf den real genutzten Federweg. Ein Toe-Ausschlag bei minus fuenfzig Millimetern ist bedeutungslos, wenn die Aufhaengung dort nie arbeitet.' },
+        { type: 'fix', text: 'Messfelder meldeten ihre Groesse, ohne dass etwas geschah. Bump Steer steht in der Abhaengigkeitsmatrix nur rechts - man verstellt nicht "Bump Steer", sondern die Tie-Rod-Hoehe. Jetzt entwertet die Neuerfassung einer Groesse auch die Phase, die sie selbst liefert.' },
+        { type: 'fix', text: 'Der Symmetrievergleich sah auf die Extremwerte statt auf die Richtung. Zwei exakt gegenlaeufige Kurven haben dieselben Extrema - sie galten damit als gleichgerichtet. Massgeblich ist jetzt die Steigung.' },
+        { type: 'intern', text: 'Es gibt keinen Zielwert, und ein Test haelt das fest. Bump Steer wird minimiert, nicht auf eine Zahl eingestellt; der frueher diskutierte Richtwert von 0,020 Zoll je Zoll Federweg steht im Handbuch ausdruecklich als nicht belegt.' }
+      ]
+    },
+    {
       version: 'v6',
       date: '2026-10-09',
       time: '19:28',

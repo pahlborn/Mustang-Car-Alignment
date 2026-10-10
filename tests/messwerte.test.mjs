@@ -54,6 +54,25 @@ await test('jede data-groesse kennt recheck.js', async () => {
   assertEqual(unbekannt, [], 'Feld meldet eine Groesse, die recheck.js nicht kennt');
 });
 
+await test('jede data-groesse bewirkt auch etwas', async () => {
+  // Ein Feld, das eine Groesse meldet, die keine Phase beruehrt, ist eine
+  // Falle: es sieht aus, als wuerde es wirken, und tut nichts.
+  //
+  // Der Fall ist aufgetreten: bump_steer steht in der Matrix nur rechts -
+  // man verstellt nicht "Bump Steer", sondern die Tie-Rod-Hoehe. Die
+  // Messfelder meldeten brav, und nichts geschah. Seitdem entwertet eine
+  // Groesse auch die Phase, die sie selbst liefert.
+  const ohneWirkung = [...new Set(M.FELDER.filter((f) => f.groesse).map((f) => f.groesse))]
+    .filter((g) => {
+      const f = R.phasenNach(g);
+      if (f.veraltet.length || f.mitmessen.length || f.hinweis.length) return false;
+      // Oder die Groesse wird von einer Phase geliefert - dann ueberholt
+      // ihre Neuerfassung diese Phase unmittelbar.
+      return !R.PHASEN.some((p) => p.liefert.includes(g));
+    });
+  assertEqual(ohneWirkung, [], 'data-groesse ohne Wirkung auf irgendeine Phase');
+});
+
 await test('jede Validierungsregel ist eine, die validation.js versteht', async () => {
   const quelle = fs.readFileSync(path.join(REPO_ROOT, 'validation.js'), 'utf8');
   const falsch = M.FELDER.filter((f) => f.regel)
