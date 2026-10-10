@@ -89,6 +89,17 @@ Dann gehoert sie nicht in die Datei der ersten. Wo eine Seite danach etwas
 nachziehen muss, geschieht das ueber ein Ereignis - das Modul muss die Seiten
 nicht kennen.
 
+**Fuenfter Vorfall, v8 - derselbe Fall, eine Stufe groesser.** In
+`nachschlagen.js` stand ein eigener, kleiner Markdown-Renderer fuer das
+Glossar: Fettdruck, Code, Links. Als die Kapitelseite dazukam, brauchte sie
+Tabellen, Blockzitate und Listen - und bekam einen zweiten Renderer. Zwei
+Fassungen desselben Formats, von denen eine Tabellen kann und die andere
+nicht.
+
+Beide lesen jetzt `markdown.js`. Zu bemerken war es nicht an einem Fehler,
+sondern an der Frage, wo der neue Renderer hingehoert - die Antwort "neben den
+alten" ist immer verdaechtig.
+
 ## 5. Kein Sollwert ohne Quelle
 
 Messwerte, Winkel und Drehmomente stehen nur mit Beleg da. Ist keiner da, wird
@@ -239,6 +250,36 @@ laufenden Code ueberhaupt angekommen ist. Eine kleine Messung am lebenden
 Objekt kostet zwei Minuten und verhindert, dass ein brauchbarer Test
 weggeworfen wird.
 
+## 7d. Ein Testfall muss den Fehler unterscheiden koennen
+
+Gleiche Zahlen auf beiden Seiten einer Pruefung lassen eine Vertauschung
+durchgehen.
+
+**Warum, v5:** der Testfall fuer die Radlast-Diagonalen nahm 400/300/300/200.
+Beide Diagonalen ergeben 600 - eine Vertauschung von Cross und Gegen-Cross
+waere nicht aufgefallen. Gemeldet hat es eine Assertion im selben Test, die
+genau das prueft: `assert(r.cross !== r.gegenCross)`.
+
+**Die Regel:** wo zwei Groessen unterschieden werden sollen, muss der Testfall
+sie unterscheidbar machen - und eine Assertion soll das festhalten, nicht nur
+der gute Vorsatz beim Schreiben.
+
+## 7e. Pruefen, wo der Fehler sichtbar waere
+
+**Sechster Vorfall, v7.** Drei Testfehlschlaege in Folge lagen nicht am Code,
+sondern am Test:
+
+- das Handbuch setzt fuer negative Zahlen ein echtes Minuszeichen (U+2212),
+  der Code einen Bindestrich - der Vergleich meldete sechs fehlende Stufen,
+  die alle dastanden
+- ein Test verbot das Wort "ZIELWERT" im Code und fand es in der
+  Kommentarzeile, die erklaert, warum es keinen gibt
+- eine Warnungszaehlung zaehlte alle Warnungen statt der gemeinten
+
+Keiner davon war ein Befund am Fahrzeug oder am Code. **Ein roter Test ist
+erst dann ein Befund, wenn der Weg dorthin geklaert ist** - sonst repariert
+man die Anwendung, bis sie zum Test passt.
+
 ## 8. Eingetragene Werte muessen wirken
 
 Ein Eingabefeld, dessen Wert nirgends erscheint, ist eine Falle. Wer misst und
@@ -297,6 +338,30 @@ Zustand.
 
 Hypothesen, die sich nicht bestaetigt haben, werden **gestrichen**, nicht
 umformuliert.
+
+## 12. Was aus einem anderen Projekt kommt, bringt dessen Einstellungen mit
+
+Eine kopierte Datei traegt mehr als ihren Inhalt: Zeilenenden, Kodierung,
+Namenskonventionen. Was dort stimmig war, muss es hier nicht sein.
+
+**Siebter Vorfall, v9.** Sieben Dateien wurden in v1 aus dem Schwesterprojekt
+kopiert und lagen seitdem mit CRLF **im Repository**, der Rest mit LF. Dort
+liegen sie als LF im Repo und nur im Arbeitsverzeichnis als CRLF - der
+Unterschied entstand durch `core.autocrlf=false`, in v1 mitgesetzt, ohne die
+Folgen zu bedenken.
+
+Acht Versionen lang harmlos. Auffaellig wird so etwas erst, wenn ein Werkzeug
+die Zeilenenden anfasst: dann meldet git eine Datei als vollstaendig geaendert,
+obwohl eine Zeile angepasst wurde - und im Diff ist nicht mehr zu sehen, was
+wirklich passiert ist.
+
+**Seitdem:** `.gitattributes` legt die Zeilenenden fest, statt sie davon
+abhaengen zu lassen, wie eine Datei hereingekommen ist.
+
+**Die allgemeine Lehre:** beim Uebernehmen aus einem anderen Projekt nicht nur
+den Inhalt pruefen, sondern auch, was unsichtbar mitkommt. Dasselbe galt fuer
+den Paketspiegel in v2 - die interne Registry-Adresse stand im Lockfile und
+war von CI aus nicht erreichbar.
 
 ## Tests
 

@@ -12,6 +12,19 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v10',
+      date: '2026-10-10',
+      time: '08:53',
+      title: 'Die Suche kennt Glossar und Handbuch',
+      changes: [
+        { type: 'neu', text: 'Unter dem Suchfeld erscheinen jetzt auch Treffer aus dem Glossar und aus den Kapiteln. Die Markierungen im Text beantworten "wo steht das hier", die Trefferliste "wo ist das erklaert" - zwei verschiedene Fragen, darum zwei Darstellungen nebeneinander statt einer anstelle der anderen.' },
+        { type: 'neu', text: 'Kapiteltreffer nennen die Fundstelle mit Umfeld und wie oft der Begriff dort vorkommt. Ein Kapitelname allein sagt nicht, ob sich das Oeffnen lohnt.' },
+        { type: 'neu', text: 'Glossar und Kapitel werden beim Seitenaufbau im Hintergrund geladen. Wer tippt, soll nicht auf neunundzwanzig Netzzugriffe warten.' },
+        { type: 'intern', text: 'Eine Gegenprobe blieb gruen, obwohl das Vorladen ausgebaut war: die Tests riefen das Laden selbst auf und prueften damit das Suchen, nicht das Vorladen. Der neue Test wartet nur, wie ein Nutzer auch, und sucht dann.' },
+        { type: 'intern', text: 'Die Arbeitsregeln sind um vier Eintraege gewachsen - zwei Renderer fuer dasselbe Format, ein Testfall der eine Vertauschung nicht unterscheiden konnte, drei rote Tests die am Test lagen und nicht am Code, und Einstellungen die beim Kopieren aus einem anderen Projekt unsichtbar mitkommen.' }
+      ]
+    },
+    {
       version: 'v9',
       date: '2026-10-10',
       time: '08:32',

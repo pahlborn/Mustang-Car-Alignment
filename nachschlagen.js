@@ -313,8 +313,83 @@
     if (nav) nav.style.display = _marken.length ? 'flex' : 'none';
     if (zahl) zahl.textContent = _marken.length ? '1 / ' + _marken.length : 'kein Treffer';
     if (_marken.length) springen(0);
+
+    weitereQuellen(q);
     return _marken.length;
   }
+
+  // ===========================================================================
+  // Zweite und dritte Quelle: Glossar und Handbuch
+  // ---------------------------------------------------------------------------
+  // Die Suche auf der Seite findet nur, was gerade dasteht. Wer in der
+  // Werkstatt nach "Thrust Angle" sucht, meint aber meist den Begriff oder
+  // das Kapitel - und beides liegt woanders.
+  //
+  // Die Treffer erscheinen unter dem Suchfeld, nicht statt der Markierungen
+  // im Text. Es sind zwei verschiedene Fragen: "wo steht das hier" und "wo
+  // ist das erklaert".
+  // ===========================================================================
+
+  function weitereQuellen(q) {
+    var ziel = document.getElementById('sucheQuellen');
+    if (!ziel) return;
+
+    if (!q || q.length < 2) { ziel.innerHTML = ''; ziel.style.display = 'none'; return; }
+
+    var teile = [];
+
+    // --- Glossar ---
+    if (typeof Glossar !== 'undefined' && Glossar.istGeladen()) {
+      var begriffe = Glossar.suchen(q).slice(0, 4);
+      if (begriffe.length) {
+        teile.push('<div class="sq-gruppe"><div class="sq-kopf">Glossar</div>'
+          + begriffe.map(function (e) {
+              return '<button type="button" class="sq-treffer"'
+                + ' onclick="glossarOeffnen(' + JSON.stringify(e.begriff) + ')">'
+                + '<span class="sq-titel">' + esc(e.begriff) + '</span>'
+                + '<span class="sq-rand">' + esc(e.kategorie) + '</span></button>';
+            }).join('')
+          + '</div>');
+      }
+    }
+
+    // --- Handbuch ---
+    if (typeof Kapitel !== 'undefined') {
+      var kapitel = Kapitel.suchen(q, 1).slice(0, 5);
+      if (kapitel.length) {
+        teile.push('<div class="sq-gruppe"><div class="sq-kopf">Handbuch</div>'
+          + kapitel.map(function (k) {
+              return '<a class="sq-treffer" href="handbuch.html?d='
+                + encodeURIComponent(k.datei) + '">'
+                + '<span class="sq-titel">' + esc(k.titel) + '</span>'
+                + '<span class="sq-rand">' + k.anzahl + '\u00d7</span>'
+                + (k.stellen[0]
+                    ? '<span class="sq-stelle">' + esc(k.stellen[0].umfeld) + '</span>'
+                    : '')
+                + '</a>';
+            }).join('')
+          + '</div>');
+      }
+    }
+
+    if (!teile.length) { ziel.innerHTML = ''; ziel.style.display = 'none'; return; }
+    ziel.innerHTML = teile.join('');
+    ziel.style.display = '';
+  }
+
+  /** Treffer der anderen Quellen ausblenden - beim Leeren und beim Wegklicken. */
+  function quellenSchliessen() {
+    var ziel = document.getElementById('sucheQuellen');
+    if (ziel) { ziel.innerHTML = ''; ziel.style.display = 'none'; }
+  }
+
+  // Klick ausserhalb der Suchleiste schliesst die Trefferliste. Ohne das
+  // bleibt sie ueber dem Inhalt stehen, den man gerade lesen wollte.
+  document.addEventListener('click', function (e) {
+    if (e.target.closest && (e.target.closest('.search-bar')
+        || e.target.closest('#sucheQuellen'))) return;
+    quellenSchliessen();
+  });
 
   function springen(idx) {
     if (!_marken.length) return;
@@ -352,6 +427,7 @@
     markenEntfernen();
     var nav = document.getElementById('sucheNav');
     if (nav) nav.style.display = 'none';
+    quellenSchliessen();
   }
 
   function sucheTaste(e) {
@@ -386,12 +462,36 @@
     document.body.appendChild(div);
   }
 
+  /**
+   * Behaelter fuer die Treffer der anderen Quellen.
+   *
+   * Hier erzeugt und nicht in den fuenf Seiten wiederholt - sonst waere es
+   * fuenfmal dasselbe Markup, und das sechste Mal vergisst man.
+   */
+  function quellenBehaelterBauen() {
+    if (document.getElementById('sucheQuellen')) return;
+    var leiste = document.querySelector('.search-bar');
+    if (!leiste) return;
+    var div = document.createElement('div');
+    div.id = 'sucheQuellen';
+    div.className = 'suche-quellen';
+    div.style.display = 'none';
+    leiste.appendChild(div);
+  }
+
   function init() {
     stapelBauen();
-    // Glossar im Hintergrund laden, damit das Overlay sofort steht. Ein
-    // Fehlschlag faellt hier nicht auf - erst beim Oeffnen, und dort gehoert
-    // er hin.
+    quellenBehaelterBauen();
+
+    // Glossar und Kapitel im Hintergrund laden. Beide werden fuer die Suche
+    // gebraucht, und wer tippt, soll nicht auf einen Netzzugriff warten.
+    //
+    // Ein Fehlschlag faellt hier nicht auf - beim Glossar erst beim Oeffnen,
+    // bei den Kapiteln gar nicht: dann fehlt die dritte Suchquelle, und das
+    // ist besser als eine Fehlermeldung fuer etwas, das niemand angefordert
+    // hat.
     if (typeof Glossar !== 'undefined') Glossar.laden().catch(function () {});
+    if (typeof Kapitel !== 'undefined') Kapitel.alleLaden().catch(function () {});
   }
 
   global.glossarOeffnen = glossarOeffnen;
@@ -408,7 +508,9 @@
     markdown: markdown,
     suchen: suchen,
     treffer: function () { return _marken.length; },
-    schluessel: schluessel
+    schluessel: schluessel,
+    weitereQuellen: weitereQuellen,
+    quellenSchliessen: quellenSchliessen
   };
 
   if (document.readyState === 'loading') {

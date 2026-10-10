@@ -23,6 +23,9 @@ new Function(fs.readFileSync(path.join(REPO_ROOT, 'referenz.js'), 'utf8'))();
 const G = globalThis.Glossar;
 const R = globalThis.Referenz.REFERENZ;
 
+new Function(fs.readFileSync(path.join(REPO_ROOT, 'kapitel.js'), 'utf8'))();
+const K_ANZAHL = globalThis.Kapitel.DATEIEN.length;
+
 const QUELLE = fs.readFileSync(path.join(REPO_ROOT, 'handbuch', 'GLOSSAR.md'), 'utf8');
 const KONV = fs.readFileSync(path.join(REPO_ROOT, 'handbuch', 'CONVENTIONS.md'), 'utf8');
 const zerlegt = G._zerlegen(QUELLE);
@@ -471,6 +474,137 @@ await test('ein Treffer in einem eingeklappten Abschnitt wird aufgeklappt', asyn
   await p.close();
   assert(r.n > 0, 'Kein Treffer fuer "Castor"');
   assertEqual(r.zu, false, 'Der Abschnitt blieb zugeklappt');
+});
+
+// ---------------------------------------------------------------------------
+suite('Glossar und Handbuch als weitere Suchquellen');
+
+await test('ein Glossarbegriff erscheint unter dem Suchfeld', async () => {
+  // Die Suche auf der Seite findet nur, was gerade dasteht. Wer in der
+  // Werkstatt nach "Thrust Angle" sucht, meint aber meist den Begriff.
+  const p = await oeffne('werkstatt.html');
+  const r = await p.page.evaluate(async () => {
+    await Glossar.laden();
+    Nachschlagen.suchen('Thrust Angle');
+    const q = document.getElementById('sucheQuellen');
+    return { sichtbar: q.style.display !== 'none', text: q.textContent };
+  });
+  await p.close();
+  assert(r.sichtbar, 'Trefferliste bleibt versteckt');
+  assert(/Glossar/.test(r.text), 'Keine Glossargruppe: ' + r.text.slice(0, 200));
+  assert(/Thrust Angle/.test(r.text), 'Begriff fehlt');
+});
+
+await test('Kapiteltreffer nennen die Fundstelle, nicht nur den Titel', async () => {
+  // Ein Kapitelname allein sagt nicht, ob sich das Oeffnen lohnt.
+  const p = await oeffne('werkstatt.html');
+  const r = await p.page.evaluate(async () => {
+    await Kapitel.alleLaden();
+    Nachschlagen.suchen('Bump Steer');
+    const q = document.getElementById('sucheQuellen');
+    return {
+      text: q.textContent,
+      stellen: q.querySelectorAll('.sq-stelle').length,
+      verweise: [...q.querySelectorAll('a')].map((a) => a.getAttribute('href'))
+    };
+  });
+  await p.close();
+  assert(/Handbuch/.test(r.text), 'Keine Handbuchgruppe');
+  assert(r.stellen > 0, 'Keine Textstelle mitgeliefert');
+  assert(r.verweise.every((h) => h.startsWith('handbuch.html?d=')),
+    'Verweis zeigt nicht ins Handbuch: ' + r.verweise.join(', '));
+});
+
+await test('die Markierungen im Text bleiben davon unberuehrt', async () => {
+  // Zwei verschiedene Fragen, zwei Darstellungen: "wo steht das hier" und
+  // "wo ist das erklaert". Die eine darf die andere nicht ersetzen.
+  const p = await oeffne('werkstatt.html');
+  const r = await p.page.evaluate(async () => {
+    await Kapitel.alleLaden();
+    const n = Nachschlagen.suchen('Phase');
+    return { treffer: n, marken: document.querySelectorAll('mark.suche-treffer').length,
+             quellen: document.getElementById('sucheQuellen').style.display !== 'none' };
+  });
+  await p.close();
+  assert(r.marken > 0, 'Keine Markierungen im Text');
+  assertEqual(r.marken, r.treffer, 'Zaehlung und Markierungen weichen ab');
+  assert(r.quellen, 'Die weiteren Quellen fehlen');
+});
+
+await test('Leeren schliesst auch die Trefferliste', async () => {
+  const p = await oeffne('werkstatt.html');
+  const sichtbar = await p.page.evaluate(async () => {
+    await Kapitel.alleLaden();
+    Nachschlagen.suchen('Castor');
+    sucheLeeren();
+    return document.getElementById('sucheQuellen').style.display !== 'none';
+  });
+  await p.close();
+  assertEqual(sichtbar, false, 'Trefferliste blieb stehen');
+});
+
+await test('ein Klick daneben schliesst die Trefferliste', async () => {
+  // Sonst steht sie ueber dem Inhalt, den man gerade lesen wollte.
+  //
+  // Der Klick wird ausgeloest, nicht geklickt: page.click() wartet darauf,
+  // dass die Stelle frei liegt - und die Trefferliste deckt sie gerade ab.
+  // Genau das ist ja der Zustand, der hier geprueft wird.
+  const p = await oeffne('werkstatt.html');
+  const sichtbar = await p.page.evaluate(async () => {
+    await Kapitel.alleLaden();
+    Nachschlagen.suchen('Castor');
+    document.getElementById('mainContent')
+      .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    return document.getElementById('sucheQuellen').style.display !== 'none';
+  });
+  await p.close();
+  assertEqual(sichtbar, false, 'Trefferliste blieb nach dem Klick stehen');
+});
+
+await test('ein Wort ohne Treffer zeigt keine leere Liste', async () => {
+  const p = await oeffne('werkstatt.html');
+  const r = await p.page.evaluate(async () => {
+    await Kapitel.alleLaden();
+    await Glossar.laden();
+    Nachschlagen.suchen('zwirbelwurst');
+    const q = document.getElementById('sucheQuellen');
+    return { sichtbar: q.style.display !== 'none', text: q.textContent };
+  });
+  await p.close();
+  assertEqual(r.sichtbar, false, 'Leere Liste wird angezeigt: "' + r.text + '"');
+});
+
+await test('die Kapitel sind da, bevor jemand tippt', async () => {
+  // Die uebrigen Tests rufen Kapitel.alleLaden() selbst auf - sie pruefen
+  // damit das Suchen, nicht das Vorladen. Eine Gegenprobe zeigte das: mit
+  // ausgebautem Vorladen blieben sie gruen, waehrend die Handbuchtreffer in
+  // Wirklichkeit fehlten.
+  //
+  // Hier wird darum nur gewartet, wie ein Nutzer auch, und dann gesucht.
+  const p = await oeffne('werkstatt.html');
+  await p.page.waitForTimeout(1200);
+  const r = await p.page.evaluate(() => {
+    const geladen = Object.keys(Kapitel.geladen()).length;
+    Nachschlagen.suchen('Castor');
+    return { geladen, text: document.getElementById('sucheQuellen').textContent };
+  });
+  await p.close();
+  assertEqual(r.geladen, K_ANZAHL, 'Kapitel wurden nicht vorgeladen');
+  assert(/Handbuch/.test(r.text), 'Keine Handbuchtreffer ohne eigenes Laden');
+});
+
+await test('der Behaelter wird auf jeder Seite gebaut', async () => {
+  for (const datei of ['index.html', 'werkstatt.html', 'messblatt.html',
+                       'bumpsteer.html', 'diagnose.html', 'handbuch.html']) {
+    const p = await oeffne(datei);
+    const r = await p.page.evaluate(() => ({
+      behaelter: document.querySelectorAll('#sucheQuellen').length,
+      kapitel: typeof Kapitel !== 'undefined'
+    }));
+    await p.close();
+    assertEqual(r.behaelter, 1, datei + ': Behaelter fehlt oder steht doppelt');
+    assertEqual(r.kapitel, true, datei + ': kapitel.js nicht geladen');
+  }
 });
 
 await test('die Suche fasst keine Skripte an', async () => {
