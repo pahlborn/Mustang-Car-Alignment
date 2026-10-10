@@ -1,4 +1,4 @@
-var CACHE_NAME = 'chassis-v8';
+var CACHE_NAME = 'chassis-v9';
 // Relativ, nicht absolut: GitHub Pages unterscheidet Gross- und Kleinschreibung
 // im Pfad. Ein absoluter Pfad in der falschen Schreibweise laesst cache.addAll
 // scheitern - und damit die gesamte Installation des Service Workers, also den

@@ -1,0 +1,15 @@
+# Zeilenenden im Repository immer LF.
+#
+# Ohne diese Datei haengt es davon ab, wie eine Datei ins Repository gekommen
+# ist: sieben Dateien wurden in v1 aus dem Schwesterprojekt kopiert und lagen
+# seitdem mit CRLF darin, der Rest mit LF. Auffaellig wird das erst, wenn ein
+# Werkzeug die Zeilenenden anfasst - dann meldet git eine Datei als komplett
+# geaendert, obwohl eine Zeile angepasst wurde.
+#
+# text=auto normalisiert beim Einchecken; eol=lf legt fest, worauf.
+* text=auto eol=lf
+
+# Binaerdateien bleiben unangetastet.
+*.png binary
+*.pdf binary
+*.zip binary

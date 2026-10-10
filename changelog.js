@@ -12,6 +12,16 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v9',
+      date: '2026-10-10',
+      time: '08:32',
+      title: 'Zeilenenden vereinheitlicht',
+      changes: [
+        { type: 'fix', text: 'Sieben Dateien lagen seit v1 mit Windows-Zeilenenden im Repository - sie waren aus dem Schwesterprojekt kopiert worden, wo sie im Arbeitsverzeichnis so vorliegen. Der Rest lag mit Unix-Zeilenenden da. Auffaellig wird so etwas erst, wenn ein Werkzeug die Zeilenenden anfasst: dann meldet git eine Datei als vollstaendig geaendert, obwohl eine Zeile angepasst wurde.' },
+        { type: 'intern', text: 'Eine .gitattributes legt die Zeilenenden jetzt fest, statt sie davon abhaengen zu lassen, wie eine Datei ins Repository gekommen ist. Der Inhalt von field-sync.js und validation.js ist weiterhin byte-identisch mit dem Schwesterprojekt.' }
+      ]
+    },
+    {
       version: 'v8',
       date: '2026-10-10',
       time: '08:25',
