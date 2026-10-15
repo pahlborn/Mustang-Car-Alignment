@@ -146,6 +146,36 @@ Evidenzgrade mit CONVENTIONS 16 und verbietet, sie als Statusfarbe zu
 benutzen. Die uebrigen Angaben - Shimgrenzen, Messmittel, Phasentitel,
 Symptomcodes - wurden bei dieser Gelegenheit nachgeprueft und sind belegt.
 
+### 5b. Ein Feldname ist noch keine Groesse - die Einheit gehoert dazu
+
+Wer einen Wert aus dem Handbuch uebernimmt, uebernimmt zwei Dinge: den Namen
+und die Einheit, in der er dort gefuehrt wird. Nur den Namen zu pruefen
+reicht nicht.
+
+**Achter Vorfall, v11.** Die Rollsteifigkeitsrechnung griff auf zwei Felder
+zu, die es in `00_PROJECT.md` gar nicht gibt: `spring_rear_rate` und
+`arb_rate_front`. Der Test, der jedes genannte Feld dort nachschlaegt, hat
+das gemeldet - derselbe, der in v6 die erfundenen Evidenzklassen aufdeckte.
+
+Beim Korrigieren kam der eigentliche Fehler heraus: die hintere Federrate
+heisst `leaf_rate` und steht dort in **lb/in**, waehrend die Rechnung N/mm
+erwartet. Ungerechnet eingesetzt waere die Hinterachse um den Faktor **5,7**
+zu steif gewesen - die Balanceaussage haette das Vorzeichen gewechselt, und
+zwar ohne dass irgendetwas unplausibel ausgesehen haette.
+
+**Warum das gefaehrlicher ist als ein erfundener Name:** ein falscher
+Feldname bricht sichtbar. Eine falsche Einheit rechnet weiter und liefert
+eine Zahl, die man glaubt.
+
+**Die Regel:** jedes Feld traegt die Einheit, in der es im Handbuch steht -
+nicht die, in der gerechnet wird. Wo umgerechnet werden muss, steht die
+Umrechnung als eigene Funktion mit Testfall da, nicht als Faktor mitten in
+der Formel.
+
+**Besonders aufpassen bei:** amerikanischen Herstellerangaben (lb/in, Zoll,
+ft-lbs, psi), Winkeln (Grad gegen Bogenmass) und allem, was in
+`00_PROJECT.md` aus einem Katalog uebernommen wurde.
+
 ## 6. Nichts aufnehmen, was nicht umgesetzt werden kann
 
 Das Fahrzeug ist von 1966 und hat begrenzte Verstellmoeglichkeiten. Eine

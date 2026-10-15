@@ -177,13 +177,64 @@ await test('die Blattfederrate wird von lb/in umgerechnet', async () => {
   assertEqual(R.lbinNachNmm(''), null, 'Leerer Wert');
 });
 
-await test('jedes Feld traegt die Einheit, in der es im Handbuch steht', async () => {
-  // Nicht die, in der gerechnet wird. Wer hier N/mm liest, obwohl dort
-  // lb/in steht, traegt die falsche Zahl ein.
-  const e = R.EINGANG.find((x) => x.feld === 'leaf_rate');
-  assert(e, 'leaf_rate fehlt in der Liste');
-  assertEqual(e.einheit, 'lb/in', 'Einheit von leaf_rate');
-  assert(e.umrechnen, 'Die Umrechnung ist nicht vermerkt');
+await test('jedes Feld traegt die Einheit aus dem Handbuch', async () => {
+  // Ein falscher Feldname bricht sichtbar. Eine falsche Einheit rechnet
+  // weiter und liefert eine Zahl, die man glaubt - darum wird nicht nur
+  // der Name nachgeschlagen, sondern auch die Einheit.
+  //
+  // 00_PROJECT.md fuehrt die Felder in Tabellen der Form
+  //   | `feldname` | Wert | Einheit | ...
+  // Geprueft wird, ob die dritte Spalte zu dem passt, was hier steht.
+  const zeilen = {};
+  for (const z of PROJ.split(/\r?\n/)) {
+    const m = z.match(/^\|\s*`([a-z_0-9]+)`\s*\|([^|]*)\|([^|]*)\|/);
+    if (m) zeilen[m[1]] = m[3].trim();
+  }
+
+  const falsch = [];
+  for (const e of R.EINGANG.concat(R.EINGANG_LASTTRANSFER)) {
+    const imHandbuch = zeilen[e.feld];
+    if (imHandbuch === undefined) continue;        // steht in keiner Tabelle
+    if (!imHandbuch) continue;                      // Spalte leer
+    // Lockerer Vergleich: "lb/in je Feder" deckt "lb/in", "mm �ber Boden"
+    // deckt "mm". Ein Gedankenstrich als Einheit gilt als keine Angabe.
+    if (e.einheit === '\u2013') continue;
+    if (!imHandbuch.toLowerCase().startsWith(e.einheit.toLowerCase())) {
+      falsch.push(e.feld + ': Modul "' + e.einheit + '", Handbuch "' + imHandbuch + '"');
+    }
+  }
+  assertEqual(falsch, [], 'Einheit weicht vom Handbuch ab');
+});
+
+await test('wo das Handbuch lb/in fuehrt, wird umgerechnet', async () => {
+  // Beide Federraten stehen dort in lb/in - eine amerikanische
+  // Herstellerangabe. Der Vermerk `umrechnen` haelt fest, dass das bekannt
+  // ist; ohne ihn liest man die Einheit und vergisst die Umrechnung.
+  for (const feld of ['spring_front_rate', 'leaf_rate']) {
+    const e = R.EINGANG.find((x) => x.feld === feld);
+    assert(e, feld + ' fehlt in der Liste');
+    assertEqual(e.einheit, 'lb/in', 'Einheit von ' + feld);
+    assert(e.umrechnen, feld + ': die Umrechnung ist nicht vermerkt');
+  }
+});
+
+await test('beide Federraten werden tatsaechlich umgerechnet', async () => {
+  // Der Vermerk allein genuegt nicht - er muss auch wirken. Ungerechnet
+  // waere die Achse um den Faktor 5,7 zu steif.
+  //
+  // Probe: 175 lb/in ergibt dieselbe Rollsteifigkeit wie der umgerechnete
+  // Wert in N/mm, direkt eingesetzt.
+  const ausLbin = R.auswerten({
+    spring_front_rate: 175, motion_ratio_front: 1, track_front: 1000,
+    leaf_rate: 175, leaf_spacing_rear: 1000
+  });
+  const direkt = R.rollsteifigkeit(R.lbinNachNmm(175), 1000);
+  nahe(ausLbin.vorn.gesamtProGrad, direkt.proGrad, 1e-9);
+  nahe(ausLbin.hinten.gesamtProGrad, direkt.proGrad, 1e-9);
+
+  // Und der Faktor stimmt: 175 lb/in sind rund 30,6 N/mm, nicht 175.
+  assert(ausLbin.vorn.radrate < 40, 'Die Federrate wurde nicht umgerechnet: '
+    + ausLbin.vorn.radrate);
 });
 
 await test('Text statt Zahl ergibt nichts', async () => {

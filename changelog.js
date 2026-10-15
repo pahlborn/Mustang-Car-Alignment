@@ -12,6 +12,18 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v12',
+      date: '2026-10-15',
+      time: '10:54',
+      title: 'Einheiten werden gegen das Handbuch geprueft',
+      changes: [
+        { type: 'fix', text: 'Die vordere Federrate stand im Code als N/mm, das Handbuch fuehrt sie in lb/in - derselbe Fehler wie bei der Blattfeder, nur bis jetzt unentdeckt. Die Vorderachse waere um den Faktor 5,7 zu steif gerechnet worden. Beide Raten werden jetzt umgerechnet.' },
+        { type: 'neu', text: 'Zwei Tests schlagen jedes Feld in 00_PROJECT.md nach und vergleichen die Einheit. Der Fehler war beim ersten Mal nur beilaeufig aufgefallen, beim Korrigieren eines anderen Feldnamens - jetzt findet er sich von selbst.' },
+        { type: 'neu', text: 'Die Federraten zeigen ihre Einheit am Eingabefeld. Wer dort N/mm liest, obwohl lb/in gemeint ist, traegt die falsche Zahl ein, und nichts daran sieht unplausibel aus.' },
+        { type: 'intern', text: 'Neue Arbeitsregel: ein Feldname ist noch keine Groesse, die Einheit gehoert dazu. Ein falscher Name bricht sichtbar - eine falsche Einheit rechnet weiter und liefert eine Zahl, die man glaubt. Besonders bei amerikanischen Herstellerangaben, Winkeln und allem aus Katalogen.' }
+      ]
+    },
+    {
       version: 'v11',
       date: '2026-10-15',
       time: '10:29',

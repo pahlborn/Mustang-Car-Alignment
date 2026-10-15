@@ -73,6 +73,38 @@ await test('jede data-groesse bewirkt auch etwas', async () => {
   assertEqual(ohneWirkung, [], 'data-groesse ohne Wirkung auf irgendeine Phase');
 });
 
+await test('jedes Feld traegt die Einheit aus 00_PROJECT.md', async () => {
+  // Ein falscher Feldname bricht sichtbar. Eine falsche Einheit rechnet
+  // weiter und liefert eine Zahl, die man glaubt.
+  //
+  // In v11 stand die vordere Federrate im Modul als N/mm, im Handbuch aber
+  // als lb/in - Faktor 5,7. Gefunden wurde das nur beiläufig, beim
+  // Korrigieren eines anderen Feldnamens. Diese Pruefung findet es von
+  // selbst.
+  const proj = fs.readFileSync(path.join(REPO_ROOT, 'handbuch', '00_PROJECT.md'), 'utf8');
+  const imHandbuch = {};
+  for (const z of proj.split(/\r?\n/)) {
+    const m = z.match(/^\|\s*`([a-z_0-9]+)`\s*\|([^|]*)\|([^|]*)\|/);
+    if (m) imHandbuch[m[1]] = m[3].trim();
+  }
+
+  const falsch = [];
+  let geprueft = 0;
+  for (const f of M.FELDER) {
+    const h = imHandbuch[f.id];
+    if (h === undefined || !h) continue;      // steht in keiner Tabelle
+    geprueft++;
+    const e = (f.einheit || '').toLowerCase();
+    if (!e || e === '\u2013') continue;
+    // Lockerer Vergleich: "lb/in je Feder" deckt "lb/in".
+    if (!h.toLowerCase().startsWith(e)) {
+      falsch.push(f.id + ': Modul "' + f.einheit + '", Handbuch "' + h + '"');
+    }
+  }
+  assert(geprueft > 5, 'Nur ' + geprueft + ' Felder abgeglichen - Regex kaputt?');
+  assertEqual(falsch, [], 'Einheit weicht vom Handbuch ab');
+});
+
 await test('jede Validierungsregel ist eine, die validation.js versteht', async () => {
   const quelle = fs.readFileSync(path.join(REPO_ROOT, 'validation.js'), 'utf8');
   const falsch = M.FELDER.filter((f) => f.regel)

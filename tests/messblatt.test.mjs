@@ -197,7 +197,7 @@ await test('ohne Fahrzeugkonstanten wird die Balance nicht gerechnet', async () 
 
 await test('mit allen Konstanten erscheint die Verteilung', async () => {
   const p = await oeffne();
-  for (const [id, v] of [['spring_front_rate', 30], ['motion_ratio_front', '0,6'],
+  for (const [id, v] of [['spring_front_rate', 175], ['motion_ratio_front', '0,6'],
                          ['track_front', 1430], ['leaf_rate', 175],
                          ['leaf_spacing_rear', 1100]]) {
     await fuelle(p.page, id, v);
@@ -208,6 +208,24 @@ await test('mit allen Konstanten erscheint die Verteilung', async () => {
   assert(/% vorn/.test(t), 'Der Anteil fehlt');
   assert(/Verteilung/.test(t), 'Der Hinweis auf die Verteilung fehlt');
   assert(/nicht\s+mitgerechnet/.test(t), 'Der ARB-Vorbehalt fehlt');
+});
+
+await test('die Federraten stehen in lb/in am Feld', async () => {
+  // Wer dort N/mm liest, obwohl das Handbuch lb/in fuehrt, traegt die
+  // falsche Zahl ein - und die Rechnung ist um den Faktor 5,7 daneben,
+  // ohne dass etwas unplausibel aussieht.
+  const p = await oeffne();
+  const r = await p.page.evaluate(() => {
+    function umfeld(id) {
+      const el = document.querySelector('[data-field="' + id + '"]');
+      const zeile = el ? el.closest('.spec-item, tr') : null;
+      return zeile ? zeile.textContent : '';
+    }
+    return { vorn: umfeld('spring_front_rate'), hinten: umfeld('leaf_rate') };
+  });
+  await p.close();
+  assert(/lb\/in/.test(r.vorn), 'Einheit fehlt bei der Federrate vorn: ' + r.vorn);
+  assert(/lb\/in/.test(r.hinten), 'Einheit fehlt bei der Blattfederrate: ' + r.hinten);
 });
 
 await test('fuer abgeleitete Werte gibt es kein Eingabefeld', async () => {

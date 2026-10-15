@@ -60,8 +60,10 @@
   // wird - nicht die, in der gerechnet wird. `leaf_rate` steht dort in
   // lb/in; wer hier N/mm erwartet, rechnet um den Faktor 5,7 daneben.
   var EINGANG = [
-    { feld: 'spring_front_rate',  label: 'Federrate vorn',       einheit: 'N/mm',
-      quelle: '00_PROJECT.md \u00a73' },
+    { feld: 'spring_front_rate',  label: 'Federrate vorn',       einheit: 'lb/in',
+      quelle: '00_PROJECT.md \u00a73', umrechnen: 'lbin_nmm',
+      hinweis: 'Im Handbuch in lb/in gef\u00fchrt \u2013 amerikanische '
+             + 'Herstellerangabe, wird f\u00fcr die Rechnung umgerechnet.' },
     { feld: 'motion_ratio_front', label: 'Motion Ratio vorn',    einheit: '\u2013',
       quelle: '00_PROJECT.md \u00a78.2',
       hinweis: 'Rad definiert anheben, Federl\u00e4ngen\u00e4nderung messen. '
@@ -217,7 +219,7 @@
     // folgt keine Rate. Dazu braeuchte es Hebelarm und Torsionslaenge, und
     // beide sind in 00_PROJECT.md offen. Eine geschaetzte ARB-Rate waere
     // genau die Zahl, die dieses Modul nicht liefern soll.
-    var v = achse(daten.spring_front_rate, daten.motion_ratio_front,
+    var v = achse(lbinNachNmm(daten.spring_front_rate), daten.motion_ratio_front,
                   daten.track_front, null);
 
     // Hinten: Blattfederrate in lb/in, Motion Ratio 1. Die Blattfeder sitzt

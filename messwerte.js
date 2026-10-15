@@ -94,8 +94,8 @@
   // Sie stehen hier, weil sie gemessen werden muessen - einmal, aber gruendlich.
   // Ohne sie bleibt jede Balanceaussage eine Schaetzung.
   feld({ id: 'spring_front_rate', gruppe: 'konstanten', art: 'stell',
-         label: 'Federrate vorn', einheit: 'N/mm', regel: 'numeric:0:200',
-         grenze: 'je Feder' });
+         label: 'Federrate vorn', einheit: 'lb/in', regel: 'numeric:0:1200',
+         grenze: 'je Feder \u2013 Herstellerangabe in lb/in' });
   feld({ id: 'motion_ratio_front', gruppe: 'konstanten', art: 'mess',
          label: 'Motion Ratio vorn', einheit: '\u2013', regel: 'numeric:0:2',
          grenze: 'geht quadratisch in die Radrate ein',
