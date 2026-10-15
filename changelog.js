@@ -12,6 +12,21 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v11',
+      date: '2026-10-15',
+      time: '10:29',
+      title: 'Die blockierenden Messungen und was aus ihnen folgt',
+      changes: [
+        { type: 'neu', text: 'Neun Fahrzeugkonstanten haben jetzt Felder: Federrate vorn, Motion Ratio, Spurweiten, Blattfederrate, Federabstand hinten, Radstand, Masse und Schwerpunkthoehe. Drei davon fuehrt das Handbuch als blockierend - ohne sie ist keine Balanceaussage moeglich.' },
+        { type: 'neu', text: 'Aus ihnen wird die Rollsteifigkeit beider Achsen und daraus die Balanceverteilung gerechnet. Die Formeln stammen aus dem Federkapitel und werden dagegen geprueft, samt der Faktortabelle fuer das Motion Ratio - es geht quadratisch ein, ein Wert von 0,5 bedeutet nicht halbe, sondern ein Viertel der Rate am Rad.' },
+        { type: 'neu', text: 'Fehlt ein Eingangswert, wird nichts gerechnet. Stattdessen steht da, welcher fehlt und wo im Handbuch beschrieben ist, wie er zu ermitteln ist. Eine plausibel aussehende Zahl waere hier schaedlicher als gar keine - sie truege eine Balanceentscheidung, die auf einer Annahme beruht.' },
+        { type: 'fix', text: 'Zwei Feldnamen waren erfunden: spring_rear_rate und arb_rate_front gibt es in 00_PROJECT.md nicht. Die hintere Federrate heisst leaf_rate, und fuer den Stabilisator ist nur der Durchmesser erfasst. Gefunden vom Test, der jedes genannte Feld im Handbuch nachschlaegt.' },
+        { type: 'fix', text: 'Dabei kam ein Einheitenfehler heraus: leaf_rate steht im Handbuch in lb/in, die Rechnung erwartet N/mm. Ungerechnet eingesetzt waere die Hinterachse um den Faktor 5,7 zu steif gewesen - die Balanceaussage haette das Vorzeichen gewechselt.' },
+        { type: 'intern', text: 'Der Stabilisator wird nicht mitgerechnet, und das steht auch so da. Aus dem Durchmesser allein folgt keine Rate; Hebelarm und Torsionslaenge sind offen. Eine geschaetzte ARB-Rate waere genau die Zahl, die dieses Modul nicht liefern soll.' },
+        { type: 'intern', text: 'Es gibt keinen Zielwert fuer die Verteilung. Das Handbuch nennt keinen - es sagt nur, in welche Richtung eine Aenderung wirkt. Was richtig ist, sagt die Trackvalidierung.' }
+      ]
+    },
+    {
       version: 'v10',
       date: '2026-10-10',
       time: '08:53',

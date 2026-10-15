@@ -28,6 +28,17 @@
 
     function zahl(id) { return Messwerte.zahl(wert(id)); }
 
+    /** Alle Feldwerte als Objekt - fuer Module, die mehrere zugleich brauchen. */
+    function alleWerte() {
+        var d = {};
+        var felder = document.querySelectorAll('[data-field]');
+        for (var i = 0; i < felder.length; i++) {
+            d[felder[i].dataset.field] = felder[i].type === 'checkbox'
+                ? felder[i].checked : felder[i].value;
+        }
+        return d;
+    }
+
     /** Zahl mit fester Nachkommastelle, oder Gedankenstrich. */
     function zz(v, n) {
         return (v === null || v === undefined) ? '\u2013' : v.toFixed(n === undefined ? 2 : n);
@@ -35,6 +46,12 @@
 
     var GRUPPEN = {
         kopf:      { titel: 'Kopfdaten',          icon: '\ud83d\udcc5' },
+        konstanten:{ titel: 'Fahrzeugkonstanten', icon: '\ud83d\udcd0',
+                     hinweis: 'Einmal messen, dann stehenlassen. Aus diesen Werten '
+                            + 'ergibt sich die Balanceverteilung. Drei davon f&uuml;hrt '
+                            + 'das Handbuch als <strong>blockierend</strong>: '
+                            + 'Motion Ratio, Federabstand hinten und Schwerpunkth&ouml;he. '
+                            + 'Solange sie fehlen, wird unten nichts gerechnet.' },
         stell:     { titel: 'Stellgr\u00f6\u00dfen Vorderachse', icon: '\ud83d\udd27',
                      hinweis: 'Was eingestellt ist. Diese Werte machen das Setup '
                             + 'reproduzierbar &ndash; sie sind <strong>keine</strong> '
@@ -228,6 +245,45 @@
                 + zeile('Cross', zz(r.cross, 2) + ' %',
                         '50 % ist ein symmetrischer Ausgangspunkt, kein Sollwert')
                 + zeile('Gegen-Cross', zz(r.gegenCross, 2) + ' %')
+                + '</div>';
+        }
+
+        if (gruppe === 'konstanten') {
+            if (typeof Rollsteifigkeit === 'undefined') return '';
+            var a = Rollsteifigkeit.auswerten(alleWerte());
+
+            // Was fehlt, steht vor dem Ergebnis - nicht darunter. Wer eine
+            // Luecke sieht, soll wissen, wo sie zu schliessen ist, bevor er
+            // eine Zahl liest, die es noch nicht gibt.
+            if (!a.tlltd) {
+                return '<div class="warning-box" style="margin-top:0.6rem;">'
+                    + '<strong>Noch nicht berechenbar.</strong> Es fehlen:<br>'
+                    + a.fehlt.map(function (f) {
+                        return '&bull; ' + esc(f.label)
+                            + ' <span style="color:var(--text-light);">('
+                            + esc(f.quelle) + ')</span>'
+                            + (f.hinweis ? '<br>&nbsp;&nbsp;<span style="font-size:0.72rem;">'
+                                + f.hinweis + '</span>' : '');
+                      }).join('<br>')
+                    + '</div>';
+            }
+
+            return '<div style="margin-top:0.6rem;">'
+                + zeile('Radrate vorn', zz(a.vorn.radrate) + ' N/mm',
+                        'k_Rad = k_Feder &times; MR&sup2;')
+                + zeile('Rollsteifigkeit vorn', zz(a.vorn.gesamtProGrad, 0) + ' Nm/&deg;')
+                + zeile('Rollsteifigkeit hinten', zz(a.hinten.gesamtProGrad, 0) + ' Nm/&deg;',
+                        'Federabstand geht quadratisch ein')
+                + zeile('TLLTD', zz(a.tlltd.anteilVorn * 100, 1) + ' % vorn',
+                        'Anteil der Vorderachse am Rollwiderstand')
+                + '<div class="info-box">Der Stabilisator ist <strong>nicht</strong> '
+                + 'mitgerechnet: aus dem Durchmesser allein folgt keine Rate, dazu '
+                + 'fehlen Hebelarm und Torsionsl&auml;nge. Das Ergebnis ist der reine '
+                + 'Federanteil.</div>'
+                + '<div class="info-box">Es z&auml;hlt die <strong>Verteilung</strong>, '
+                + 'nicht das Niveau. Steifer vorn bedeutet mehr Untersteuern, steifer '
+                + 'hinten mehr &Uuml;bersteuern &ndash; einen Zielwert nennt das '
+                + 'Handbuch nicht.</div>'
                 + '</div>';
         }
 

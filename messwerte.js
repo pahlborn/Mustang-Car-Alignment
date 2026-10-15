@@ -86,6 +86,44 @@
            groesse: 'castor' });
   });
 
+  // ---- Fahrzeugkonstanten ---------------------------------------------------
+  // Die Werte aus 00_PROJECT.md 8.2, aus denen sich die Balanceverteilung
+  // rechnen laesst. Drei davon nennt das Handbuch eigens als blockierend:
+  // motion_ratio_front, leaf_spacing_rear und cg_height.
+  //
+  // Sie stehen hier, weil sie gemessen werden muessen - einmal, aber gruendlich.
+  // Ohne sie bleibt jede Balanceaussage eine Schaetzung.
+  feld({ id: 'spring_front_rate', gruppe: 'konstanten', art: 'stell',
+         label: 'Federrate vorn', einheit: 'N/mm', regel: 'numeric:0:200',
+         grenze: 'je Feder' });
+  feld({ id: 'motion_ratio_front', gruppe: 'konstanten', art: 'mess',
+         label: 'Motion Ratio vorn', einheit: '\u2013', regel: 'numeric:0:2',
+         grenze: 'geht quadratisch in die Radrate ein',
+         messmittel: 'Rad anheben, Federl\u00e4ngen\u00e4nderung messen' });
+  feld({ id: 'track_front', gruppe: 'konstanten', art: 'mess',
+         label: 'Spurweite vorn', einheit: 'mm', regel: 'numeric:1000:2000',
+         messmittel: 'Radmitte zu Radmitte' });
+  feld({ id: 'track_rear', gruppe: 'konstanten', art: 'mess',
+         label: 'Spurweite hinten', einheit: 'mm', regel: 'numeric:1000:2000',
+         messmittel: 'Radmitte zu Radmitte' });
+  feld({ id: 'leaf_rate', gruppe: 'konstanten', art: 'stell',
+         label: 'Blattfederrate', einheit: 'lb/in', regel: 'numeric:0:600',
+         grenze: 'je Feder \u2013 Herstellerangabe in lb/in' });
+  feld({ id: 'leaf_spacing_rear', gruppe: 'konstanten', art: 'mess',
+         label: 'Federabstand hinten', einheit: 'mm', regel: 'numeric:500:1800',
+         grenze: 'Blattfedermitten, nicht die Spurweite',
+         messmittel: 'Mitte zu Mitte der Blattfedern' });
+  feld({ id: 'wheelbase', gruppe: 'konstanten', art: 'mess',
+         label: 'Radstand', einheit: 'mm', regel: 'numeric:2000:3500',
+         messmittel: 'beide Seiten einzeln' });
+  feld({ id: 'mass_total_raceready', gruppe: 'konstanten', art: 'mess',
+         label: 'Masse race-ready', einheit: 'kg', regel: 'numeric:500:2500',
+         messmittel: 'Longacre Corner-Weight-Waagen, Summe' });
+  feld({ id: 'cg_height', gruppe: 'konstanten', art: 'mess',
+         label: 'Schwerpunkth\u00f6he', einheit: 'mm', regel: 'numeric:200:1000',
+         grenze: 'geht linear in das Rollmoment ein',
+         messmittel: 'Waagenmessung mit angehobener Achse' });
+
   // ---- Alignment ------------------------------------------------------------
   VORN.forEach(function (r) {
     feld({ id: 'al_castor_' + r.toLowerCase(), gruppe: 'alignment', art: 'mess', rad: r,

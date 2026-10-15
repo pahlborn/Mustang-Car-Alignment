@@ -182,6 +182,34 @@ await test('die Pyrometer-Auswertung nennt beide Kennzahlen getrennt', async () 
   assert(/14[.,]0 K/.test(t), 'Gefaelle stimmt nicht: ' + t);
 });
 
+await test('ohne Fahrzeugkonstanten wird die Balance nicht gerechnet', async () => {
+  // Drei Werte nennt das Handbuch als blockierend. Solange sie fehlen, darf
+  // keine TLLTD-Zahl dastehen - sie wuerde eine Balanceentscheidung tragen,
+  // die auf einer Annahme beruht.
+  const p = await oeffne();
+  const t = await p.page.textContent('[data-gruppe="konstanten"]');
+  await p.close();
+  assert(/Noch nicht berechenbar/.test(t), 'Es wird gerechnet: ' + t.slice(0, 200));
+  assert(/Motion Ratio/.test(t), 'Die Luecke wird nicht benannt');
+  assert(/00_PROJECT/.test(t), 'Die Fundstelle fehlt');
+  assert(!/TLLTD/.test(t), 'TLLTD erscheint trotz fehlender Werte');
+});
+
+await test('mit allen Konstanten erscheint die Verteilung', async () => {
+  const p = await oeffne();
+  for (const [id, v] of [['spring_front_rate', 30], ['motion_ratio_front', '0,6'],
+                         ['track_front', 1430], ['leaf_rate', 175],
+                         ['leaf_spacing_rear', 1100]]) {
+    await fuelle(p.page, id, v);
+  }
+  const t = await p.page.textContent('[data-gruppe="konstanten"]');
+  await p.close();
+  assert(/TLLTD/.test(t), 'Keine Verteilung: ' + t.slice(0, 300));
+  assert(/% vorn/.test(t), 'Der Anteil fehlt');
+  assert(/Verteilung/.test(t), 'Der Hinweis auf die Verteilung fehlt');
+  assert(/nicht\s+mitgerechnet/.test(t), 'Der ARB-Vorbehalt fehlt');
+});
+
 await test('fuer abgeleitete Werte gibt es kein Eingabefeld', async () => {
   // Wer sie eintragen koennte, koennte sie auch falsch eintragen - und dann
   // stuende neben dem Messwert eine Zahl, die nicht zu ihm passt.
