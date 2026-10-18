@@ -12,6 +12,19 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v13',
+      date: '2026-10-18',
+      time: '12:00',
+      title: 'Der Bind-Test - und was er verhindert',
+      changes: [
+        { type: 'neu', text: 'Die Bind-Seite: Reproduzierbarkeit der Radlasten (6.1), Camber-Bind (6.2), laterale Ueberbestimmung am Panhard (6.3) und Hysterese (6.4). Das Urteil steht ganz oben und sperrt sichtbar - Projektregel 1: ohne bestandenen Test keine Zehntelarbeit. Wer erst nach dem Messen liest, dass er nicht haette messen sollen, hat umsonst gemessen.' },
+        { type: 'fix', text: 'Das Kapitel liess das Cross Weight in Prozent gegen die Einzelecken streuen - eine Rechnung, die nicht aufgeht. Die Spanne einer Summe kann nie groesser sein als die Summe der Einzelspannen, und der Nenner schwankt mit: bei einer sauberen Reihe mit plus/minus 1 kg je Ecke entstand ein Cross-Ausschlag von ueber 0,2 Prozentpunkten, der nichts bedeutete. Ausgewertet wird jetzt ein Diagonalmass in kg, das diesen Fehler nicht hat.' },
+        { type: 'neu', text: 'Das Diagonalmass wird ausgewiesen, aber nicht bewertet. Seine Schwelle laesst sich erst aus realen Messreihen ableiten - eine Zahl ohne Datengrundlage waere hier genauso wertlos wie ein geratener Sollwert. Ebenso die Hysterese: das Kapitel nennt nur, dass beide Seiten aehnlich sein sollen.' },
+        { type: 'fix', text: 'Der Hysteresetest misst Ride Height, nicht Radlast - die Feldnamen sprachen von oben und unten und meinten belastet und entlastet. Beim Bauen der Seite aufgefallen, vor dem ersten Release korrigiert.' },
+        { type: 'intern', text: 'Neue Arbeitsregel: zwei abgeleitete Groessen duerfen nur verglichen werden, wenn sie dieselbe Bezugsgroesse haben. Die Eckenstreuung stand in Prozent der Gesamtmasse, die Cross-Streuung in Prozentpunkten des Diagonalanteils - dasselbe Muster wie beim lb/in-Fehler aus v11, nur zwischen zwei gerechneten Werten statt zwischen zwei Einheiten.' }
+      ]
+    },
+    {
       version: 'v12',
       date: '2026-10-15',
       time: '10:54',

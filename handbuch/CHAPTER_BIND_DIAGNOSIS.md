@@ -209,9 +209,34 @@ Das Grundverfahren. Kein Zusatzwerkzeug nötig.
 | 0,5 – 1 % | grenzwertig — Ursache suchen |
 | **> 1 %** | **Bind. Keine Setup-Arbeit, bevor das geklärt ist.** |
 
-Zusätzlich auswerten: **Streut das Cross Weight stärker als die Einzelecken?** Dann liegt ein diagonaler Effekt vor — typisch für Verspannung.
-
 > Die Prozentangaben sind **Projektfestlegung**, keine Herstellerangabe. Sie dienen als Arbeitsschwelle und sind nach den ersten realen Messungen zu überprüfen.
+
+#### Zusätzlich: wandert Last diagonal?
+
+Eine Verspannung hat eine eigene Signatur. Sie drückt eine Ecke nieder und entlastet die diagonal gegenüberliegende, während Längs- und Querverteilung unauffällig bleiben. Genau das unterscheidet sie von einer Settling-Streuung, die alle vier Ecken gleichartig betrifft.
+
+**Diagonalmaß** je Durchgang, bezogen auf den ersten:
+
+```text
+D = (ΔLF + ΔRR) − (ΔRF + ΔLR)      [kg]
+```
+
+mit `Δ` = Abweichung dieser Ecke gegenüber Messung A. Zum Vergleich daneben:
+
+```text
+Längsmaß = (ΔLF + ΔRF) − (ΔLR + ΔRR)
+Quermaß  = (ΔLF + ΔLR) − (ΔRF + ΔRR)
+```
+
+| Beobachtung | Deutung |
+|---|---|
+| alle drei Maße klein | gleichmäßige Streuung — Settling, kein Hinweis auf Verspannung |
+| **Diagonalmaß deutlich größer als Längs- und Quermaß** | **diagonaler Effekt — typisch für Verspannung** |
+| Längs- oder Quermaß dominiert | Fahrzeug setzt sich ungleichmäßig — Pad, Settling oder Reifendruck prüfen |
+
+> **Warum nicht über das Cross Weight in Prozent:** Cross ist `(RF + LR) / Total`. Schwankt die Gesamtmasse zwischen den Durchgängen auch nur um ein Kilogramm, bewegt sich der Nenner mit — und erzeugt eine scheinbare Cross-Streuung, ohne dass Last gewandert wäre. Bei einer sauberen Reihe mit ±1 kg Streuung je Ecke entsteht so ein Cross-Ausschlag von über 0,2 Prozentpunkten, der nichts bedeutet. Das Diagonalmaß in Kilogramm hat diesen Fehler nicht.
+
+> **Schwelle noch offen.** Ab welchem Diagonalmaß von Verspannung auszugehen ist, lässt sich erst sagen, wenn reale Messreihen vorliegen. Bis dahin werden die drei Maße nebeneinander ausgewiesen und vom Menschen beurteilt — eine Zahl ohne Datengrundlage wäre hier genauso wertlos wie ein geratener Sollwert.
 
 ### 6.2 Sichttest auf Camber-Bind
 
@@ -246,6 +271,8 @@ Dieser Test zielt auf den Panhard/Shackle-Konflikt.
 | **A ≠ B**, B ≈ C | Panhard war verspannt eingebaut → Länge/Einbaulage prüfen |
 | **A ≈ B ≠ C** | Anschließen erzeugt Verspannung → **Panhard-Länge falsch** |
 | alle verschieden | mehrfacher Bind — Ursachen einzeln isolieren |
+
+> **Was ~ bedeutet:** Gleich ist, wenn keine Ecke mehr als **0,5 % der Gesamtmasse** abweicht — dieselbe Größenordnung, die §6.1 als wiederholbar („gut“) kennzeichnet. Größere Abweichungen werden der Änderung zugeschrieben, nicht dem Messrauschen. Liegt die Abweichung zwischen 0,5 und 1 %, ist die Messung nach §6.1 selbst nur grenzwertig — in diesem Fall zuerst §6.1 wiederholen. **Projektfestlegung**, wie die Schwellen in §6.1.
 
 > **Beim Wiederanschließen** muss sich der Panhard-Bolzen **ohne Kraft** einführen lassen. Muss gehebelt oder gezogen werden, steht die Achse nicht dort, wo der Panhard sie haben will — das ist direkt sichtbare Überbestimmung.
 

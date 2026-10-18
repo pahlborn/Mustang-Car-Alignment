@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a365d">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <title>Bind-Diagnose &ndash; Mustang 1966 Chassis Setup</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="version.js"></script>
+    <script src="changelog.js"></script>
+    <script src="field-sync.js"></script>
+    <script src="validation.js"></script>
+    <script src="errorlog.js"></script>
+    <script src="recheck.js"></script>
+    <script src="status.js"></script>
+    <script src="bind.js"></script>
+    <script src="kapitel.js"></script>
+    <script src="markdown.js"></script>
+    <script src="glossar.js"></script>
+    <script src="referenz.js"></script>
+    <script src="app.js"></script>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-row">
+        <a href="index.html" class="header-title">
+            <span class="ht-name">Mustang Chassis<span class="ht-sub">1966 &middot; Rundstrecke</span></span>
+            <span class="ht-meta" onclick="openChangelog()" title="Release-Dokumentation"><span class="ht-version" id="appVersion"></span><span class="ht-built"></span></span>
+        </a>
+        <a class="nav-item" href="index.html" title="&Uuml;bersicht"><span class="nav-icon">&#128202;</span><span class="nav-label">&Uuml;bersicht</span></a>
+        <a class="nav-item" href="werkstatt.html" title="Werkstatt"><span class="nav-icon">&#128295;</span><span class="nav-label">Werkstatt</span></a>
+        <a class="nav-item" href="messblatt.html" title="Messblatt"><span class="nav-icon">&#128207;</span><span class="nav-label">Messblatt</span></a>
+        <a class="nav-item" href="bumpsteer.html" title="Bump Steer"><span class="nav-icon">&#128200;</span><span class="nav-label">Bump Steer</span></a>
+        <a class="nav-item active" href="bind.html" title="Bind-Diagnose"><span class="nav-icon">&#9878;</span><span class="nav-label">Bind</span></a>
+        <a class="nav-item" href="handbuch.html" title="Handbuch"><span class="nav-icon">&#128214;</span><span class="nav-label">Handbuch</span></a>
+        <a class="nav-item" href="diagnose.html" title="Diagnose"><span class="nav-icon">&#127937;</span><span class="nav-label">Diagnose</span></a>
+        <div style="position:relative;">
+            <button class="header-gear" onclick="toggleToolMenu()" id="toolMenuBtn" title="Werkzeuge">&#9881;</button>
+            <div id="toolMenu" class="tool-menu">
+                <button type="button" onclick="openSettings();closeToolMenu()">&#9729; Cloud-Sync</button>
+                <button type="button" onclick="syncFromCloud();closeToolMenu()">&#8635; Jetzt abgleichen</button>
+                <hr>
+                <button type="button" onclick="saveData();closeToolMenu()">&#128190; Speichern</button>
+                <button type="button" onclick="exportJSON();closeToolMenu()">&#128229; Export</button>
+                <button type="button" onclick="document.getElementById('importFile').click();closeToolMenu()">&#128228; Import</button>
+                <button type="button" onclick="window.print();closeToolMenu()">&#128424; Drucken</button>
+                <hr>
+                <button type="button" onclick="showErrorLog();closeToolMenu()">&#128203; Fehlerprotokoll</button>
+                <button type="button" class="menu-version" onclick="openChangelog();closeToolMenu()" title="Release-Dokumentation">Version <span class="app-version"></span><span class="app-built"></span> &rsaquo;</button>
+            </div>
+        </div>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
+    </div>
+    <div class="search-bar">
+        <input type="search" id="sucheFeld" placeholder="Suchen... (Strg+F)" oninput="sucheEingabe()" onkeydown="sucheTaste(event)" autocomplete="off">
+        <div class="search-nav" id="sucheNav">
+            <button type="button" onclick="sucheSpringen(-1)" title="Zur&uuml;ck">&#9650;</button>
+            <span class="search-count" id="sucheZahl"></span>
+            <button type="button" onclick="sucheSpringen(1)" title="Weiter">&#9660;</button>
+            <button type="button" onclick="sucheLeeren()" title="Schliessen">&#10005;</button>
+        </div>
+    </div>    <div class="save-status"><span id="syncBadge"></span><span id="saveTime"></span></div>
+</div>
+
+<div class="container" id="mainContent">
+
+    <div class="info-box">
+        <strong>Bind entscheidet, ob Setup-Arbeit zul&auml;ssig ist.</strong>
+        Eine Verspannung im Fahrwerk erzeugt keine Fehlermeldung &ndash; erst die
+        Wiederholungsmessung verr&auml;t sie. Wer bei vorhandenem Bind einstellt,
+        optimiert gegen ein Rauschen. Messmittel: <strong>Longacre</strong>
+        Waagen mit coplanarem Setup Pad; f&uuml;r &sect;6.4 zus&auml;tzlich ein
+        H&ouml;henma&szlig;.
+    </div>
+
+    <div id="bindUrteil"></div>
+
+    <div id="bindListe"></div>
+
+</div>
+
+<div class="modal-overlay" id="settingsModal">
+    <div class="modal" role="dialog" aria-label="Cloud-Sync einrichten">
+        <h3>Cloud-Sync</h3>
+        <div class="status-line" id="connectionStatus">Nicht verbunden</div>
+        <label for="ghToken">GitHub Personal Access Token</label>
+        <input type="password" id="ghToken" placeholder="ghp_...">
+        <p class="hint">Braucht den Bereich <code>gist</code>. Der Token bleibt auf diesem Ger&auml;t.</p>
+        <div class="btn-row">
+            <button type="button" class="btn-danger" onclick="disconnectGist()">Trennen</button>
+            <button type="button" class="btn-secondary" onclick="closeSettings()">Abbrechen</button>
+            <button type="button" class="btn-primary" onclick="saveSettings()">Verbinden</button>
+        </div>
+    </div>
+</div>
+
+<script src="bind-ui.js"></script>
+
+<script src="nachschlagen.js"></script>
+
+</body>
+</html>

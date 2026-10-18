@@ -67,6 +67,12 @@ jobs:
       - name: Rollsteifigkeit und Balanceverteilung
         run: node tests/rollsteifigkeit.test.mjs
 
+      - name: Bind-Diagnose (Reproduzierbarkeit, Camber-Bind, Panhard, Hysterese)
+        run: node tests/bind.test.mjs
+
+      - name: Bind-Seite
+        run: node tests/bind-ui.test.mjs
+
   # Wer eine ausgelieferte Datei aendert, zaehlt die Version hoch. Sonst gehen
   # zwei verschiedene Staende unter derselben Nummer raus - genau so ist es in
   # gt40-engine bei v54 und in jerico bei v13 passiert, dort zwoelf Minuten

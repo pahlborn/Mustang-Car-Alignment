@@ -176,6 +176,30 @@ der Formel.
 ft-lbs, psi), Winkeln (Grad gegen Bogenmass) und allem, was in
 `00_PROJECT.md` aus einem Katalog uebernommen wurde.
 
+**Neunter Vorfall, v13 - derselbe Fehler zwischen zwei gerechneten Werten.**
+Das Bind-Kapitel verglich zwei Streuungen miteinander: die Streuung der
+Einzelecken in Prozent der Gesamtmasse gegen die Streuung des Cross Weight in
+Prozentpunkten des Diagonalanteils. Beide Zahlen standen in Prozent, also sah
+der Vergleich zulaessig aus. Er war es nicht - die zweite ist eine Summe aus
+der ersten.
+
+Der Test, der das aufdeckte, war kein Rechentest, sondern einer, der eine
+Messreihe ohne jeden Fehler durchlaufen liess: plus/minus 1 kg je Ecke, kein
+Bind. Das Cross Weight meldete trotzdem eine Spanne von ueber 0,2
+Prozentpunkten. Eine Summe, deren Summanden sich unabhaengig bewegen, streut
+mehr als jeder einzelne - die Zahl war rechnerisch korrekt und bedeutete
+nichts.
+
+**Was uebrig bleibt:** das Diagonalmass. Es setzt die zwei Achsen gegeneinander
+und wird in kg gefuehrt, mit derselben Bezugsgroesse wie die Messung selbst.
+Es stuetzte sich auf keine Katalogzahl und steht trotzdem aus demselben Grund
+unter Vorbehalt: eine Schwelle ohne Messreihe waere eine geratene Zahl, und
+solche Zahlen kommen in dieses Handbuch nicht (Regel 5).
+
+**Die Regel:** zwei abgeleitete Groessen darf man nur vergleichen, wenn sie
+dieselbe Bezugsgroesse haben. Unterschiedliche Nenner sind derselbe Fall wie
+unterschiedliche Einheiten, nur schwerer zu sehen.
+
 ## 6. Nichts aufnehmen, was nicht umgesetzt werden kann
 
 Das Fahrzeug ist von 1966 und hat begrenzte Verstellmoeglichkeiten. Eine
