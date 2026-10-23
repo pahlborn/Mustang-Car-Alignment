@@ -9,7 +9,13 @@ on:
 jobs:
   browser-tests:
     name: Browser-Tests
-    runs-on: ubuntu-latest
+    # Festgenagelt, nicht ubuntu-latest: als GitHub das Image auf 26.04
+    # weiterdrehte, scheiterte "Chromium installieren" mit "Playwright does
+    # not support chromium on ubuntu26.04-x64" - nach elf Sekunden, vor dem
+    # ersten Test. Playwright ist in package.json exakt festgelegt, damit
+    # genau so ein Bruch nicht passiert; das Image war die Luecke daneben.
+    # Wer hier hochzieht, zieht die Playwright-Version mit.
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
 
     steps:
@@ -85,7 +91,7 @@ jobs:
   # Tests an der Installation scheitern.
   versionsdisziplin:
     name: Versionsdisziplin
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
 
     steps:

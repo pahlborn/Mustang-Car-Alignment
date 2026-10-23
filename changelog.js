@@ -19,7 +19,8 @@
       changes: [
         { type: 'neu', text: 'Werkstatt und Uebersicht zeigen den Bind-Befund jetzt oben, bevor irgendetwas eingetragen wird. Ein Befund sperrt sichtbar mit Begruendung, ein noch nicht durchgefuehrter Test wird als offener Punkt gemeldet - Projektregel 1 gilt nicht nur auf der Bind-Seite. Wer erst dort nachliest, hat schon gemessen.' },
         { type: 'intern', text: 'Der Befund wird auf beiden Seiten aus denselben gespeicherten Werten neu gerechnet und nicht gespeichert. Es gibt keinen zweiten Stand, der auseinanderlaufen koennte, und das Urteil ist auf jedem Geraet dasselbe wie auf der Bind-Seite.' },
-        { type: 'intern', text: 'Die Speicherkennung chassisSetup stand viermal im Code, je einmal in app.js, bind-ui.js, bumpsteer-ui.js und messblatt.js. Sie steht jetzt in field-sync.js - vier Kopien derselben Zeichenkette sind vier Orte, an denen etwas auseinanderlaufen kann.' }
+        { type: 'intern', text: 'Die Speicherkennung chassisSetup stand viermal im Code, je einmal in app.js, bind-ui.js, bumpsteer-ui.js und messblatt.js. Sie steht jetzt in field-sync.js - vier Kopien derselben Zeichenkette sind vier Orte, an denen etwas auseinanderlaufen kann.' },
+        { type: 'intern', text: 'CI lief auf ubuntu-latest. GitHub drehte das Image auf 26.04 weiter, Playwright kennt das nicht, und der Lauf brach in "Chromium installieren" ab - nach elf Sekunden, vor dem ersten Test. Rot wegen der Umgebung, nicht wegen des Codes. Beide Jobs stehen jetzt auf ubuntu-24.04, und ein Test verbietet rollende Images im Workflow.' }
       ]
     },
     {

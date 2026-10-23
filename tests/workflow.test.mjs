@@ -95,6 +95,42 @@ await test('Der Workflow ruft keine Datei auf, die es nicht gibt', async () => {
   assert(fehlend.length === 0, 'Im Workflow genannt, aber nicht vorhanden: ' + fehlend.join(', '));
 });
 
+// ---------------------------------------------------------------------------
+suite('Die Laufzeitumgebung ist festgenagelt');
+
+await test('Kein Job laeuft auf einem rollenden Image', async () => {
+  // Bei v14 drehte GitHub ubuntu-latest auf 26.04. Playwright 1.56.1 kennt
+  // das nicht, und "Chromium installieren" brach nach elf Sekunden ab - vor
+  // dem ersten Test. Der Lauf war rot wegen der Umgebung, nicht wegen des
+  // Codes, und das ist die teuerste Sorte roter Lauf: man sucht am falschen
+  // Ende.
+  //
+  // playwright steht in package.json auf einer exakten Version, genau gegen
+  // diese Fehlerklasse. Das Image war die Luecke daneben.
+  const rollend = [];
+  zeilen.forEach((z, i) => {
+    const m = z.match(/^\s*runs-on:\s*(.+?)\s*$/);
+    if (m && /-latest\b/.test(m[1])) rollend.push('Zeile ' + (i + 1) + ': ' + m[1]);
+  });
+  assert(rollend.length === 0,
+    'runs-on zeigt auf ein rollendes Image:\n  ' + rollend.join('\n  '));
+});
+
+await test('Jeder Job nennt ueberhaupt ein Image', async () => {
+  // Gegenrichtung: die Pruefung darueber ist auch dann gruen, wenn runs-on
+  // ganz fehlt - dann laeuft der Job gar nicht erst.
+  // Nur was unterhalb von "jobs:" steht - auf derselben Tiefe liegen sonst
+  // auch die Schluessel von "on:", und die sind keine Jobs.
+  const start = zeilen.findIndex((z) => /^jobs:\s*$/.test(z));
+  assert(start >= 0, 'Kein jobs:-Block im Workflow');
+  const ab = zeilen.slice(start + 1);
+  const jobs = ab.filter((z) => /^ {2}[a-z][\w-]*:\s*$/.test(z)).length;
+  const images = ab.filter((z) => /^\s*runs-on:/.test(z)).length;
+  assert(jobs > 0, 'Keine Jobs im Workflow gefunden');
+  assert(images === jobs,
+    jobs + ' Job(s), aber ' + images + ' runs-on-Angabe(n)');
+});
+
 } finally {
   // kein Browser, kein Server - nichts aufzuraeumen
 }

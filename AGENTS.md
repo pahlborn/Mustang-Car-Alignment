@@ -444,6 +444,38 @@ den Inhalt pruefen, sondern auch, was unsichtbar mitkommt. Dasselbe galt fuer
 den Paketspiegel in v2 - die interne Registry-Adresse stand im Lockfile und
 war von CI aus nicht erreichbar.
 
+### 12a. Was nicht festgenagelt ist, wird irgendwann weitergedreht
+
+**Elfter Vorfall, v14.** Der Push von v14 war rot. Nicht wegen des Codes:
+GitHub hatte `ubuntu-latest` auf 26.04 weitergedreht, und Playwright 1.56.1
+kennt das Image nicht. Der Schritt "Chromium installieren" brach ab mit
+`ERROR: Playwright does not support chromium on ubuntu26.04-x64` - nach elf
+Sekunden, also bevor ein einziger Test lief.
+
+**Was daran lehrreich ist:** `package.json` legt Playwright auf eine exakte
+Version fest, und der Test dazu begruendet das ausdruecklich damit, dass CI
+sonst "eine neuere Playwright-Fassung zieht, die einen anderen
+Chromium-Build erwartet". Der Gedanke war richtig und die Haelfte davon
+umgesetzt - das Paket war festgenagelt, die Maschine darunter nicht.
+
+Es gibt immer ein Stockwerk tiefer. Pinnt man das Paket, rollt das Image;
+pinnt man das Image, rollt die Action-Version; und so weiter.
+
+**Die Regel:** was eine Version hat, bekommt eine. `runs-on` nennt ein
+konkretes Image, nicht `-latest`. Und wer eines hochzieht, zieht die
+zugehoerige Werkzeugversion mit - die beiden gehoeren zusammen.
+
+**Seitdem geprueft:** `tests/workflow.test.mjs` verbietet `-latest` in
+`runs-on` und prueft in der Gegenrichtung, dass jeder Job ueberhaupt ein
+Image nennt. Ohne die zweite Pruefung waere die erste auch dann gruen, wenn
+`runs-on` ganz fehlt - dann laeuft der Job gar nicht.
+
+**Und fuer die Fehlersuche:** ein roter Lauf, der nach Sekunden endet und
+dessen Fehler in einem Installationsschritt steht, ist ein Umgebungsbefund,
+kein Codebefund (Regel 7e). Der zweite Job, `Versionsdisziplin`, war die
+ganze Zeit gruen - er braucht keinen Browser. Dass genau ein Job faellt und
+der andere nicht, sagt schon, wo man suchen muss.
+
 ## Tests
 
 ```
