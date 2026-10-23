@@ -57,7 +57,7 @@ Verbindlicher Setup-Ablauf: siehe [`02_WORKFLOW.md`](02_WORKFLOW.md).
 | Federn | **620 lb/in**, bezogen über Street or Track; Teilenummer noch erfassen — Teileidentifikation siehe unten | Rate und Bezugsquelle: Verifiziert (Halter, nach Umbau, 2026-10-23); Teilenummer Offen |
 | Spring Perches | Roller Spring Perches `ORP-RSP64-73` (über Street or Track), zwei gedichtete Rollenlager statt der Seriengummilager | Verifiziert (Halter, nach Umbau, 2026-10-23) |
 | Dämpfer | Bilstein `RCD-55-R054`, Street-Abstimmung — siehe „Dämpfer vorn" | Verifiziert (Halter, nach Umbau, 2026-10-23) |
-| Front ARB / Endlinks | genaue Hardware und Preload-Zustand erfassen | Offen |
+| Front ARB / Endlinks | 1" (gemessen), verstellbare Endlinks, Poly-Lagerbuchsen — siehe „Vorderer Stabilisator"; Teilenummer und Preload-Zustand offen | Verifiziert (Halter, nach Umbau, 2026-10-23); Preload Offen |
 | Bump-Steer-Kit | Baer Tracker `BAE-3261001` für 1965–66 (über Street or Track); ersetzt die äußeren Spurstangenköpfe, Höhe des äußeren Tie-Rod-Pivots über Distanzstücke einstellbar | Verifiziert (Halter, nach Umbau, 2026-10-23); Distanzstück-Stapel je Seite Offen |
 | Steering Arms / Tie Rods / Center Link / Idler / Pitman | äußere Spurstangenköpfe: siehe Bump-Steer-Kit; übriger Ist-Zustand vollständig inventarisieren | Offen |
 
@@ -118,11 +118,13 @@ Einstellmechanik und Reihenfolge: [`CHAPTER_FRONT_ADJUSTMENT_UCA_LCA.md`](CHAPTE
 
 | Feld | Wert | Einheit | Status |
 |---|---|---|---|
-| `arb_front_dia` | **1" = 25,4 mm** | mm | **Projektangabe** |
-| `arb_front_part_no` | | Teilenummer | Offen |
+| `arb_front_dia` | **1" = 25,4 mm** | mm | **Verifiziert (Halter, gemessen, nach Umbau, 2026-10-23)** |
+| `arb_front_part_no` | | Teilenummer | Offen (Halter: nicht bekannt) |
 | `arb_front_arm_length` | | mm, Hebelarm bis Endlink | Offen |
-| `arb_front_endlink_type` | | Serie / verstellbar / Heim | Offen |
-| `arb_front_bushing_type` | | Gummi / Poly / Delrin | Offen |
+| `arb_front_endlink_type` | **verstellbar** | Serie / verstellbar / Heim | Verifiziert (Halter, nach Umbau, 2026-10-23) |
+| `arb_front_bushing_type` | **Poly** | Gummi / Poly / Delrin | Verifiziert (Halter, nach Umbau, 2026-10-23) |
+
+> **Verstellbare Endlinks heißen: die Vorspannung des Stabis ist einstellbar — und damit auch falsch einstellbar.** Sie ist in Phase 8 als `arb_preload` zu prüfen ([`02_WORKFLOW.md`](02_WORKFLOW.md) §11) und vor dem Bind-Test zu lösen bzw. spannungsfrei zu stellen (Voraussetzung auf der Bind-Seite). Eine einseitig vorgespannte Stabilisatorverbindung verschiebt Radlasten diagonal, ohne dass an Federn oder Fahrhöhe etwas verändert wurde.
 
 **Katalogabgleich:** SoT führt für 1964–66 zwei Durchmesser (Scott Drake): `SCD-S1MS-5482-A` mit **1"** und `SCD-S1MS-5482-B` mit **1-1/8"**. Der verbaute Durchmesser entspricht damit der **kleineren** der beiden angebotenen Varianten.
 
@@ -503,7 +505,7 @@ Vor einer endgültigen technischen Veröffentlichung noch verifizieren:
 - Einstelllänge der Strut Rods je Seite (Ausführung geklärt: Global West `ASR-4`)
 - aktuelle LCA-Camber-Kit-Position
 - Frontfeder-Teilenummer und freie Länge (Rate geklärt: 620 lb/in)
-- Front-ARB und Endlinks
+- Front-ARB: Hebelarm `arb_front_arm_length` und Preload-Zustand (Durchmesser, Endlinks, Buchsen geklärt)
 - aktuelle Bushings
 - Panhard-Abmessungen und Befestigungshöhen
 - aktuelle Kardanwelle
