@@ -32,6 +32,11 @@
   var LOCAL_DEVICE_KEY = 'device_id';
   var LOCAL_DEVICE_NAME_KEY = 'device_name';
 
+  // Die Kennung des Felddatensatzes steht hier und nirgends sonst. Sie stand
+  // in app.js, bind-ui.js, bumpsteer-ui.js und messblatt.js je einmal - vier
+  // Kopien derselben Zeichenkette (Arbeitsregel 4).
+  var STORAGE_KEY = 'chassisSetup';
+
   /** Geraete-ID: einmal generiert, bleibt im localStorage. */
   function getDeviceId() {
     var id = localStorage.getItem(LOCAL_DEVICE_KEY);
@@ -181,6 +186,22 @@
     return merged;
   }
 
+  /**
+   * Den gespeicherten Felddatensatz lesen.
+   *
+   * Gebraucht wird das von jeder Seite, die Werte anzeigt, ohne ihre Felder
+   * selbst zu besitzen - und vom Bind-Befund, der auf denselben Werten
+   * rechnet wie bind.html. Unlesbares ergibt einen leeren Datensatz, keine
+   * Ausnahme: eine kaputte Zeile im Speicher darf keine Seite lahmlegen.
+   */
+  function lesen() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') || {};
+    } catch (e) {
+      return {};
+    }
+  }
+
   /** Feldwerte der aktuellen Seite einsammeln. */
   function collectFields(root) {
     var out = {};
@@ -194,7 +215,9 @@
     TIMES_KEY: TIMES_KEY,
     DEVICES_KEY: DEVICES_KEY,
     DEVICE_KEY: DEVICE_KEY,
+    STORAGE_KEY: STORAGE_KEY,
     isBlank: isBlank,
+    lesen: lesen,
     collectFields: collectFields,
     mergeIntoExisting: mergeIntoExisting,
     mergeRecords: mergeRecords,

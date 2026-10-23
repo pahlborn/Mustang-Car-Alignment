@@ -74,6 +74,33 @@ der Test, der jede Matrix-Groesse auf Wirkung prueft.
 eine Groesse benennt, prueft vorher, ob sie schon einen Namen hat -
 `Recheck.alleGroessen()` listet sie auf.
 
+**Zehnter Vorfall, v14 - vier Kopien einer Zeichenkette.** Die Kennung des
+Felddatensatzes, `'chassisSetup'`, stand viermal im Code: in `app.js`, und
+dann noch einmal in `bind-ui.js`, `bumpsteer-ui.js` und `messblatt.js`. Alle
+drei Seiten lesen beim Start denselben Datensatz nach, weil `app.js` ihn
+anwendet, bevor es ihre Felder gibt - und jede hatte sich die Kennung dafuer
+abgeschrieben.
+
+Schaden angerichtet hat es nicht, und das ist der Punkt: es waere erst beim
+Umbenennen aufgefallen, und zwar als drei Seiten, die ihre gespeicherten
+Werte stillschweigend nicht mehr finden. Kein Fehler, keine Meldung - nur
+leere Felder, die vorher gefuellt waren.
+
+Aufgefallen ist es beim Bauen von `bind-warnung.js`: die Frage war, woher
+dieses Modul den Datensatz nimmt, und die ehrliche Antwort waere eine fuenfte
+Kopie gewesen. Die Kennung steht jetzt in `field-sync.js`, zusammen mit
+`FieldSync.lesen()`.
+
+**Seitdem geprueft:** `tests/bind-warnung.test.mjs` sucht in jeder
+ausgelieferten `.js` nach `'chassisSetup'` **in Anfuehrungszeichen** und
+erlaubt es nur in `field-sync.js`. Das Anfuehrungszeichen ist der
+Unterschied: ein Literal ist Code, dasselbe Wort in einem Kommentar
+beschreibt nur.
+
+**Die Probe beim Hinzufuegen eines Moduls:** woher nimmt es seine Daten? Wenn
+die Antwort eine Zeichenkette ist, die anderswo schon steht, ist das Modul
+nicht die Ursache - es macht nur sichtbar, was schon vorher doppelt war.
+
 ## 4a. Ein Mechanismus gehoert dorthin, wo seine Funktion liegt
 
 Nicht dorthin, wo er zuerst gebraucht wurde. Sonst funktioniert er an seinem

@@ -12,6 +12,17 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v14',
+      date: '2026-10-20',
+      time: '06:51',
+      title: 'Der Bind-Befund steht auch dort, wo gearbeitet wird',
+      changes: [
+        { type: 'neu', text: 'Werkstatt und Uebersicht zeigen den Bind-Befund jetzt oben, bevor irgendetwas eingetragen wird. Ein Befund sperrt sichtbar mit Begruendung, ein noch nicht durchgefuehrter Test wird als offener Punkt gemeldet - Projektregel 1 gilt nicht nur auf der Bind-Seite. Wer erst dort nachliest, hat schon gemessen.' },
+        { type: 'intern', text: 'Der Befund wird auf beiden Seiten aus denselben gespeicherten Werten neu gerechnet und nicht gespeichert. Es gibt keinen zweiten Stand, der auseinanderlaufen koennte, und das Urteil ist auf jedem Geraet dasselbe wie auf der Bind-Seite.' },
+        { type: 'intern', text: 'Die Speicherkennung chassisSetup stand viermal im Code, je einmal in app.js, bind-ui.js, bumpsteer-ui.js und messblatt.js. Sie steht jetzt in field-sync.js - vier Kopien derselben Zeichenkette sind vier Orte, an denen etwas auseinanderlaufen kann.' }
+      ]
+    },
+    {
       version: 'v13',
       date: '2026-10-18',
       time: '12:00',

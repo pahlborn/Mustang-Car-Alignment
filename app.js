@@ -24,7 +24,9 @@
 
     // ==== KONFIGURATION ====
     var GIST_FILENAME = 'mustang-chassis-setup.json';
-    var STORAGE_KEY = 'chassisSetup';
+    // Die Kennung gehoert zu den Feldern, nicht zu dieser Seite - sie steht in
+    // field-sync.js. Zwei Zeichenketten waeren zwei Orte (Arbeitsregel 4).
+    var STORAGE_KEY = FieldSync.STORAGE_KEY;
     var GIST_ID_KEY = 'chassis_gist_id';
     var PAGE = (location.pathname.split('/').pop() || 'index.html').replace('.html', '');
     var COLLAPSE_KEY = 'chassis_collapse_' + PAGE;

@@ -420,7 +420,7 @@
     zeichnen();
 
     try {
-      var gespeichert = JSON.parse(localStorage.getItem('chassisSetup') || '{}');
+      var gespeichert = FieldSync.lesen();
       var felder = document.querySelectorAll('[data-field]');
       for (var i = 0; i < felder.length; i++) {
         var v = gespeichert[felder[i].dataset.field];

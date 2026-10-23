@@ -324,7 +324,7 @@
         // Gespeicherte Werte eintragen. app.js hat beim Laden schon
         // applyData() gerufen - da gab es die Felder aber noch nicht.
         try {
-            var daten = JSON.parse(localStorage.getItem('chassisSetup') || '{}');
+            var daten = FieldSync.lesen();
             var felder = document.querySelectorAll('[data-field]');
             for (var i = 0; i < felder.length; i++) {
                 var v = daten[felder[i].dataset.field];
