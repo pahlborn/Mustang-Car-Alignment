@@ -281,6 +281,18 @@ await test('die Speicherkennung steht nur in field-sync.js', async () => {
     'field-sync.js nennt die Kennung nicht mehr');
 });
 
+await test('Felder werden nur in field-sync.js ausgelesen und befuellt', async () => {
+  // Bis v14 stand die Schleife ueber [data-field] siebenmal da: dreimal als
+  // Auslesen (collectFields gab es schon), viermal als Eintragen - und eine
+  // der vier kannte keine Kontrollkaestchen. Wer eine Seite baut, nimmt
+  // FieldSync.collectFields() und FieldSync.anwenden().
+  const dateien = fs.readdirSync(REPO_ROOT).filter((f) => f.endsWith('.js'));
+  const mitSchleife = dateien.filter((f) => f !== 'field-sync.js'
+    && /querySelectorAll\(\s*['"]\[data-field\]['"]\s*\)/
+      .test(fs.readFileSync(path.join(REPO_ROOT, f), 'utf8')));
+  assertEqual(mitSchleife, [], 'Eigene Feldschleife ausserhalb von field-sync.js');
+});
+
 await test('bind-warnung.js nennt keinen Bind-Feldnamen', async () => {
   // Die Namen kommen aus Bind.feld*. Sonst liefe die Anzeige beim naechsten
   // Umbenennen ins Leere - und zwar still, weil sie dann nur noch "offen"

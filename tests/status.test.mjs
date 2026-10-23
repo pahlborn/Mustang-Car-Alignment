@@ -33,10 +33,30 @@ function lade(datei) {
   new Function(fs.readFileSync(path.join(REPO_ROOT, datei), 'utf8'))();
 }
 lade('recheck.js');
+lade('field-sync.js');
+lade('bind.js');
 lade('status.js');
 
 const R = globalThis.Recheck;
 const S = globalThis.Status;
+const B = globalThis.Bind;
+const F = globalThis.FieldSync;
+
+/**
+ * Bind-Messreihe nach 6.1 in den Felddatensatz schreiben. Die Feldnamen
+ * kommen aus Bind.feldRadlast(), nicht als Zeichenkette von hier.
+ */
+function bindReihe(reihen) {
+  const d = {};
+  reihen.forEach((r, i) => {
+    B.RAEDER.forEach((rad, k) => { d[B.feldRadlast(i + 1, rad)] = r[k]; });
+  });
+  localStorage.setItem(F.STORAGE_KEY, JSON.stringify(d));
+}
+/** Plus/minus 1 kg je Ecke - bestanden. */
+const BIND_SAUBER = [[400, 380, 300, 290], [401, 379, 300, 290], [400, 380, 301, 290]];
+/** LF wandert um 20 kg, 1,46 % der Gesamtmasse - Bind. */
+const BIND_GEFUNDEN = [[400, 380, 300, 290], [420, 360, 310, 280], [400, 380, 300, 290]];
 
 /** Sauberer Anfang vor jedem Test - sonst traegt der vorige seinen Stand weiter. */
 function zuruecksetzen() {
@@ -45,7 +65,9 @@ function zuruecksetzen() {
   uhr = 1_700_000_000_000;
 }
 
+/** Alle Phasen erledigt und der Bind-Test bestanden - das ist "alles". */
 function allesErledigt() {
+  bindReihe(BIND_SAUBER);
   for (const p of R.PHASEN) S.setzen(p.id, 'done');
 }
 
@@ -96,6 +118,48 @@ await test('alles erledigt: 100 Prozent und bereit', async () => {
   assertEqual(f.erledigt, 19, 'erledigt');
   assertEqual(f.prozent, 100, 'Prozent');
   assertEqual(S.rennstreckenbereit().bereit, true, 'bereit');
+});
+
+// ---------------------------------------------------------------------------
+suite('Ohne bestandenen Bind-Test ist nichts bereit');
+
+await test('alle Phasen erledigt, Bind-Test nicht erfasst: nicht bereit', async () => {
+  // Arbeitsregel 9: kein Test heisst nicht "kein Bind". Ein Setup ohne
+  // Test ist nicht fertig, man weiss nur nicht, ob es taugt.
+  zuruecksetzen();
+  for (const p of R.PHASEN) S.setzen(p.id, 'done');
+  const r = S.rennstreckenbereit();
+  assertEqual(S.fortschritt().prozent, 100, 'Der Balken zaehlt die Phasen, nicht den Test');
+  assertEqual(r.bereit, false, 'bereit ohne Bind-Test');
+  assert(r.grund.some((g) => /Bind-Test \(6\.1\) nicht erfasst/.test(g)),
+    'Der fehlende Test wird nicht genannt: ' + r.grund.join(', '));
+});
+
+await test('alle Phasen erledigt, Bind gefunden: nicht bereit, mit Grund', async () => {
+  // Projektregel 6: keine Setup-Schluesse aus Messungen mit bekanntem Bind.
+  zuruecksetzen();
+  bindReihe(BIND_GEFUNDEN);
+  for (const p of R.PHASEN) S.setzen(p.id, 'done');
+  const r = S.rennstreckenbereit();
+  assertEqual(r.bereit, false, 'bereit trotz Bind');
+  assertEqual(r.bind.sperrt, true, 'Der Testfall sperrt nicht');
+  assert(r.grund.some((g) => /^Bind-Befund: Radlasten streuen 1\.46 %/.test(g)),
+    'Der Bind-Grund fehlt oder ist falsch: ' + r.grund.join(', '));
+});
+
+await test('fehlt bind.js, ist das kein Bestehen', async () => {
+  // Eine Sicherheitspruefung, die bei fehlender Grundlage durchwinkt, ist
+  // keine. Wer bind.js auf einer Seite vergisst, soll "nicht bereit" sehen,
+  // nicht "bereit".
+  zuruecksetzen();
+  allesErledigt();
+  const echt = globalThis.Bind;
+  delete globalThis.Bind;
+  let r;
+  try { r = S.rennstreckenbereit(); } finally { globalThis.Bind = echt; }
+  assertEqual(r.bereit, false, 'bereit ohne bind.js');
+  assert(r.grund.some((g) => /nicht ermittelbar/.test(g)),
+    'Der Grund fehlt: ' + r.grund.join(', '));
 });
 
 await test('in Arbeit zaehlt halb', async () => {

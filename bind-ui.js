@@ -32,15 +32,7 @@
     return el.type === 'checkbox' ? el.checked : el.value;
   }
 
-  function daten() {
-    var d = {};
-    var felder = document.querySelectorAll('[data-field]');
-    for (var i = 0; i < felder.length; i++) {
-      d[felder[i].dataset.field] = felder[i].type === 'checkbox'
-        ? felder[i].checked : felder[i].value;
-    }
-    return d;
-  }
+  function daten() { return FieldSync.collectFields(); }
 
   function zz(v, n) {
     return (v === null || v === undefined) ? '\u2013' : v.toFixed(n === undefined ? 2 : n);
@@ -419,16 +411,9 @@
     if (typeof Bind === 'undefined') return;
     zeichnen();
 
-    try {
-      var gespeichert = FieldSync.lesen();
-      var felder = document.querySelectorAll('[data-field]');
-      for (var i = 0; i < felder.length; i++) {
-        var v = gespeichert[felder[i].dataset.field];
-        if (v === undefined) continue;
-        if (felder[i].type === 'checkbox') felder[i].checked = !!v;
-        else felder[i].value = v;
-      }
-    } catch (e) {}
+    // app.js hat beim Laden schon eingetragen - da gab es die Felder aber
+    // noch nicht, sie entstehen erst in zeichnen().
+    FieldSync.anwenden(FieldSync.lesen());
 
     if (typeof Validation !== 'undefined') Validation.init(document);
     zeichneErgebnisse();

@@ -127,6 +127,21 @@ Beide lesen jetzt `markdown.js`. Zu bemerken war es nicht an einem Fehler,
 sondern an der Frage, wo der neue Renderer hingehoert - die Antwort "neben den
 alten" ist immer verdaechtig.
 
+**Zwoelfter Vorfall, v15 - eine Schleife, sieben Mal.** Die Schleife ueber
+alle `[data-field]` stand dreimal als Auslesen in den Seiten, obwohl
+`FieldSync.collectFields()` seit v1 genau das tut, und viermal als Eintragen.
+Die Kopie in `messblatt.js` kannte keine Kontrollkaestchen - harmlos, solange
+das Messblatt keine hat, und eine Falle beim ersten, das dazukommt. Beides
+steht jetzt in `field-sync.js` (`collectFields`, `anwenden`), und
+`tests/bind-warnung.test.mjs` verbietet `querySelectorAll('[data-field]')`
+ausserhalb davon.
+
+**Zur Gegenprobe dabei (Regel 7c):** der Eingriff "anwenden() kennt keine
+Kontrollkaestchen" blieb zuerst gruen - gegen die falsche Testdatei. Der Test,
+der ihn faengt, steht in `bumpsteer.test.mjs` ("ein gesetzter Haken ueberlebt
+das Neuladen"). Vor dem Schreiben eines neuen Tests nachsehen, ob es ihn
+schon gibt.
+
 ## 5. Kein Sollwert ohne Quelle
 
 Messwerte, Winkel und Drehmomente stehen nur mit Beleg da. Ist keiner da, wird

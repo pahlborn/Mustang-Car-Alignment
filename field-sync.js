@@ -1,8 +1,11 @@
 /**
- * field-sync.js - Speichern und Zusammenfuehren der Messwert-Felder.
+ * field-sync.js - Lesen, Eintragen, Speichern und Zusammenfuehren der
+ * Messwert-Felder.
  *
- * Wird von index.html, specs.html und build-log.html gemeinsam genutzt.
- * Muss VOR dem Inline-Script der Seite geladen werden (im <head>).
+ * Wird von jeder Seite im <head> geladen, vor app.js und vor den
+ * Seitenmodulen. Alles, was Felder ausliest oder gespeicherte Werte in
+ * Felder eintraegt, laeuft hierueber - nicht ueber eine eigene Schleife in
+ * der Seite (Arbeitsregel 4a).
  *
  * Hintergrund
  * -----------
@@ -211,6 +214,24 @@
     return out;
   }
 
+  /**
+   * Werte eines Datensatzes in die Felder der Seite eintragen.
+   *
+   * Felder ohne Eintrag im Datensatz bleiben, wie sie sind. Die Gegenrichtung
+   * zu collectFields() - beide behandeln Kontrollkaestchen gleich, weil sie
+   * hier nebeneinander stehen. Als die Schleife noch in vier Dateien stand,
+   * kannte eine davon keine Kontrollkaestchen.
+   */
+  function anwenden(daten, root) {
+    daten = daten || {};
+    (root || document).querySelectorAll('[data-field]').forEach(function (el) {
+      var v = daten[el.dataset.field];
+      if (v === undefined) return;
+      if (el.type === 'checkbox') el.checked = !!v;
+      else el.value = v;
+    });
+  }
+
   global.FieldSync = {
     TIMES_KEY: TIMES_KEY,
     DEVICES_KEY: DEVICES_KEY,
@@ -219,6 +240,7 @@
     isBlank: isBlank,
     lesen: lesen,
     collectFields: collectFields,
+    anwenden: anwenden,
     mergeIntoExisting: mergeIntoExisting,
     mergeRecords: mergeRecords,
     getDeviceId: getDeviceId,

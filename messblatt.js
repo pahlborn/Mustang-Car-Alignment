@@ -29,15 +29,7 @@
     function zahl(id) { return Messwerte.zahl(wert(id)); }
 
     /** Alle Feldwerte als Objekt - fuer Module, die mehrere zugleich brauchen. */
-    function alleWerte() {
-        var d = {};
-        var felder = document.querySelectorAll('[data-field]');
-        for (var i = 0; i < felder.length; i++) {
-            d[felder[i].dataset.field] = felder[i].type === 'checkbox'
-                ? felder[i].checked : felder[i].value;
-        }
-        return d;
-    }
+    function alleWerte() { return FieldSync.collectFields(); }
 
     /** Zahl mit fester Nachkommastelle, oder Gedankenstrich. */
     function zz(v, n) {
@@ -323,14 +315,7 @@
 
         // Gespeicherte Werte eintragen. app.js hat beim Laden schon
         // applyData() gerufen - da gab es die Felder aber noch nicht.
-        try {
-            var daten = FieldSync.lesen();
-            var felder = document.querySelectorAll('[data-field]');
-            for (var i = 0; i < felder.length; i++) {
-                var v = daten[felder[i].dataset.field];
-                if (v !== undefined) felder[i].value = v;
-            }
-        } catch (e) {}
+        FieldSync.anwenden(FieldSync.lesen());
 
         if (typeof Validation !== 'undefined') Validation.init(document);
         zeichneErgebnisse();

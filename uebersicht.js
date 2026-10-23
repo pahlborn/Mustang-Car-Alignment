@@ -57,7 +57,7 @@
                 box.innerHTML = '<div class="info-box" style="border-left-color:var(--success);">'
                     + '<strong>Rennstreckenbereit.</strong> Alle Werkstattphasen sind '
                     + 'abgeschlossen, keine ist durch eine sp&auml;tere &Auml;nderung ung&uuml;ltig '
-                    + 'geworden.</div>';
+                    + 'geworden, und der Bind-Test ist bestanden.</div>';
             } else if (f.erledigt === 0 && f.wip === 0) {
                 // Kein Fortschritt heisst nicht "nicht bereit", sondern
                 // "noch nichts erfasst". Das ist eine andere Aussage.

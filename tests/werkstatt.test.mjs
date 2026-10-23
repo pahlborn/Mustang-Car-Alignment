@@ -30,6 +30,22 @@ const ALLES_ERLEDIGT = `
   werkstattZeichnen();
 `;
 
+/**
+ * Bind-Messreihe nach 6.1 in den Speicher. Ohne bestandenen Test ist seit
+ * v15 nichts rennstreckenbereit. Feldnamen aus Bind.feldRadlast().
+ */
+function bindReihe(reihen) {
+  return `(() => {
+    const d = {};
+    ${JSON.stringify(reihen)}.forEach((r, i) => {
+      Bind.RAEDER.forEach((rad, k) => { d[Bind.feldRadlast(i + 1, rad)] = r[k]; });
+    });
+    localStorage.setItem(FieldSync.STORAGE_KEY, JSON.stringify(d));
+  })();`;
+}
+const BIND_SAUBER = bindReihe([[400, 380, 300, 290], [401, 379, 300, 290], [400, 380, 301, 290]]);
+const BIND_GEFUNDEN = bindReihe([[400, 380, 300, 290], [420, 360, 310, 280], [400, 380, 300, 290]]);
+
 try {
 
 // ---------------------------------------------------------------------------
@@ -246,6 +262,7 @@ await test('ohne Daten: "noch nichts erfasst", nicht "nicht bereit"', async () =
 await test('alles erledigt: rennstreckenbereit, Balken auf 100 Prozent', async () => {
   const p = await oeffne('index.html');
   const r = await p.page.evaluate(`(() => {
+    ${BIND_SAUBER}
     for (const ph of Recheck.PHASEN) Status.setzen(ph.id, 'done');
     uebersichtZeichnen();
     return {
@@ -290,9 +307,42 @@ await test('nach einer Camber-Aenderung faellt der Balken zurueck', async () => 
     'Verweise zeigen nicht auf die Phasen: ' + r.verweise.join(', '));
 });
 
+await test('alle Phasen erledigt, aber Bind: nicht rennstreckenbereit', async () => {
+  // Der Balken zaehlt Phasen und steht auf 100 Prozent - die Aussage
+  // darueber nicht. Ein Setup unter Bind ist nicht fertig, sondern
+  // unbrauchbar (Projektregel 6).
+  const p = await oeffne('index.html');
+  const r = await p.page.evaluate(`(() => {
+    ${BIND_GEFUNDEN}
+    for (const ph of Recheck.PHASEN) Status.setzen(ph.id, 'done');
+    uebersichtZeichnen();
+    return {
+      text: document.getElementById('bereitAussage').textContent,
+      breite: document.getElementById('overallFill').style.width
+    };
+  })()`);
+  await p.close();
+  assert(/Nicht rennstreckenbereit/i.test(r.text), 'Aussage: ' + r.text);
+  assert(/Bind-Befund/.test(r.text), 'Der Bind wird als Grund nicht genannt: ' + r.text);
+  assertEqual(r.breite, '100%', 'Der Balken zaehlt die Phasen');
+});
+
+await test('alle Phasen erledigt, kein Bind-Test: nicht rennstreckenbereit', async () => {
+  const p = await oeffne('index.html');
+  const t = await p.page.evaluate(`(() => {
+    for (const ph of Recheck.PHASEN) Status.setzen(ph.id, 'done');
+    uebersichtZeichnen();
+    return document.getElementById('bereitAussage').textContent;
+  })()`);
+  await p.close();
+  assert(/Nicht rennstreckenbereit/i.test(t), 'Aussage: ' + t);
+  assert(/Bind-Test \(6\.1\) nicht erfasst/.test(t), 'Der fehlende Test wird nicht genannt: ' + t);
+});
+
 await test('Reifendruck laesst den Balken stehen', async () => {
   const p = await oeffne('index.html');
   const r = await p.page.evaluate(`(() => {
+    ${BIND_SAUBER}
     for (const ph of Recheck.PHASEN) Status.setzen(ph.id, 'done');
     Status.eintragen('reifen_druck');
     uebersichtZeichnen();

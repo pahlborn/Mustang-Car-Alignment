@@ -12,6 +12,18 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v15',
+      date: '2026-10-23',
+      time: '10:05',
+      title: 'Rennstreckenbereit heisst auch: kein Bind',
+      changes: [
+        { type: 'neu', text: 'Die Bereitschaft auf der Startseite verlangt jetzt einen bestandenen Bind-Test. Vorher konnte "Rennstreckenbereit" direkt neben "Bind-Befund: keine Setup-Arbeit" stehen. Ein Setup, das unter Bind gemessen wurde, ist nicht fertig, sondern unbrauchbar - Projektregel 6: keine Setup-Schluesse aus Messungen mit bekanntem Bind.' },
+        { type: 'neu', text: 'Ein nicht erfasster Bind-Test zaehlt nicht als bestanden, und ebenso wenig ein Befund, der sich nicht ermitteln laesst. Eine Sicherheitspruefung, die bei fehlender Grundlage durchwinkt, ist keine. Der Fortschrittsbalken zaehlt weiter nur die Phasen.' },
+        { type: 'fix', text: 'Die Startseite beschrieb noch den Stand der ersten Ausgabe - "nur das Geruest", das Handbuch werde "schrittweise ueberfuehrt". Sie nennt jetzt, was es gibt und wo es steht.' },
+        { type: 'intern', text: 'Die Schleife ueber alle Eingabefelder stand siebenmal im Code: dreimal zum Auslesen, obwohl es dafuer schon eine Funktion gab, und viermal zum Eintragen - eine der vier kannte keine Kontrollkaestchen. Beides steht jetzt in field-sync.js, und ein Test verbietet eigene Schleifen in den Seiten.' }
+      ]
+    },
+    {
       version: 'v14',
       date: '2026-10-20',
       time: '06:51',

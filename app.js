@@ -134,12 +134,7 @@
 
     function applyData(data) {
         isLoading = true;
-        document.querySelectorAll('[data-field]').forEach(function (el) {
-            var v = data[el.dataset.field];
-            if (v === undefined) return;
-            if (el.type === 'checkbox') el.checked = !!v;
-            else el.value = v;
-        });
+        FieldSync.anwenden(data);
         isLoading = false;
     }
 

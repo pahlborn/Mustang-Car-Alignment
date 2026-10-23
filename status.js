@@ -307,19 +307,50 @@
   }
 
   /**
+   * Der Bind-Befund, soweit er sich ermitteln laesst.
+   *
+   * Gerechnet mit bind.js auf den gespeicherten Feldwerten - derselbe Befund
+   * wie auf bind.html, nicht abgeschrieben.
+   *
+   * Fehlt bind.js, ist der Befund `unbekannt`, nicht `bestanden`. Eine
+   * Sicherheitspruefung, die bei fehlender Grundlage durchwinkt, ist keine.
+   */
+  function bindStand() {
+    if (typeof Bind === 'undefined' || typeof FieldSync === 'undefined') {
+      return { bekannt: false, geprueft: false, sperrt: false, gruende: [] };
+    }
+    var bf = Bind.befund(FieldSync.lesen());
+    return { bekannt: true, geprueft: bf.geprueft, sperrt: bf.sperrt, gruende: bf.gruende };
+  }
+
+  /**
    * Ist das Fahrzeug rennstreckenbereit?
    *
-   * Nur wenn jede Phase erledigt und keine veraltet ist. `grund` nennt, was
-   * fehlt - eine Anzeige, die nur "nein" sagt, hilft in der Box nicht weiter.
+   * Nur wenn jede Phase erledigt ist, keine veraltet - und der Bind-Test
+   * nach 6.1 bestanden. Projektregel 6 aus dem Bind-Kapitel: "Keine
+   * Setup-Schluesse aus Messungen mit bekanntem Bind." Ein Setup, das unter
+   * Bind gemessen wurde, ist nicht fertig, sondern unbrauchbar - auch wenn
+   * jede Phase abgehakt ist.
+   *
+   * Ein nicht erfasster Test zaehlt nicht als bestanden (Arbeitsregel 9).
+   *
+   * `grund` nennt, was fehlt - eine Anzeige, die nur "nein" sagt, hilft in
+   * der Box nicht weiter.
    */
   function rennstreckenbereit() {
     var f = fortschritt();
-    var bereit = f.gesamt > 0 && f.erledigt === f.gesamt;
+    var b = bindStand();
+    var phasenFertig = f.gesamt > 0 && f.erledigt === f.gesamt;
+    var bindOk = b.bekannt && b.geprueft && !b.sperrt;
+
     var grund = [];
+    if (b.sperrt) grund.push('Bind-Befund: ' + b.gruende.join('; '));
+    else if (!b.bekannt) grund.push('Bind-Befund nicht ermittelbar');
+    else if (!b.geprueft) grund.push('Bind-Test (6.1) nicht erfasst');
     if (f.veraltet) grund.push(f.veraltet + ' Phase(n) veraltet');
     if (f.wip) grund.push(f.wip + ' in Arbeit');
     if (f.offen) grund.push(f.offen + ' offen');
-    return { bereit: bereit, grund: grund };
+    return { bereit: phasenFertig && bindOk, grund: grund, bind: b };
   }
 
   /** Alle Phasen mit ihrem vollstaendigen Zustand - fuer die Anzeige. */
