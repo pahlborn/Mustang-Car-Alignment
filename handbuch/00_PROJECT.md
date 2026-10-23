@@ -20,7 +20,7 @@ Verbindlicher Setup-Ablauf: siehe [`02_WORKFLOW.md`](02_WORKFLOW.md).
 >
 > Vor dem 2026-10-23 wurde das Fahrwerk umfassend umgebaut (genaues Datum noch eintragen). Betroffen sind nach Angabe des Fahrzeughalters: UCA/LCA/Camber Kit, Ball Joints, Strut Rods, Federn vorn, Stabilisator vorn/Endlinks, Lenkung, Dämpfer, Blattfedern, Shackles/Buchsen hinten, Panhard Bar und Driveline.
 >
-> Die Tabellen in §3–§5 beschreiben den Stand **vor** dem Umbau. Bis eine Zeile in Phase 0 ([`02_WORKFLOW.md`](02_WORKFLOW.md) §3) einzeln bestätigt oder ersetzt ist, gilt sie als `Legacy-Angabe` nach [`CONVENTIONS.md`](CONVENTIONS.md) §17 — gleich, was in ihrer Statusspalte steht. Werte, Raten und Verstellbereiche aus diesen Tabellen dürfen bis dahin nicht als Rechengrundlage dienen.
+> Die Tabellen in §3–§5 beschreiben den Stand **vor** dem Umbau. Bis eine Zeile in Phase 0 ([`02_WORKFLOW.md`](02_WORKFLOW.md) §3) einzeln bestätigt oder ersetzt ist, gilt sie als `Legacy-Angabe` nach [`CONVENTIONS.md`](CONVENTIONS.md) §17 — gleich, was in ihrer Statusspalte steht. Bestätigte Zeilen tragen `Verifiziert (Halter, nach Umbau, <Datum>)`. Werte, Raten und Verstellbereiche aus diesen Tabellen dürfen bis dahin nicht als Rechengrundlage dienen.
 >
 > Nach Umbau der Buchsen an der Hinterachse ist zudem der Bind-Test zu wiederholen ([`CHAPTER_BIND_DIAGNOSIS.md`](CHAPTER_BIND_DIAGNOSIS.md) §8, Regel 4).
 
@@ -45,12 +45,12 @@ Verbindlicher Setup-Ablauf: siehe [`02_WORKFLOW.md`](02_WORKFLOW.md).
 
 | Bauteil / Geometrie | Projektstand | Status |
 |---|---|---|
-| Shelby Drop | vorhanden | Projektangabe |
-| **UCA** | **Street or Track Tubular +Caster, `SOT-UCA65-66`** | **Projektangabe** |
-| UCA Cross Shaft | Standard oder „Dropped" — welche Variante, noch erfassen | Offen |
-| UCA Heim-Gelenke | Einstellposition vorn/hinten je Seite noch erfassen | Offen |
-| LCA Camber Kit | Street or Track `SOT-LCACK65-66` | Projektangabe |
-| LCA | Serien-LCA oder SoT Tubular (`SOT-LCA6566`)? | Offen |
+| Shelby Drop | vorhanden, über gebohrte Löcher am Federbeindom (Standard-Cross-Shaft); Bohrposition (1" / 1-3/4") noch erfassen | Verifiziert (Halter, nach Umbau, 2026-10-23); Bohrposition Offen |
+| **UCA** | **Street or Track Tubular +Caster, `SOT-UCA65-66`** | **Verifiziert (Halter, nach Umbau, 2026-10-23)** |
+| UCA Cross Shaft | **Standard** (nicht „Dropped") | Verifiziert (Halter, nach Umbau, 2026-10-23) |
+| UCA Heim-Gelenke | Einstellposition vorn/hinten je Seite noch erfassen. Herstellerangabe zum Auslieferungszustand: vorderes Gelenk 3 Umdrehungen weiter heraus als das hintere, ergibt ca. +3° Castor; beide UCA müssen gleich lang sein (Herstellerangabe, siehe unter der Tabelle) | Offen |
+| LCA Camber Kit | Street or Track `SOT-LCACK65-66`, eingeschweißt; ±3/8" Verschiebung des LCA gegenüber Serie (Herstellerangabe, siehe unter der Tabelle) | Verifiziert (Halter, nach Umbau, 2026-10-23); Plattenposition Offen |
+| LCA | Street or Track Tubular Lower Roller Control Arm, `SOT-LCA6566` | Verifiziert (Halter, nach Umbau, 2026-10-23) |
 | Strut Rods | einstellbar; Global West im Projekt dokumentiert | Projektangabe; Modell/Version offen |
 | Ball Joints | Howe | Projektangabe |
 | Steering Box | Flaming River FR1497-1Q, 1" sector, 16:1 | Projektangabe |
@@ -58,6 +58,11 @@ Verbindlicher Setup-Ablauf: siehe [`02_WORKFLOW.md`](02_WORKFLOW.md).
 | Dämpfer | genaue Ausführung/Einstellung noch erfassen | Offen |
 | Front ARB / Endlinks | genaue Hardware und Preload-Zustand erfassen | Offen |
 | Steering Arms / Tie Rods / Center Link / Idler / Pitman | Ist-Zustand vollständig inventarisieren | Offen |
+
+**Herstellerangaben (Street or Track, abgerufen 2026-10-23):**
+
+- `SOT-UCA65-66`, https://streetortrack.com/street-or-track-tubular-caster-upper-arms — „Shipped with the front bearing 3 turns further out than the rear. This adds approx. +3 degrees of positive caster"; die beiden UCA müssen gleich lang sein, sonst unterscheiden sich die Camberkurven links und rechts.
+- `SOT-LCACK65-66`, https://streetortrack.com/suspension/front-suspension/lower-control-arms/lower-control-arm-camber-kit-for-65-66-mustangs — „move the lower control arm 3/8" inboard or 3/8" outboard from stock".
 
 ### Alignment-relevante Regel
 
@@ -72,7 +77,7 @@ Mit dem `SOT-UCA65-66` hat das Fahrzeug **vier** Verstellebenen an der Vorderach
 3. LCA Camber Kit — Camber, diskrete Plattenstufen
 4. Strut Rods — Castor
 
-Damit entspricht die Hardware **derselben Konfiguration, mit der Street or Track sein dokumentiertes Track-Setup erreicht hat**. Das Beispiel −2,75° Camber / +5° Castor ist deshalb erstmals als Referenz übertragbar — unter dem Vorbehalt, dass LCA-Typ, Cross-Shaft-Variante und Reifen abweichen können.
+Damit entspricht die Hardware **derselben Konfiguration, mit der Street or Track sein dokumentiertes Track-Setup erreicht hat**: Tubular UCA, Tubular LCA (`SOT-LCA6566`, seit dem Umbau bestätigt) und LCA Camber Kit. Das Beispiel −2,75° Camber / +5° Castor ist deshalb als Referenz übertragbar — unter dem Vorbehalt, dass Cross-Shaft-Variante des SoT-Testwagens unbekannt ist und die Reifen abweichen.
 
 Einstellmechanik und Reihenfolge: [`CHAPTER_FRONT_ADJUSTMENT_UCA_LCA.md`](CHAPTER_FRONT_ADJUSTMENT_UCA_LCA.md).
 
@@ -472,8 +477,8 @@ Eine einzelne Alignment-Zahl allein ist keine vollständige Fahrzeug-Baseline.
 
 Vor einer endgültigen technischen Veröffentlichung noch verifizieren:
 
-- exakte UCA-Ausführung
-- exakte Shelby-Drop-Ausführung/Bohrposition
+- Shelby-Drop-Bohrposition (Ausführung geklärt: Standard-Cross-Shaft, gebohrt)
+- Einstellposition der UCA-Heim-Gelenke je Seite
 - exakte Global-West-Strut-Rod-Ausführung
 - aktuelle LCA-Camber-Kit-Position
 - Frontfeder-Ausführung und Rate
