@@ -110,9 +110,7 @@ Einstellmechanik und Reihenfolge: [`CHAPTER_FRONT_ADJUSTMENT_UCA_LCA.md`](CHAPTE
 | `spring_front_free_length` | | Zoll |
 | `spring_front_install_date` | | |
 
-**Stand nach Umbau (Halter, 2026-10-23):** 620 lb/in, bezogen über Street or Track. Teilenummer, Hersteller und freie Länge stehen noch aus: im SoT-Katalog (abgerufen 2026-10-23) ist die Feder nicht als eigenes Produkt zu finden, nur erwähnt — die GT-Feder `SCD-C5ZZ-5310-E` (260 lb) beschreibt SoT als „softer ride than our 620 coil springs".
-
-**Offene Entscheidung:** Der Halter erwägt einen Wechsel der Frontfedern zu Mike Maier Inc. oder Maier Racing (2026-10-23). Für die Hinterachse steht dieselbe Frage in [`DECISION_LEAF_SPRINGS.md`](DECISION_LEAF_SPRINGS.md). Bis zur Entscheidung gilt der verbaute Stand. Die Einheit folgt derselben Konvention wie bei `leaf_rate`: Händler schreiben „620 lb", gemeint ist die Rate in lb/in. Für die Rechnung wird umgerechnet (`lbinNachNmm()`, siehe Arbeitsregel 5b) — die Zahl muss zusätzlich im Messblatt eingetragen werden, dieses Dokument speist die Rechnung nicht.
+**Stand nach Umbau (Halter, 2026-10-23):** 620 lb/in, bezogen über Street or Track. Teilenummer, Hersteller und freie Länge stehen noch aus: im SoT-Katalog (abgerufen 2026-10-23) ist die Feder nicht als eigenes Produkt zu finden, nur erwähnt — die GT-Feder `SCD-C5ZZ-5310-E` (260 lb) beschreibt SoT als „softer ride than our 620 coil springs". Die Einheit folgt derselben Konvention wie bei `leaf_rate`: Händler schreiben „620 lb", gemeint ist die Rate in lb/in. Für die Rechnung wird umgerechnet (`lbinNachNmm()`, siehe Arbeitsregel 5b) — die Zahl muss zusätzlich im Messblatt eingetragen werden, dieses Dokument speist die Rechnung nicht.
 
 > Die Federrate geht über das Motion Ratio **quadratisch** in die Radrate ein (siehe [`CHAPTER_SPRINGS_ROLL_STIFFNESS.md`](CHAPTER_SPRINGS_ROLL_STIFFNESS.md) §3.1). Ohne sie ist keine Rollsteifigkeit berechenbar.
 
