@@ -340,6 +340,35 @@ await test('jede Groesse der Matrix hat eine Wirkung auf mindestens eine Phase',
   assertEqual(ohne, [], 'Matrix-Groesse ohne Wirkung auf eine Phase');
 });
 
+// ---------------------------------------------------------------------------
+suite('Die Bind-Schranke steht, wo das Handbuch sie hinstellt');
+
+await test('BIND_TEST_NACH nennt eine Werkstattphase', async () => {
+  const p = R.PHASEN.find((x) => x.id === R.BIND_TEST_NACH);
+  assert(p, 'BIND_TEST_NACH ist keine Phase: ' + R.BIND_TEST_NACH);
+});
+
+await test('02_WORKFLOW.md fuehrt die Schranke im Abschnitt genau dieser Phase', async () => {
+  // Die Stelle ist eine Projektfestlegung (2026-10-23) und steht im
+  // Handbuch. Wandert sie dort, muss der Code mitwandern - und umgekehrt.
+  // Geprueft wird der Abschnitt der Phase, nicht nur das Vorkommen im Text:
+  // sonst bliebe der Test gruen, wenn die Schranke im Handbuch an eine
+  // andere Stelle rutscht.
+  const p = R.PHASEN.find((x) => x.id === R.BIND_TEST_NACH);
+  const kopf = new RegExp('^## \\d+\\. Phase ' + p.nr + ' \u2014', 'm');
+  const m = kopf.exec(WORKFLOW);
+  assert(m, 'Abschnitt fuer Phase ' + p.nr + ' nicht gefunden');
+  const rest = WORKFLOW.slice(m.index + m[0].length);
+  const ende = rest.search(/^## /m);
+  const block = ende > -1 ? rest.slice(0, ende) : rest;
+  assert(block.includes('### Schranke: Bind-Test vor Phase ' + (p.nr + 1)),
+    'Die Schranke steht nicht im Abschnitt von Phase ' + p.nr);
+  // Der Linktext steht im Handbuch als Code: [`CHAPTER_...md`](...)
+  assert(/CHAPTER_BIND_DIAGNOSIS\.md`?\]\([^)]+\) §6\.1/.test(block),
+    'Die Schranke verweist nicht auf §6.1 des Bind-Kapitels');
+  assert(/Projektfestlegung/.test(block), 'Die Schranke ist nicht als Projektfestlegung markiert');
+});
+
 } finally {
   // kein Server, kein Browser
 }

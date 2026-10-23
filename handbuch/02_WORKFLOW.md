@@ -1,8 +1,8 @@
 # Mustang Track Chassis Setup — Workflow
 
 **Dokumentrolle:** Einziger verbindlicher Gesamt-Setup-Ablauf  
-**Version:** 0.3  
-**Datum:** 2026-10-05  
+**Version:** 0.4  
+**Datum:** 2026-10-23  
 **Status:** Autoritativ für Reihenfolge und Rückkopplungen
 
 ---
@@ -22,6 +22,8 @@ MECHANIK
 REFERENZ / SETUP PAD
    ↓
 RACE-READY
+   ↓
+BIND-TEST  (Schranke)
    ↓
 INITIALGEOMETRIE
    ↓
@@ -191,6 +193,22 @@ Vor vergleichbaren Messungen immer gleich:
 ### Projektregel
 
 Ein Setup-Wert ohne dokumentierten Race-Ready-Zustand ist nur bedingt vergleichbar.
+
+### Schranke: Bind-Test vor Phase 4
+
+Nach Phase 3 und vor jeder weiteren Messung: Reproduzierbarkeitstest der Radlasten nach [`CHAPTER_BIND_DIAGNOSIS.md`](CHAPTER_BIND_DIAGNOSIS.md) §6.1 — drei Durchgänge, dazwischen anheben und absetzen.
+
+Begründung: Das Bind-Kapitel verlangt den Test „vor jeder Setup-Session" (§8, Projektregel 1). Hier sind seine Voraussetzungen erstmals erfüllt — Setup Pad aus Phase 2, Race-Ready-Zustand aus Phase 3 —, und noch ist kein Messwert erhoben, der unter Bind entstanden sein könnte.
+
+| Ergebnis nach §6.1 | Weiter mit |
+|---|---|
+| gut | Phase 4 |
+| grenzwertig | Ursache suchen, Test wiederholen |
+| Bind | §7 des Bind-Kapitels — keine Setup-Arbeit, bevor das geklärt ist |
+
+Nach jeder Buchsenänderung an der Hinterachse ist der Test zu wiederholen (Bind-Kapitel §8, Regel 4).
+
+> **Projektfestlegung** vom 2026-10-23: Die Stelle im Ablauf ist aus den Voraussetzungen des Tests abgeleitet, keine Herstellerangabe.
 
 ---
 

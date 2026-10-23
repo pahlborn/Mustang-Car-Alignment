@@ -12,6 +12,17 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v16',
+      date: '2026-10-23',
+      time: '14:14',
+      title: 'Der Bind-Test hat seinen Platz im Ablauf',
+      changes: [
+        { type: 'neu', text: 'In der Werkstatt steht zwischen Phase 3 und Phase 4 eine Schranke: der Bind-Test nach 6.1. Sie zeigt, ob der Test bestanden, offen oder mit Befund ist. Solange er nicht bestanden ist, tragen die Phasen 4 bis 18 die Marke "Bind-Test zuerst". Gesperrt wird nichts - der Statusknopf bleibt bedienbar.' },
+        { type: 'fix', text: 'Das Bind-Kapitel verlangte den Test "vor jeder Setup-Session", der verbindliche Ablauf in 02_WORKFLOW.md nannte ihn nirgends. Die Stelle steht jetzt dort, als Projektfestlegung: nach Phase 3, weil dort Setup Pad und Race-Ready-Zustand erstmals stehen und noch kein Wert unter Bind gemessen wurde.' },
+        { type: 'intern', text: 'Die Lage der Schranke steht in recheck.js neben den Phasen, und ein Test prueft, dass sie im Handbuch im Abschnitt genau dieser Phase steht. Wandert sie dort, muss der Code mitwandern.' }
+      ]
+    },
+    {
       version: 'v15',
       date: '2026-10-23',
       time: '10:05',

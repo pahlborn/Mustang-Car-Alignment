@@ -197,6 +197,13 @@
     { nr: 18, id: 'phase18', titel: 'Baseline einfrieren',      liefert: ['baseline_id'] }
   ];
 
+  // Der Bind-Test nach CHAPTER_BIND_DIAGNOSIS 6.1 steht als Schranke im
+  // Ablauf - 02_WORKFLOW.md 6, Abschnitt "Schranke: Bind-Test vor Phase 4".
+  // Er ist keine Phase: er hat keinen Status zum Abhaken, sondern ein
+  // Ergebnis, das bind.js aus den Messwerten rechnet. Hier steht nur, WO er
+  // steht - die Phasen danach gelten erst mit bestandenem Test.
+  var BIND_TEST_NACH = 'phase3';
+
   // ===========================================================================
   // Kaskade
   // ===========================================================================
@@ -323,6 +330,7 @@
   global.Recheck = {
     MATRIX: MATRIX,
     PHASEN: PHASEN,
+    BIND_TEST_NACH: BIND_TEST_NACH,
     SAMMEL: SAMMEL,
     betroffen: betroffen,
     phasenNach: phasenNach,

@@ -129,6 +129,32 @@
 
     // ==== Phasen ====
 
+    /**
+     * Die Schranke zwischen Phase 3 und 4: der Bind-Test nach 6.1.
+     *
+     * Kein Statusknopf - der Test hat ein Ergebnis, keinen Haken. Das
+     * Ergebnis rechnet bind.js aus den Messwerten; Status.bindStand() ist
+     * dieselbe Quelle, aus der auch die Bereitschaft auf der Startseite liest.
+     */
+    function schranke(b) {
+        var ok = b.bekannt && b.geprueft && !b.sperrt;
+        var text, art = 'info-box', stil = '';
+        if (ok) {
+            text = '<strong>&#9878; Bind-Test bestanden.</strong> Die Phasen ab 4 stehen auf '
+                + 'reproduzierbaren Radlasten.';
+            stil = ' style="border-left-color:var(--success);"';
+        } else if (b.sperrt) {
+            art = 'warning-box';
+            text = '<strong>&#9878; Bind-Befund &ndash; keine Setup-Arbeit.</strong> '
+                + esc(b.gruende.join('; ')) + '.';
+        } else {
+            text = '<strong>&#9878; Hier: Bind-Test nach 6.1</strong> &ndash; nach Phase 3, vor '
+                + 'Phase 4. Noch nicht erfasst; ohne ihn ist kein Wert ab Phase 4 belastbar.';
+        }
+        return '<div id="bindSchranke" class="' + art + '"' + stil + '>' + text
+            + ' <a href="bind.html">Zur Bind-Diagnose</a></div>';
+    }
+
     function zeichnePhasen() {
         var ziel = document.getElementById('phasenListe');
         if (!ziel) return;
@@ -145,12 +171,28 @@
             }
         }
 
+        // Die Schranke steht nach der Phase, die recheck.js nennt. Was danach
+        // kommt, traegt eine Marke, solange der Test nicht bestanden ist -
+        // gesperrt wird nichts: der Statusknopf bleibt bedienbar.
+        var b = Status.bindStand();
+        var bindOk = b.bekannt && b.geprueft && !b.sperrt;
+        var hinterSchranke = false;
+
         ziel.innerHTML = Status.uebersicht().map(function (p) {
             var marke = '';
             if (p.veraltet) {
                 marke = '<span class="marke marke-veraltet">veraltet</span>';
             } else if (p.mitmessen) {
                 marke = '<span class="marke marke-wartet">mitmessen</span>';
+            }
+            if (hinterSchranke && !bindOk) {
+                marke += '<span class="marke marke-wartet bind-zuerst"'
+                    + ' title="Bind-Test nach 6.1 steht vor dieser Phase">Bind-Test zuerst</span>';
+            }
+            var danach = '';
+            if (p.id === Recheck.BIND_TEST_NACH) {
+                danach = schranke(b);
+                hinterSchranke = true;
             }
 
             // event.stopPropagation() im onclick, nicht als nachtraeglich
@@ -192,7 +234,8 @@
                 + '<h2>' + p.nr + '. ' + esc(p.titel) + '</h2>' + marke
                 + '</div>'
                 + '<div class="section-body' + zu + '">' + inhalt.join('') + '</div>'
-                + '</div>';
+                + '</div>'
+                + danach;
         }).join('');
 
     }
@@ -212,6 +255,10 @@
     // status.js, weil er zu ausFeld() gehoert und nicht zu dieser Seite.
     // Hier wird nur die Anzeige nachgezogen.
     document.addEventListener('status-geaendert', zeichneAlles);
+
+    // Wer auf der Bind-Seite gemessen hat und zurueckwechselt, soll die
+    // Schranke im neuen Stand sehen, ohne neu zu laden.
+    window.addEventListener('focus', zeichneAlles);
 
     function init() {
         if (typeof Recheck === 'undefined' || typeof Status === 'undefined') return;

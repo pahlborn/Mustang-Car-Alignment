@@ -181,6 +181,70 @@ await test('eine geschlossene Phase bleibt beim Abhaken geschlossen', async () =
 });
 
 // ---------------------------------------------------------------------------
+suite('Die Bind-Schranke nach Phase 3');
+
+/** Schranke und Marken nach dem Zeichnen auslesen. */
+const SCHRANKE_LESEN = `
+  werkstattZeichnen();
+  const s = document.getElementById('bindSchranke');
+  const vor = s && s.previousElementSibling, nach = s && s.nextElementSibling;
+  return {
+    da: !!s,
+    vor: vor && vor.id, nach: nach && nach.id,
+    text: s ? s.textContent : '',
+    warnt: !!(s && s.classList.contains('warning-box')),
+    verweis: s ? [...s.querySelectorAll('a')].map((a) => a.getAttribute('href')) : [],
+    markiert: [...document.querySelectorAll('#phasenListe .section')]
+      .filter((x) => x.querySelector('.bind-zuerst')).map((x) => x.id)
+  };
+`;
+
+await test('ohne Test: Schranke zwischen 3 und 4, Phasen 4-18 markiert', async () => {
+  const p = await oeffne('werkstatt.html');
+  const r = await p.page.evaluate(`(() => { ${SCHRANKE_LESEN} })()`);
+  await p.close();
+  assert(r.da, 'Keine Schranke in der Phasenliste');
+  assertEqual([r.vor, r.nach], ['sec-phase3', 'sec-phase4'], 'Lage der Schranke');
+  assert(/noch nicht erfasst/i.test(r.text), 'Der fehlende Test wird nicht genannt: ' + r.text);
+  assert(r.verweis.includes('bind.html'), 'Kein Weg zur Bind-Seite');
+  const erwartet = [];
+  for (let n = 4; n <= 18; n++) erwartet.push('sec-phase' + n);
+  assertEqual(r.markiert, erwartet, 'Markierte Phasen');
+});
+
+await test('bestanden: keine Marke, die Schranke sagt es', async () => {
+  const p = await oeffne('werkstatt.html');
+  const r = await p.page.evaluate(`(() => { ${BIND_SAUBER} ${SCHRANKE_LESEN} })()`);
+  await p.close();
+  assert(/bestanden/i.test(r.text), 'Schranke: ' + r.text);
+  assertEqual(r.warnt, false, 'Die Schranke warnt trotz bestandenem Test');
+  assertEqual(r.markiert, [], 'Marken trotz bestandenem Test');
+});
+
+await test('Bind gefunden: Schranke warnt mit Grund, Phasen bleiben markiert', async () => {
+  const p = await oeffne('werkstatt.html');
+  const r = await p.page.evaluate(`(() => { ${BIND_GEFUNDEN} ${SCHRANKE_LESEN} })()`);
+  await p.close();
+  assertEqual(r.warnt, true, 'Die Schranke warnt nicht');
+  assert(/Radlasten streuen 1\.46 %/.test(r.text), 'Der Grund fehlt: ' + r.text);
+  assertEqual(r.markiert.length, 15, 'Anzahl markierter Phasen');
+});
+
+await test('die Schranke folgt dem Speicher beim Zurueckkommen', async () => {
+  // Gemessen wird auf bind.html, oft in einem zweiten Reiter.
+  const p = await oeffne('werkstatt.html');
+  const r = await p.page.evaluate(`(() => {
+    ${BIND_SAUBER}
+    window.dispatchEvent(new Event('focus'));
+    return { text: document.getElementById('bindSchranke').textContent,
+             marken: document.querySelectorAll('#phasenListe .bind-zuerst').length };
+  })()`);
+  await p.close();
+  assert(/bestanden/i.test(r.text), 'Die Schranke zieht nicht nach: ' + r.text);
+  assertEqual(r.marken, 0, 'Marken stehen noch');
+});
+
+// ---------------------------------------------------------------------------
 suite('Der Regelkreis in der Anzeige');
 
 await test('Camber eintragen: drei Phasen werden als veraltet markiert', async () => {

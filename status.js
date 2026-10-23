@@ -454,6 +454,7 @@
     pruefen: pruefen,
     fortschritt: fortschritt,
     rennstreckenbereit: rennstreckenbereit,
+    bindStand: bindStand,
     uebersicht: uebersicht,
     abgleichen: abgleichen,
     holen: holen,
