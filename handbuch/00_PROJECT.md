@@ -51,7 +51,7 @@ Verbindlicher Setup-Ablauf: siehe [`02_WORKFLOW.md`](02_WORKFLOW.md).
 | UCA Heim-Gelenke | Einstellposition vorn/hinten je Seite noch erfassen. Herstellerangabe zum Auslieferungszustand: vorderes Gelenk 3 Umdrehungen weiter heraus als das hintere, ergibt ca. +3° Castor; beide UCA müssen gleich lang sein (Herstellerangabe, siehe unter der Tabelle) | Offen |
 | LCA Camber Kit | Street or Track `SOT-LCACK65-66`, eingeschweißt; ±3/8" Verschiebung des LCA gegenüber Serie (Herstellerangabe, siehe unter der Tabelle) | Verifiziert (Halter, nach Umbau, 2026-10-23); Plattenposition Offen |
 | LCA | Street or Track Tubular Lower Roller Control Arm, `SOT-LCA6566` | Verifiziert (Halter, nach Umbau, 2026-10-23) |
-| Strut Rods | einstellbar; Global West im Projekt dokumentiert | Projektangabe; Modell/Version offen |
+| Strut Rods | Global West `ASR-4` (Standardausführung 1964–66, Clevis in der serienmäßigen Rahmenaufnahme), einstellbar | Verifiziert (Halter, nach Umbau, 2026-10-23); Einstelllänge je Seite Offen |
 | Ball Joints | Howe | Projektangabe |
 | Steering Box | Flaming River FR1497-1Q, 1" sector, 16:1 | Projektangabe |
 | Federn | genaue Rate/Ausführung noch erfassen | Offen |
@@ -59,10 +59,11 @@ Verbindlicher Setup-Ablauf: siehe [`02_WORKFLOW.md`](02_WORKFLOW.md).
 | Front ARB / Endlinks | genaue Hardware und Preload-Zustand erfassen | Offen |
 | Steering Arms / Tie Rods / Center Link / Idler / Pitman | Ist-Zustand vollständig inventarisieren | Offen |
 
-**Herstellerangaben (Street or Track, abgerufen 2026-10-23):**
+**Herstellerangaben (abgerufen 2026-10-23):**
 
 - `SOT-UCA65-66`, https://streetortrack.com/street-or-track-tubular-caster-upper-arms — „Shipped with the front bearing 3 turns further out than the rear. This adds approx. +3 degrees of positive caster"; die beiden UCA müssen gleich lang sein, sonst unterscheiden sich die Camberkurven links und rechts.
 - `SOT-LCACK65-66`, https://streetortrack.com/suspension/front-suspension/lower-control-arms/lower-control-arm-camber-kit-for-65-66-mustangs — „move the lower control arm 3/8" inboard or 3/8" outboard from stock".
+- Global West `ASR-4`, https://www.globalwest.net/product/asr-4/ — Mustang 1964–66; „no welding or frame modifications required". Einen Verstellbereich nennt der Hersteller nicht. Für Karossen mit schmalerer Nachbau-Rahmenaufnahme (Dynacorn) gibt es `ASR-10`; nach Angabe des Halters ist `ASR-4` verbaut, die Aufnahme also serienmäßig breit.
 
 ### Alignment-relevante Regel
 
@@ -479,7 +480,7 @@ Vor einer endgültigen technischen Veröffentlichung noch verifizieren:
 
 - Shelby-Drop-Bohrposition (Ausführung geklärt: Standard-Cross-Shaft, gebohrt)
 - Einstellposition der UCA-Heim-Gelenke je Seite
-- exakte Global-West-Strut-Rod-Ausführung
+- Einstelllänge der Strut Rods je Seite (Ausführung geklärt: Global West `ASR-4`)
 - aktuelle LCA-Camber-Kit-Position
 - Frontfeder-Ausführung und Rate
 - Front-ARB und Endlinks
