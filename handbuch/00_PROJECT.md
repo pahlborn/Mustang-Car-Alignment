@@ -53,13 +53,13 @@ Verbindlicher Setup-Ablauf: siehe [`02_WORKFLOW.md`](02_WORKFLOW.md).
 | LCA | Street or Track Tubular Lower Roller Control Arm, `SOT-LCA6566` | Verifiziert (Halter, nach Umbau, 2026-10-23) |
 | Strut Rods | Global West `ASR-4` (Standardausführung 1964–66, Clevis in der serienmäßigen Rahmenaufnahme), einstellbar | Verifiziert (Halter, nach Umbau, 2026-10-23); Einstelllänge je Seite Offen |
 | Ball Joints | oben: Moog nach Lieferzustand der SoT-UCA; unten: Howe — Teileidentifikation siehe unten | Verifiziert (Halter, nach Umbau, 2026-10-23); Teilenummern Offen |
-| Steering Box | Flaming River FR1497-1Q, 1" sector, 16:1 | Projektangabe |
+| Steering Box | Flaming River FR1497-1Q, 1" sector, 16:1 — siehe „Lenkung — Teileidentifikation" | Legacy-Angabe — nach Umbau bestätigen |
 | Federn | **620 lb/in**, bezogen über Street or Track; Teilenummer noch erfassen — Teileidentifikation siehe unten | Rate und Bezugsquelle: Verifiziert (Halter, nach Umbau, 2026-10-23); Teilenummer Offen |
 | Spring Perches | Roller Spring Perches `ORP-RSP64-73` (über Street or Track), zwei gedichtete Rollenlager statt der Seriengummilager | Verifiziert (Halter, nach Umbau, 2026-10-23) |
 | Dämpfer | Bilstein `RCD-55-R054`, Street-Abstimmung — siehe „Dämpfer vorn" | Verifiziert (Halter, nach Umbau, 2026-10-23) |
 | Front ARB / Endlinks | 1" (gemessen), verstellbare Endlinks, Poly-Lagerbuchsen — siehe „Vorderer Stabilisator"; Teilenummer und Preload-Zustand offen | Verifiziert (Halter, nach Umbau, 2026-10-23); Preload Offen |
 | Bump-Steer-Kit | Baer Tracker `BAE-3261001` für 1965–66 (über Street or Track); ersetzt die äußeren Spurstangenköpfe, Höhe des äußeren Tie-Rod-Pivots über Distanzstücke einstellbar | Verifiziert (Halter, nach Umbau, 2026-10-23); Distanzstück-Stapel je Seite Offen |
-| Steering Arms / Tie Rods / Center Link / Idler / Pitman | äußere Spurstangenköpfe: siehe Bump-Steer-Kit; übriger Ist-Zustand vollständig inventarisieren | Offen |
+| Steering Arms / Tie Rods / Center Link / Idler / Pitman / Achsschenkel | äußere Spurstangenköpfe: Bump-Steer-Kit; übrige Teile in „Lenkung — Teileidentifikation" nachtragen | Offen |
 
 **Herstellerangaben (abgerufen 2026-10-23):**
 
@@ -164,6 +164,24 @@ Bezogen auf den verbauten 1"-Stab:
 **Herstellerangabe** (https://streetortrack.com/suspension/front-suspension/shock-absorbers-466/bilstein-front-shock-for-64-66-mustang-street-valving.html, abgerufen 2026-10-23): Street „ideal for spring rates up to 600lbs"; SoT führt außerdem Sport `RCD-55-R083` („500-700lb") und Race `RCD-55-R085` („700-1000lb"). Verbaut sind 620 lb/in — knapp oberhalb des für Street genannten Bereichs. Das ist hier festgehalten, nicht bewertet: Dämpfer wirken auf das transiente Verhalten, und ob das stört, zeigt die Strecke.
 
 > Dämpfer wirken **nicht** auf die stationäre Balance, sondern auf das transiente Verhalten — Turn-in, Lastwechsel, Kerbs. Siehe [`CHAPTER_SPRINGS_ROLL_STIFFNESS.md`](CHAPTER_SPRINGS_ROLL_STIFFNESS.md) §6.
+
+### Lenkung — Teileidentifikation
+
+> **Eintragen und stehenlassen.** Die Lenkung wurde beim Umbau angefasst; welche Teile getauscht sind, ist noch zu erfassen (Halter, 2026-10-23). Werte in die Spalte „Wert" nachtragen.
+
+| Feld | Wert | Einheit | Status |
+|---|---|---|---|
+| `steering_box_part_no` | Flaming River `FR1497-1Q`, 1" sector, 16:1 | Teilenummer | Legacy-Angabe — nach Umbau bestätigen |
+| `pitman_arm_part_no` | | Teilenummer | Offen |
+| `idler_arm_part_no` | | Teilenummer | Offen |
+| `center_link_part_no` | | Teilenummer | Offen |
+| `tie_rod_inner_part_no` | | Teilenummer | Offen |
+| `tie_rod_outer` | Baer Tracker `BAE-3261001` | Teilenummer | Verifiziert (Halter, nach Umbau, 2026-10-23) |
+| `tie_rod_sleeve_type` | | Serie / Rohr / verstärkt | Offen |
+| `steering_arm_type` | | Serie / anderes | Offen |
+| `spindle_type` | | Bauart (z. B. Serie 1965–66 Disc/Drum) | Offen — Bump-Steer-Kit `BAE-3261001` setzt Achsschenkel 1965–66 voraus |
+
+> **Warum die Achsschenkel zuerst:** Baer schreibt: „Baer Trackers fit the spindle you have, not necessarily the model and year of your vehicle." Passen Kit und Achsschenkel nicht zusammen, stimmt die Bump-Steer-Geometrie von vornherein nicht — bevor überhaupt gemessen wird.
 
 ---
 
