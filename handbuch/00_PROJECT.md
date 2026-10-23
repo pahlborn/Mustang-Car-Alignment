@@ -54,8 +54,9 @@ Verbindlicher Setup-Ablauf: siehe [`02_WORKFLOW.md`](02_WORKFLOW.md).
 | Strut Rods | Global West `ASR-4` (Standardausführung 1964–66, Clevis in der serienmäßigen Rahmenaufnahme), einstellbar | Verifiziert (Halter, nach Umbau, 2026-10-23); Einstelllänge je Seite Offen |
 | Ball Joints | oben: Moog nach Lieferzustand der SoT-UCA; unten: Howe — Teileidentifikation siehe unten | Verifiziert (Halter, nach Umbau, 2026-10-23); Teilenummern Offen |
 | Steering Box | Flaming River FR1497-1Q, 1" sector, 16:1 | Projektangabe |
-| Federn | genaue Rate/Ausführung noch erfassen | Offen |
-| Dämpfer | genaue Ausführung/Einstellung noch erfassen | Offen |
+| Federn | **620 lb/in**, bezogen über Street or Track; Teilenummer noch erfassen — Teileidentifikation siehe unten | Rate und Bezugsquelle: Verifiziert (Halter, nach Umbau, 2026-10-23); Teilenummer Offen |
+| Spring Perches | Roller Spring Perches `ORP-RSP64-73` (über Street or Track), zwei gedichtete Rollenlager statt der Seriengummilager | Verifiziert (Halter, nach Umbau, 2026-10-23) |
+| Dämpfer | Bilstein `RCD-55-R054`, Street-Abstimmung — siehe „Dämpfer vorn" | Verifiziert (Halter, nach Umbau, 2026-10-23) |
 | Front ARB / Endlinks | genaue Hardware und Preload-Zustand erfassen | Offen |
 | Bump-Steer-Kit | Baer Tracker `BAE-3261001` für 1965–66 (über Street or Track); ersetzt die äußeren Spurstangenköpfe, Höhe des äußeren Tie-Rod-Pivots über Distanzstücke einstellbar | Verifiziert (Halter, nach Umbau, 2026-10-23); Distanzstück-Stapel je Seite Offen |
 | Steering Arms / Tie Rods / Center Link / Idler / Pitman | äußere Spurstangenköpfe: siehe Bump-Steer-Kit; übriger Ist-Zustand vollständig inventarisieren | Offen |
@@ -65,6 +66,8 @@ Verbindlicher Setup-Ablauf: siehe [`02_WORKFLOW.md`](02_WORKFLOW.md).
 - `SOT-UCA65-66`, https://streetortrack.com/street-or-track-tubular-caster-upper-arms — „Shipped with the front bearing 3 turns further out than the rear. This adds approx. +3 degrees of positive caster"; die beiden UCA müssen gleich lang sein, sonst unterscheiden sich die Camberkurven links und rechts.
 - `SOT-LCACK65-66`, https://streetortrack.com/suspension/front-suspension/lower-control-arms/lower-control-arm-camber-kit-for-65-66-mustangs — „move the lower control arm 3/8" inboard or 3/8" outboard from stock".
 - Baer Tracker `BAE-3261001`, https://streetortrack.com/baer-tracker-bump-steer-kit-for-1965-66-ford-mustangs-3261001 — „replaces outer tie rods"; „height adjustable with use of machined spacers"; „Baer Trackers fit the spindle you have, not necessarily the model and year of your vehicle"; „Fits manual steering cars only". Das 1965–66-Kit setzt damit Achsschenkel der Bauart 1965–66 voraus — bei der Inventur der Lenkung bestätigen.
+- Paket `SOT-6566TFEKIT` (Tubular Front End System), https://streetortrack.com/packages-1/street-or-track-tubular-front-end-system — enthält „Adjustable Strut Rods", „Tubular Upper Control Arms", „Tubular Lower Control Arms"; Federn, Federteller und Ball Joints sind nicht als Lieferumfang genannt. UCA und LCA wurden nach Angabe des Halters als dieses Paket bezogen; verbaut sind trotzdem **Global West `ASR-4`** statt der SoT-Strut-Rods (Halter, 2026-10-23).
+- Roller Spring Perches `ORP-RSP64-73`, https://streetortrack.com/suspension/front-suspension/spring-perches/roller-spring-perches.html — „2 sealed roller bearings" ersetzen die Gummilager „for a bind free operation". Eine Änderung von Geometrie oder Fahrhöhe nennt der Hersteller nicht.
 - Global West `ASR-4`, https://www.globalwest.net/product/asr-4/ — Mustang 1964–66; „no welding or frame modifications required". Einen Verstellbereich nennt der Hersteller nicht. Für Karossen mit schmalerer Nachbau-Rahmenaufnahme (Dynacorn) gibt es `ASR-10`; nach Angabe des Halters ist `ASR-4` verbaut, die Aufnahme also serienmäßig breit.
 
 ### Alignment-relevante Regel
@@ -103,9 +106,13 @@ Einstellmechanik und Reihenfolge: [`CHAPTER_FRONT_ADJUSTMENT_UCA_LCA.md`](CHAPTE
 |---|---|---|
 | `spring_front_part_no` | | Teilenummer |
 | `spring_front_manufacturer` | | |
-| `spring_front_rate` | | lb/in |
+| `spring_front_rate` | **620** | lb/in |
 | `spring_front_free_length` | | Zoll |
 | `spring_front_install_date` | | |
+
+**Stand nach Umbau (Halter, 2026-10-23):** 620 lb/in, bezogen über Street or Track. Teilenummer, Hersteller und freie Länge stehen noch aus: im SoT-Katalog (abgerufen 2026-10-23) ist die Feder nicht als eigenes Produkt zu finden, nur erwähnt — die GT-Feder `SCD-C5ZZ-5310-E` (260 lb) beschreibt SoT als „softer ride than our 620 coil springs".
+
+**Offene Entscheidung:** Der Halter erwägt einen Wechsel der Frontfedern zu Mike Maier Inc. oder Maier Racing (2026-10-23). Für die Hinterachse steht dieselbe Frage in [`DECISION_LEAF_SPRINGS.md`](DECISION_LEAF_SPRINGS.md). Bis zur Entscheidung gilt der verbaute Stand. Die Einheit folgt derselben Konvention wie bei `leaf_rate`: Händler schreiben „620 lb", gemeint ist die Rate in lb/in. Für die Rechnung wird umgerechnet (`lbinNachNmm()`, siehe Arbeitsregel 5b) — die Zahl muss zusätzlich im Messblatt eingetragen werden, dieses Dokument speist die Rechnung nicht.
 
 > Die Federrate geht über das Motion Ratio **quadratisch** in die Radrate ein (siehe [`CHAPTER_SPRINGS_ROLL_STIFFNESS.md`](CHAPTER_SPRINGS_ROLL_STIFFNESS.md) §3.1). Ohne sie ist keine Rollsteifigkeit berechenbar.
 
@@ -146,13 +153,15 @@ Bezogen auf den verbauten 1"-Stab:
 
 | Feld | Wert | Einheit |
 |---|---|---|
-| `shock_front_part_no` | | Teilenummer |
+| `shock_front_part_no` | **`RCD-55-R054`** | Teilenummer |
 | `shock_front_manufacturer` | Bilstein (über Street or Track) | |
-| `shock_front_valving` | | Street / Sport / Race |
+| `shock_front_valving` | **Street** | Street / Sport / Race |
 | `shock_front_adjustable` | | ja / nein |
 | `shock_front_install_date` | | |
 
-**Katalogabgleich:** SoT führt `RCD-55-R054` (Bilstein front, 64–66 Mustang, Street valving).
+**Stand nach Umbau (Halter, 2026-10-23):** `RCD-55-R054`, Street-Abstimmung. Verstellbarkeit nennt der Hersteller nicht.
+
+**Herstellerangabe** (https://streetortrack.com/suspension/front-suspension/shock-absorbers-466/bilstein-front-shock-for-64-66-mustang-street-valving.html, abgerufen 2026-10-23): Street „ideal for spring rates up to 600lbs"; SoT führt außerdem Sport `RCD-55-R083` („500-700lb") und Race `RCD-55-R085` („700-1000lb"). Verbaut sind 620 lb/in — knapp oberhalb des für Street genannten Bereichs. Das ist hier festgehalten, nicht bewertet: Dämpfer wirken auf das transiente Verhalten, und ob das stört, zeigt die Strecke.
 
 > Dämpfer wirken **nicht** auf die stationäre Balance, sondern auf das transiente Verhalten — Turn-in, Lastwechsel, Kerbs. Siehe [`CHAPTER_SPRINGS_ROLL_STIFFNESS.md`](CHAPTER_SPRINGS_ROLL_STIFFNESS.md) §6.
 
@@ -165,7 +174,7 @@ Bezogen auf den verbauten 1"-Stab:
 | Achse | Ford 9" | Projektangabe |
 | Differential | Eaton TrueTrac | Projektangabe |
 | Achsübersetzung | 3.50:1 | Projektangabe |
-| Federung | Blattfedern, **erneuert (Street or Track)** | Projektangabe |
+| Federung | Blattfedern Street or Track `SCD-C5ZZ-5560-4ME`, 4,5 Lagen Mid-Eye, 175 lb/in — siehe „Blattfedern — Teileidentifikation" | Verifiziert (Halter, nach Umbau, 2026-10-23) |
 | Federhistorie | 4-leaf Reverse-Eye → Mid-Eye | Legacy-Angabe |
 | Panhard Bar | vorhanden; Maier-Kontext | Projektangabe; Geometrie/Höhe offen |
 | Bushings | Projekt enthält Diskussion Delrin/Del-A-Lum-artiger Lösungen | Legacy-Angabe; aktuelle Bestückung offen |
@@ -183,7 +192,7 @@ Bezogen auf den verbauten 1"-Stab:
 | `leaf_eye_type` | **Mid-Eye** | | **Projektangabe** |
 | `leaf_count` | **4,5** | Lagen | **Projektangabe** |
 | `leaf_manufacturer` | Street or Track (Scott Drake) | | Projektangabe |
-| `leaf_part_no` | vermutlich `SCD-C5ZZ-5560-4ME` | Teilenummer | zu bestätigen |
+| `leaf_part_no` | `SCD-C5ZZ-5560-4ME` | Teilenummer | Verifiziert (Halter, nach Umbau, 2026-10-23) |
 | `leaf_install_date` | | | Offen |
 
 **Katalogabgleich (Stand 10/2026):** Street or Track führt für 1964–73 Mustang drei Blattfedern:
@@ -216,7 +225,7 @@ Im Projekt steht die Frage, ob nach Einbau von Delrin-Shackles auf Federn von **
 
 | Feld | Wert | Einheit |
 |---|---|---|
-| `shock_rear_part_no` | | Teilenummer |
+| `shock_rear_part_no` | **`RCD-55-R056`** (Halter, nach Umbau, 2026-10-23) | Teilenummer |
 | `shock_rear_manufacturer` | Bilstein (über Street or Track) | |
 | `shock_rear_valving` | | Street / Sport / Race |
 | `shock_rear_adjustable` | | ja / nein |
@@ -495,10 +504,8 @@ Vor einer endgültigen technischen Veröffentlichung noch verifizieren:
 - Einstellposition der UCA-Heim-Gelenke je Seite
 - Einstelllänge der Strut Rods je Seite (Ausführung geklärt: Global West `ASR-4`)
 - aktuelle LCA-Camber-Kit-Position
-- Frontfeder-Ausführung und Rate
+- Frontfeder-Teilenummer und freie Länge (Rate geklärt: 620 lb/in)
 - Front-ARB und Endlinks
-- Dämpfer
-- aktuelle Mid-Eye-Blattfeder: Hersteller/Rate/Blattzahl
 - aktuelle Bushings
 - Panhard-Abmessungen und Befestigungshöhen
 - aktuelle Kardanwelle
