@@ -195,10 +195,12 @@ Bezogen auf den verbauten 1"-Stab:
 | Federung | Blattfedern Street or Track `SCD-C5ZZ-5560-4ME`, 4,5 Lagen Mid-Eye, 175 lb/in — siehe „Blattfedern — Teileidentifikation" | Verifiziert (Halter, nach Umbau, 2026-10-23) |
 | Federhistorie | 4-leaf Reverse-Eye → Mid-Eye | Legacy-Angabe |
 | Panhard Bar | vorhanden; Maier-Kontext | Projektangabe; Geometrie/Höhe offen |
-| Bushings | Federaugen-/Hangerbuchsen: ob im Shackle-Set enthalten und aus welchem Material, noch erfassen | Offen |
-| Shackles | **Delrin-Shackle-Set, bezogen über Summit Racing**; Hersteller und Teilenummer noch erfassen; Geometrie/Winkel vermessen | Material und Bezugsquelle: Verifiziert (Halter, nach Umbau, 2026-10-23); Teilenummer Offen |
+| Bushings | vordere und hintere Federaugenbuchsen Del-A-Lum, abschmierbar — Teil des Shackle-Kits `106SH` | Verifiziert (Halter, nach Umbau, 2026-10-23); Lieferumfang laut Hersteller |
+| Shackles | **Global West `106SH`**, „Del-A-Lum Bushings and Shackle Kit" für 1964–73 Mustang, bezogen über Summit Racing; Geometrie/Winkel vermessen | Verifiziert (Halter, nach Umbau, 2026-10-23); Shackle-Winkel Offen |
 
-> **Bind-Risiko Panhard + steife Federlagerung.** Global West schreibt zu seinen Del-A-Lum-Kits für 1964–66: „if you use a panhard rod with Del-a-lum bushings, in this application, you will create bind in the rear suspension" (https://www.globalwest.net/product/mustang-del-a-lum-bushings-shackle-kit-1964-1965-1966-reverse-eye-leaf-global-west/, abgerufen 2026-10-23). Ob das für das hier verbaute Delrin-Set gilt, ist nicht belegt — das Fahrzeug hat aber genau diese Kombination. Entscheiden muss der Test auf laterale Überbestimmung ([`CHAPTER_BIND_DIAGNOSIS.md`](CHAPTER_BIND_DIAGNOSIS.md) §6.3), nicht die Herstellerwarnung allein.
+**Herstellerangaben `106SH`** (https://www.globalwest.net/product/mustang-del-a-lum-bushings-shackle-kit-1964-1965-1966-global-west-suspension/, abgerufen 2026-10-23): Lieferumfang „front and rear eyelet bushings, shackles, and related hardware"; „Grease fittings are installed"; die Buchsen „provide lateral control of the leaf springs" und „stop the leaf from walking inboard". Shackle-Länge gegenüber Serie, Einfluss auf die Fahrhöhe und Freigabe für Mid-Eye-Federn nennt der Hersteller nicht.
+
+> **Bind-Risiko Panhard + seitlich führende Federlagerung.** Für das Schwester-Kit mit derselben Del-A-Lum-Lagerung schreibt Global West: „if you use a panhard rod with Del-a-lum bushings, in this application, you will create bind in the rear suspension" (`114SH`, https://www.globalwest.net/product/mustang-del-a-lum-bushings-shackle-kit-1964-1965-1966-reverse-eye-leaf-global-west/, abgerufen 2026-10-23). Auf der Seite von `106SH` selbst steht diese Warnung nicht. Das Fahrzeug hat genau diese Kombination: Panhard Bar plus Del-A-Lum-Lagerung, die laut Hersteller seitlich führt. Entscheiden muss der Test auf laterale Überbestimmung ([`CHAPTER_BIND_DIAGNOSIS.md`](CHAPTER_BIND_DIAGNOSIS.md) §6.3) — er ist hier keine Formalität, sondern die Prüfung eines konkreten Verdachts.
 | U-Bolts / Spring Plates | Zustand/Hardware dokumentieren | Offen |
 | Rear ARB | nicht als vorhanden bestätigt | Offen |
 
@@ -526,7 +528,7 @@ Vor einer endgültigen technischen Veröffentlichung noch verifizieren:
 - aktuelle LCA-Camber-Kit-Position
 - Frontfeder-Teilenummer und freie Länge (Rate geklärt: 620 lb/in)
 - Front-ARB: Hebelarm `arb_front_arm_length` und Preload-Zustand (Durchmesser, Endlinks, Buchsen geklärt)
-- aktuelle Bushings
+- Shackle-Winkel und Freigabe von `106SH` für die Mid-Eye-Federn (Bushings geklärt: Del-A-Lum aus `106SH`)
 - Panhard-Abmessungen und Befestigungshöhen
 - aktuelle Kardanwelle
 - exaktes Longacre-Waagenmodell

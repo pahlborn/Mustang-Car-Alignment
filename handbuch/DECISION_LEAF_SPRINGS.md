@@ -126,7 +126,7 @@ Die beiden Positionen sind **nicht gleichwertig**:
 | **vorderes Federauge** | **ja, oder Polyurethan** | Längsführung, kaum Querbewegung nötig — MMI empfiehlt hier selbst Urethan |
 | **hinterer Shackle** | **kritisch** | genau hier findet die laterale Ausgleichsbewegung statt |
 
-> **Vorschlag zur Prüfung:** Falls die Delrin-Shackles bereits verbaut sind, ist die erste Frage nicht „welche Federn", sondern **„erzeugt die Kombination Panhard + Delrin-Shackle bereits Bind?"** Das ist messbar (§7).
+> **Vorschlag zur Prüfung:** Die Del-A-Lum-Lagerung ist verbaut, vorn und hinten ([`00_PROJECT.md`](00_PROJECT.md) §4). Damit ist die erste Frage nicht „welche Federn", sondern **„erzeugt die Kombination Panhard + Del-A-Lum-Lagerung bereits Bind?"** Das ist messbar (§7).
 
 ---
 
@@ -162,7 +162,7 @@ Der vordere ARB hat 1" Durchmesser ([`00_PROJECT.md`](00_PROJECT.md) §3). Ein W
 
 | Prüfung | Verfahren |
 |---|---|
-| **Sind die Delrin-Shackles bereits verbaut?** | Sichtprüfung |
+| Lagerung hinten | verbaut — Bestückung: [`00_PROJECT.md`](00_PROJECT.md) §4 |
 | **Bind-Test** | Vollständiges Verfahren in [`CHAPTER_BIND_DIAGNOSIS.md`](CHAPTER_BIND_DIAGNOSIS.md) §6 |
 | **Test auf laterale Überbestimmung** | [`CHAPTER_BIND_DIAGNOSIS.md`](CHAPTER_BIND_DIAGNOSIS.md) §6.3 — Panhard lösen, Radlasten vergleichen |
 | Panhard-Geometrie | Länge, Höhen, Winkel erfassen (`CHAPTER_REAR` §9) |
@@ -206,7 +206,7 @@ Zwei Wege, beide belegbar:
 
 ## 9. Offene Punkte
 
-- [ ] Delrin-Shackles verbaut oder geplant?
+- [x] Del-A-Lum-Shackles und -Federaugenbuchsen verbaut ([`00_PROJECT.md`](00_PROJECT.md) §4)
 - [ ] Bind-Test durchgeführt
 - [ ] `leaf_spacing_rear` gemessen
 - [ ] `motion_ratio_front` gemessen

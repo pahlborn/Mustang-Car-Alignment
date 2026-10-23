@@ -361,7 +361,7 @@ Bremse, Handbremse?  → gelöst?
 
 | Schritt | Status |
 |---|---|
-| Sind Delrin-Shackles verbaut oder geplant? | **offen** |
+| Del-A-Lum-Lagerung hinten (Shackles und Federaugen) | **verbaut** — Bestückung: [`00_PROJECT.md`](00_PROJECT.md) §4; zusammen mit der Panhard Bar ist §6.3 damit vorrangig |
 | Reproduzierbarkeitstest Radlasten | **nicht durchgeführt** |
 | Test auf laterale Überbestimmung (§6.3) | **nicht durchgeführt** |
 | Hysteresetest links/rechts | **nicht durchgeführt** |
