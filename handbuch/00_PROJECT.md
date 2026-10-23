@@ -57,12 +57,14 @@ Verbindlicher Setup-Ablauf: siehe [`02_WORKFLOW.md`](02_WORKFLOW.md).
 | Federn | genaue Rate/Ausführung noch erfassen | Offen |
 | Dämpfer | genaue Ausführung/Einstellung noch erfassen | Offen |
 | Front ARB / Endlinks | genaue Hardware und Preload-Zustand erfassen | Offen |
-| Steering Arms / Tie Rods / Center Link / Idler / Pitman | Ist-Zustand vollständig inventarisieren | Offen |
+| Bump-Steer-Kit | Baer Tracker `BAE-3261001` für 1965–66 (über Street or Track); ersetzt die äußeren Spurstangenköpfe, Höhe des äußeren Tie-Rod-Pivots über Distanzstücke einstellbar | Verifiziert (Halter, nach Umbau, 2026-10-23); Distanzstück-Stapel je Seite Offen |
+| Steering Arms / Tie Rods / Center Link / Idler / Pitman | äußere Spurstangenköpfe: siehe Bump-Steer-Kit; übriger Ist-Zustand vollständig inventarisieren | Offen |
 
 **Herstellerangaben (abgerufen 2026-10-23):**
 
 - `SOT-UCA65-66`, https://streetortrack.com/street-or-track-tubular-caster-upper-arms — „Shipped with the front bearing 3 turns further out than the rear. This adds approx. +3 degrees of positive caster"; die beiden UCA müssen gleich lang sein, sonst unterscheiden sich die Camberkurven links und rechts.
 - `SOT-LCACK65-66`, https://streetortrack.com/suspension/front-suspension/lower-control-arms/lower-control-arm-camber-kit-for-65-66-mustangs — „move the lower control arm 3/8" inboard or 3/8" outboard from stock".
+- Baer Tracker `BAE-3261001`, https://streetortrack.com/baer-tracker-bump-steer-kit-for-1965-66-ford-mustangs-3261001 — „replaces outer tie rods"; „height adjustable with use of machined spacers"; „Baer Trackers fit the spindle you have, not necessarily the model and year of your vehicle"; „Fits manual steering cars only". Das 1965–66-Kit setzt damit Achsschenkel der Bauart 1965–66 voraus — bei der Inventur der Lenkung bestätigen.
 - Global West `ASR-4`, https://www.globalwest.net/product/asr-4/ — Mustang 1964–66; „no welding or frame modifications required". Einen Verstellbereich nennt der Hersteller nicht. Für Karossen mit schmalerer Nachbau-Rahmenaufnahme (Dynacorn) gibt es `ASR-10`; nach Angabe des Halters ist `ASR-4` verbaut, die Aufnahme also serienmäßig breit.
 
 ### Alignment-relevante Regel

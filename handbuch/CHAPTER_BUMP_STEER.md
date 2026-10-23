@@ -458,6 +458,8 @@ Damit kann die **Höhe des äußeren Tie-Rod-Pivots** verändert werden.
 
 Opentracker und Street or Track bieten Baer-Tracker-Systeme für 1965-66 Manual Steering an; Global West bietet ebenfalls ein entsprechendes Kit.
 
+Welches System an diesem Fahrzeug verbaut ist, steht in [`00_PROJECT.md`](00_PROJECT.md) §3.
+
 Aber:
 
 > **Ein Bump-Steer-Kit ist kein Beweis, dass Bump Steer richtig eingestellt ist.**
@@ -601,7 +603,7 @@ Nur wenn die Baseline eine relevante Abweichung zeigt.
 - reale Bump-/Droop-Reserve
 - geometrische Höhe der verbauten Ball Joints gegenüber Serie (Bestückung: [`00_PROJECT.md`](00_PROJECT.md) §3)
 - Einfluss des vorhandenen Shelby Drop
-- ob ein Bump-Steer-Kit bereits vorhanden ist
+- Distanzstück-Stapel des Bump-Steer-Kits je Seite (Kit: [`00_PROJECT.md`](00_PROJECT.md) §3)
 - welches Messgerät verwendet werden soll
 
 ---
