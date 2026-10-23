@@ -195,8 +195,10 @@ Bezogen auf den verbauten 1"-Stab:
 | Federung | Blattfedern Street or Track `SCD-C5ZZ-5560-4ME`, 4,5 Lagen Mid-Eye, 175 lb/in — siehe „Blattfedern — Teileidentifikation" | Verifiziert (Halter, nach Umbau, 2026-10-23) |
 | Federhistorie | 4-leaf Reverse-Eye → Mid-Eye | Legacy-Angabe |
 | Panhard Bar | vorhanden; Maier-Kontext | Projektangabe; Geometrie/Höhe offen |
-| Bushings | Projekt enthält Diskussion Delrin/Del-A-Lum-artiger Lösungen | Legacy-Angabe; aktuelle Bestückung offen |
-| Shackles | aktuelle Geometrie/Winkel vermessen | Offen |
+| Bushings | Federaugen-/Hangerbuchsen: ob im Shackle-Set enthalten und aus welchem Material, noch erfassen | Offen |
+| Shackles | **Delrin-Shackle-Set, bezogen über Summit Racing**; Hersteller und Teilenummer noch erfassen; Geometrie/Winkel vermessen | Material und Bezugsquelle: Verifiziert (Halter, nach Umbau, 2026-10-23); Teilenummer Offen |
+
+> **Bind-Risiko Panhard + steife Federlagerung.** Global West schreibt zu seinen Del-A-Lum-Kits für 1964–66: „if you use a panhard rod with Del-a-lum bushings, in this application, you will create bind in the rear suspension" (https://www.globalwest.net/product/mustang-del-a-lum-bushings-shackle-kit-1964-1965-1966-reverse-eye-leaf-global-west/, abgerufen 2026-10-23). Ob das für das hier verbaute Delrin-Set gilt, ist nicht belegt — das Fahrzeug hat aber genau diese Kombination. Entscheiden muss der Test auf laterale Überbestimmung ([`CHAPTER_BIND_DIAGNOSIS.md`](CHAPTER_BIND_DIAGNOSIS.md) §6.3), nicht die Herstellerwarnung allein.
 | U-Bolts / Spring Plates | Zustand/Hardware dokumentieren | Offen |
 | Rear ARB | nicht als vorhanden bestätigt | Offen |
 
