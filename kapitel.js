@@ -191,6 +191,16 @@
   function geladen(datei) { return datei ? _inhalt[datei] || null : _inhalt; }
 
   /**
+   * Adresse der Kapitelseite fuer eine Handbuchdatei.
+   *
+   * Stand bis v16 dreimal da: in handbuch-ui.js und zweimal in
+   * nachschlagen.js. Wer die Adressform aendert, aendert sie hier.
+   */
+  function link(datei) {
+    return 'handbuch.html?d=' + encodeURIComponent(datei);
+  }
+
+  /**
    * Volltextsuche ueber alle geladenen Kapitel.
    *
    * Gibt je Treffer die Textstelle mit Umfeld zurueck - ein Dateiname allein
@@ -252,6 +262,7 @@
     laden: laden,
     alleLaden: alleLaden,
     geladen: geladen,
+    link: link,
     suchen: suchen,
     _umfeld: umfeld
   };

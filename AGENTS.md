@@ -299,6 +299,18 @@ zwei Gruenden gleichzeitig. Beide lagen offen zutage, und der Test war gruen.
 sichtbar waere. Bei Umschaltern heisst das: beide Richtungen, nicht nur die
 bequeme.
 
+**Dasselbe in v17, an echten Daten.** `Recheck.phasenAbschnitt()` sucht
+"Phase 1" - ein Praefix von "Phase 10". Der Test lief gegen das Handbuch, und
+dort steht Phase 1 vor Phase 10: auch eine fehlerhafte Praefixsuche findet
+zuerst den richtigen Abschnitt. Der Test war gruen und haette es mit dem
+Fehler auch bleiben. Echte Daten sind nicht automatisch der schwere Fall -
+hier war es ein konstruierter Text, in dem Phase 10 vorn steht.
+
+Nebenbei, fuer Gegenproben-Skripte: in `String.prototype.replace()` ist `$'`
+im Ersatztext ein Sonderzeichen. Ein Ersatz wie `'.*$'` zerstoert die Datei,
+der Test wird rot - aus dem falschen Grund. Fuer woertliches Ersetzen
+`split(von).join(nach)`.
+
 ## 7a. Zwei Mechanismen fuer dieselbe Sache sind einer zu viel
 
 Faengt ein zweiter Mechanismus den Schaden des ersten auf, faellt dessen

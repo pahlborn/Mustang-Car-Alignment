@@ -204,6 +204,31 @@
   // steht - die Phasen danach gelten erst mit bestandenem Test.
   var BIND_TEST_NACH = 'phase3';
 
+  // Die Datei, aus der Phasen und Matrix stammen.
+  var WORKFLOW = '02_WORKFLOW.md';
+
+  /**
+   * Der Abschnitt einer Phase aus 02_WORKFLOW.md, ohne seine Ueberschrift.
+   *
+   * Jede Phase hat dort einen Abschnitt "## <n>. Phase <nr> — <Titel>". Die
+   * Werkstatt zeigt ihn beim Aufklappen an, gelesen und nicht abgeschrieben:
+   * was in einer Phase zu tun ist, steht nur im Handbuch.
+   *
+   * @param {string} text  Volltext von 02_WORKFLOW.md
+   * @param {number} nr    Phasennummer
+   * @returns {string|null} null, wenn es den Abschnitt nicht gibt
+   */
+  function phasenAbschnitt(text, nr) {
+    var kopf = new RegExp('^## \\d+\\. Phase ' + nr + ' \u2014.*$', 'm');
+    var m = kopf.exec(String(text || ''));
+    if (!m) return null;
+    var rest = text.slice(m.index + m[0].length);
+    var ende = rest.search(/^## /m);
+    var block = ende > -1 ? rest.slice(0, ende) : rest;
+    // Die Trennlinie vor dem naechsten Abschnitt gehoert nicht zur Phase.
+    return block.replace(/\n-{3,}\s*$/, '').trim();
+  }
+
   // ===========================================================================
   // Kaskade
   // ===========================================================================
@@ -331,6 +356,8 @@
     MATRIX: MATRIX,
     PHASEN: PHASEN,
     BIND_TEST_NACH: BIND_TEST_NACH,
+    WORKFLOW: WORKFLOW,
+    phasenAbschnitt: phasenAbschnitt,
     SAMMEL: SAMMEL,
     betroffen: betroffen,
     phasenNach: phasenNach,

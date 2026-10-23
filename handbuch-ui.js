@@ -24,9 +24,7 @@
     return m ? decodeURIComponent(m[1]) : '';
   }
 
-  function kapitelLink(datei) {
-    return 'handbuch.html?d=' + encodeURIComponent(datei);
-  }
+  function kapitelLink(datei) { return Kapitel.link(datei); }
 
   // ==== Inhaltsverzeichnis ====
 

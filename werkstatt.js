@@ -155,6 +155,20 @@
             + ' <a href="bind.html">Zur Bind-Diagnose</a></div>';
     }
 
+    /** Der Abschnitt einer Phase aus 02_WORKFLOW.md, gerendert - oder ''. */
+    function handbuchAbschnitt(nr) {
+        if (typeof Kapitel === 'undefined' || typeof Markdown === 'undefined') return '';
+        var wf = Kapitel.geladen(Recheck.WORKFLOW);
+        if (!wf) return '';
+        var text = Recheck.phasenAbschnitt(wf.text, nr);
+        if (!text) return '';
+        return '<div class="phase-handbuch">'
+            + Markdown.rendern(text, { kapitelLink: Kapitel.link, ankerPraefix: 'phase' + nr + '-' })
+            + '<p class="phase-quelle" style="font-size:0.72rem;color:var(--text-light);">'
+            + 'Aus <a href="' + esc(Kapitel.link(Recheck.WORKFLOW)) + '">02_WORKFLOW.md</a></p>'
+            + '</div>';
+    }
+
     function zeichnePhasen() {
         var ziel = document.getElementById('phasenListe');
         if (!ziel) return;
@@ -217,6 +231,13 @@
                     + '&ndash; sie kann abgeschlossen sein, aber nicht veralten.</div>');
             }
 
+            // Was in dieser Phase zu tun ist, steht im Handbuch - gelesen,
+            // nicht abgeschrieben. Solange 02_WORKFLOW.md nicht geladen ist
+            // (oder offline fehlt), entfaellt der Teil; die Karte bleibt
+            // bedienbar.
+            var abschnitt = handbuchAbschnitt(p.nr);
+            if (abschnitt) inhalt.push(abschnitt);
+
             if (p.wegen.length) {
                 var zeilen = p.wegen.map(function (w) {
                     return esc(nameVon(w.groesse)) + ' ge&auml;ndert am ' + zeit(w.zeit)
@@ -264,6 +285,18 @@
         if (typeof Recheck === 'undefined' || typeof Status === 'undefined') return;
         baueAuswahl();
         zeichneAlles();
+
+        // Der Handbuchtext kommt nach: die Phasen stehen sofort, der Text
+        // folgt, sobald die Datei da ist. Fehlt sie, bleibt es beim Geruest -
+        // der Fehler landet im Protokoll, nicht in einer haengenden Seite.
+        if (typeof Kapitel !== 'undefined') {
+            Kapitel.laden(Recheck.WORKFLOW).then(zeichneAlles).catch(function (err) {
+                if (typeof ErrorLog !== 'undefined') {
+                    ErrorLog.add('Handbuch nicht ladbar: ' + Recheck.WORKFLOW,
+                                 { quelle: 'werkstatt.js', stack: err.message });
+                }
+            });
+        }
     }
 
     window.eingriffEintragen = eingriffEintragen;

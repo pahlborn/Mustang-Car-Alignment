@@ -32,11 +32,7 @@
   // ===========================================================================
   function markdown(text) {
     if (typeof Markdown === 'undefined') return esc(text);
-    return Markdown.rendern(text, {
-      kapitelLink: function (datei) {
-        return 'handbuch.html?d=' + encodeURIComponent(datei);
-      }
-    });
+    return Markdown.rendern(text, { kapitelLink: Kapitel.link });
   }
 
 
@@ -359,8 +355,7 @@
       if (kapitel.length) {
         teile.push('<div class="sq-gruppe"><div class="sq-kopf">Handbuch</div>'
           + kapitel.map(function (k) {
-              return '<a class="sq-treffer" href="handbuch.html?d='
-                + encodeURIComponent(k.datei) + '">'
+              return '<a class="sq-treffer" href="' + esc(Kapitel.link(k.datei)) + '">'
                 + '<span class="sq-titel">' + esc(k.titel) + '</span>'
                 + '<span class="sq-rand">' + k.anzahl + '\u00d7</span>'
                 + (k.stellen[0]

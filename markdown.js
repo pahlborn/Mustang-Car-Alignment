@@ -95,6 +95,7 @@
    * @param {object} [opt]
    *   opt.kapitelLink  Funktion Dateiname -> URL, fuer Querverweise
    *   opt.ueberschriften  Array, wird mit {stufe, text, anker} gefuellt
+   *   opt.ankerPraefix  wird jeder Ueberschriften-id vorangestellt
    * @returns {string}
    */
   function rendern(text, opt) {
@@ -132,7 +133,10 @@
         absatz(puffer);
         var stufe = h[1].length;
         var titel = h[2];
-        var a = anker(titel);
+        // ankerPraefix: wer mehrere Ausschnitte auf eine Seite setzt, bekaeme
+        // sonst dieselbe id mehrfach - "Ziel" und "Vorgehen" stehen in fast
+        // jeder Phase.
+        var a = (opt.ankerPraefix || '') + anker(titel);
         if (opt.ueberschriften) opt.ueberschriften.push({ stufe: stufe, text: titel, anker: a });
         // H1 bleibt dem Seitentitel vorbehalten; im Fliesstext beginnt die
         // Gliederung bei H2, sonst konkurrieren zwei H1 miteinander.

@@ -341,6 +341,43 @@ await test('jede Groesse der Matrix hat eine Wirkung auf mindestens eine Phase',
 });
 
 // ---------------------------------------------------------------------------
+suite('Jede Phase hat ihren Abschnitt im Handbuch');
+
+await test('fuer jede Werkstattphase liefert phasenAbschnitt() Text', async () => {
+  // Die Werkstatt zeigt diesen Text beim Aufklappen. Eine Phase ohne
+  // Abschnitt waere eine leere Karte - und hiesse, dass Code und Handbuch
+  // die Phasen verschieden zaehlen.
+  const ohne = R.PHASEN.filter((p) => !R.phasenAbschnitt(WORKFLOW, p.nr)).map((p) => p.nr);
+  assertEqual(ohne, [], 'Phasen ohne Abschnitt in 02_WORKFLOW.md');
+});
+
+await test('der Abschnitt endet vor der naechsten Phase', async () => {
+  // Phase 1 traegt die Stop-Regel; die Ueberschrift von Phase 2 darf nicht
+  // mehr dazugehoeren, und auch nicht die Trennlinie davor.
+  const a = R.phasenAbschnitt(WORKFLOW, 1);
+  assert(/Stop-Regel/.test(a), 'Die Stop-Regel fehlt in Phase 1');
+  assert(!/Phase 2/.test(a), 'Phase 2 ragt in den Abschnitt von Phase 1');
+  assert(!/-{3,}\s*$/.test(a), 'Die Trennlinie haengt am Abschnitt');
+  assert(!/^## /m.test(a), 'Eine Abschnittsueberschrift steht im Text');
+});
+
+await test('Phase 1 und Phase 10 werden nicht verwechselt', async () => {
+  // "Phase 1" ist ein Praefix von "Phase 10". Im Handbuch steht Phase 1
+  // zuerst - dort findet auch eine fehlerhafte Praefixsuche den richtigen
+  // Abschnitt, und der Test waere gruen, obwohl der Fehler da ist (Regel 7,
+  // dritter Vorfall: der harmlose Fall). Darum ein Text, in dem Phase 10
+  // vorn steht.
+  const t = '## 1. Phase 10 \u2014 Zehn\nzehn\n\n## 2. Phase 1 \u2014 Eins\neins\n';
+  assertEqual(R.phasenAbschnitt(t, 1), 'eins', 'Phase 1');
+  assertEqual(R.phasenAbschnitt(t, 10), 'zehn', 'Phase 10');
+});
+
+await test('eine unbekannte Phase ergibt null, keinen falschen Abschnitt', async () => {
+  assertEqual(R.phasenAbschnitt(WORKFLOW, 99), null, 'Phase 99');
+  assertEqual(R.phasenAbschnitt('', 1), null, 'leerer Text');
+});
+
+// ---------------------------------------------------------------------------
 suite('Die Bind-Schranke steht, wo das Handbuch sie hinstellt');
 
 await test('BIND_TEST_NACH nennt eine Werkstattphase', async () => {
@@ -355,12 +392,8 @@ await test('02_WORKFLOW.md fuehrt die Schranke im Abschnitt genau dieser Phase',
   // sonst bliebe der Test gruen, wenn die Schranke im Handbuch an eine
   // andere Stelle rutscht.
   const p = R.PHASEN.find((x) => x.id === R.BIND_TEST_NACH);
-  const kopf = new RegExp('^## \\d+\\. Phase ' + p.nr + ' \u2014', 'm');
-  const m = kopf.exec(WORKFLOW);
-  assert(m, 'Abschnitt fuer Phase ' + p.nr + ' nicht gefunden');
-  const rest = WORKFLOW.slice(m.index + m[0].length);
-  const ende = rest.search(/^## /m);
-  const block = ende > -1 ? rest.slice(0, ende) : rest;
+  const block = R.phasenAbschnitt(WORKFLOW, p.nr);
+  assert(block, 'Abschnitt fuer Phase ' + p.nr + ' nicht gefunden');
   assert(block.includes('### Schranke: Bind-Test vor Phase ' + (p.nr + 1)),
     'Die Schranke steht nicht im Abschnitt von Phase ' + p.nr);
   // Der Linktext steht im Handbuch als Code: [`CHAPTER_...md`](...)

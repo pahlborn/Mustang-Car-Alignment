@@ -181,6 +181,66 @@ await test('eine geschlossene Phase bleibt beim Abhaken geschlossen', async () =
 });
 
 // ---------------------------------------------------------------------------
+suite('Jede Phase zeigt, was zu tun ist');
+
+await test('jede Phase traegt ihren Abschnitt aus 02_WORKFLOW.md', async () => {
+  const p = await oeffne('werkstatt.html');
+  await p.page.waitForSelector('#phasenListe .phase-handbuch', { state: 'attached', timeout: 5000 });
+  const r = await p.page.evaluate(() => ({
+    mit: document.querySelectorAll('#phasenListe .section .phase-handbuch').length,
+    phase1: document.querySelector('#sec-phase1 .phase-handbuch').textContent,
+    phase3: document.querySelector('#sec-phase3 .phase-handbuch').textContent,
+    quelle: document.querySelector('#sec-phase1 .phase-quelle a').getAttribute('href')
+  }));
+  const fehler = p.fehler.slice();
+  await p.close();
+  assertEqual(fehler, [], 'Fehler beim Laden');
+  assertEqual(r.mit, 19, 'Phasen mit Handbuchtext');
+  assert(/Radlager/.test(r.phase1) && /Stop-Regel/.test(r.phase1),
+    'Phase 1 zeigt ihre Pruefliste nicht: ' + r.phase1.slice(0, 120));
+  assert(/Schranke: Bind-Test vor Phase 4/.test(r.phase3), 'Phase 3 nennt die Schranke nicht');
+  assertEqual(r.quelle, 'handbuch.html?d=02_WORKFLOW.md', 'Verweis auf die Quelle');
+});
+
+await test('keine id kommt auf der Seite doppelt vor', async () => {
+  // "Ziel", "Vorgehen", "Projektregel" stehen in vielen Phasen. Ohne
+  // Praefix bekaemen sie dieselbe id, und ein Sprung dorthin landete in
+  // der falschen Phase.
+  const p = await oeffne('werkstatt.html');
+  await p.page.waitForSelector('#phasenListe .phase-handbuch', { state: 'attached', timeout: 5000 });
+  const doppelt = await p.page.evaluate(() => {
+    const ids = [...document.querySelectorAll('[id]')].map((e) => e.id);
+    return [...new Set(ids.filter((x, i) => ids.indexOf(x) !== i))];
+  });
+  await p.close();
+  assertEqual(doppelt, [], 'Doppelte ids');
+});
+
+await test('fehlt das Handbuch, bleibt die Werkstatt bedienbar', async () => {
+  // Offline ohne Cache, oder eine umbenannte Datei: die Phasen muessen
+  // trotzdem stehen, der Statusknopf trotzdem wirken.
+  const ctx = await neuerKontext(browser);
+  const page = await ctx.newPage();
+  const fehler = [];
+  page.on('pageerror', (e) => fehler.push(e.message));
+  await page.route('**/handbuch/02_WORKFLOW.md', (route) => route.abort());
+  await page.goto(base + '/werkstatt.html');
+  await page.waitForTimeout(600);
+  const knopf = '#phasenListe .step-status[data-phase="phase4"]';
+  await page.click(knopf);
+  const r = await page.evaluate((sel) => ({
+    phasen: document.querySelectorAll('#phasenListe .section').length,
+    text: document.querySelectorAll('#phasenListe .phase-handbuch').length,
+    stufe: document.querySelector(sel).value
+  }), knopf);
+  await ctx.close();
+  assertEqual(fehler, [], 'Unbehandelter Fehler ohne Handbuch');
+  assertEqual(r.phasen, 19, 'Phasen ohne Handbuch');
+  assertEqual(r.text, 0, 'Handbuchtext, obwohl die Datei fehlt');
+  assertEqual(r.stufe, 'wip', 'Der Statusknopf wirkt nicht');
+});
+
+// ---------------------------------------------------------------------------
 suite('Die Bind-Schranke nach Phase 3');
 
 /** Schranke und Marken nach dem Zeichnen auslesen. */
@@ -253,8 +313,10 @@ await test('Camber eintragen: drei Phasen werden als veraltet markiert', async (
     ${ALLES_ERLEDIGT}
     Status.eintragen('camber', 'Platte 2');
     werkstattZeichnen();
+    // Die Marke, nicht das Wort: seit v17 steht in jeder Karte Handbuchtext,
+    // und ein "veraltet" darin wuerde hier mitzaehlen.
     return [...document.querySelectorAll('#phasenListe .section')]
-      .filter((s) => s.textContent.includes('veraltet'))
+      .filter((s) => s.querySelector('.marke-veraltet'))
       .map((s) => s.id);
   })()`);
   await p.close();

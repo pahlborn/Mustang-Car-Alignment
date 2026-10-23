@@ -12,6 +12,17 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v17',
+      date: '2026-10-23',
+      time: '14:41',
+      title: 'Jede Phase sagt, was zu tun ist',
+      changes: [
+        { type: 'neu', text: 'Eine aufgeklappte Phase in der Werkstatt zeigt ihren Abschnitt aus 02_WORKFLOW.md: Pruefliste, Vorgehen, Stop-Regeln. Bisher stand dort nur, welche Groessen die Phase festlegt - was zu tun ist, musste man im Handbuch nachschlagen. Der Text wird gelesen, nicht abgeschrieben; aendert sich das Handbuch, aendert sich die Karte.' },
+        { type: 'neu', text: 'Fehlt das Handbuch - offline ohne Cache oder nach einer Umbenennung -, bleiben die Phasen bedienbar, nur ohne Text. Der Fehler steht im Protokoll.' },
+        { type: 'intern', text: 'Die Adresse einer Kapitelseite wurde an drei Stellen zusammengesetzt, in handbuch-ui.js und zweimal in nachschlagen.js. Sie steht jetzt in Kapitel.link(). Ueberschriften aus mehreren Ausschnitten auf einer Seite bekommen ein Praefix - sonst stuende "Ziel" neunzehnmal mit derselben id da.' }
+      ]
+    },
+    {
       version: 'v16',
       date: '2026-10-23',
       time: '14:14',
