@@ -1,8 +1,8 @@
 # Mustang Track Chassis Setup — Project
 
 **Dokumentrolle:** Single Source of Truth für das konkrete Fahrzeug  
-**Version:** 0.2  
-**Datum:** 2026-10-05  
+**Version:** 0.3  
+**Datum:** 2026-10-23  
 **Status:** Autoritativ für Fahrzeugdaten, Hardware, Messmittel und aktuelle Baseline
 
 ---
@@ -15,6 +15,14 @@ Fachkapitel dürfen diese Daten erläutern oder auf sie verweisen, aber Fahrzeug
 
 Konventionen und Formeln: siehe [`CONVENTIONS.md`](CONVENTIONS.md).  
 Verbindlicher Setup-Ablauf: siehe [`02_WORKFLOW.md`](02_WORKFLOW.md).
+
+> **Fahrwerksumbau — Hardware-Angaben in §3 bis §5 gelten als `Legacy-Angabe`.**
+>
+> Vor dem 2026-10-23 wurde das Fahrwerk umfassend umgebaut (genaues Datum noch eintragen). Betroffen sind nach Angabe des Fahrzeughalters: UCA/LCA/Camber Kit, Ball Joints, Strut Rods, Federn vorn, Stabilisator vorn/Endlinks, Lenkung, Dämpfer, Blattfedern, Shackles/Buchsen hinten, Panhard Bar und Driveline.
+>
+> Die Tabellen in §3–§5 beschreiben den Stand **vor** dem Umbau. Bis eine Zeile in Phase 0 ([`02_WORKFLOW.md`](02_WORKFLOW.md) §3) einzeln bestätigt oder ersetzt ist, gilt sie als `Legacy-Angabe` nach [`CONVENTIONS.md`](CONVENTIONS.md) §17 — gleich, was in ihrer Statusspalte steht. Werte, Raten und Verstellbereiche aus diesen Tabellen dürfen bis dahin nicht als Rechengrundlage dienen.
+>
+> Nach Umbau der Buchsen an der Hinterachse ist zudem der Bind-Test zu wiederholen ([`CHAPTER_BIND_DIAGNOSIS.md`](CHAPTER_BIND_DIAGNOSIS.md) §8, Regel 4).
 
 ---
 
