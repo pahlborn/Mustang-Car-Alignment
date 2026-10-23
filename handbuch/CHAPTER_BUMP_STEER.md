@@ -93,7 +93,7 @@ Bei unserem Fahrzeug:
 - veränderte Camber-/Castor-Einstellung
 - einstellbare Strut Rods
 - LCA Camber Kit
-- Howe Ball Joints
+- nicht serienmäßige Ball Joints (Bestückung: [`00_PROJECT.md`](00_PROJECT.md) §3)
 - manuelle Lenkung
 - geänderte Ride Height möglich
 
@@ -599,7 +599,7 @@ Nur wenn die Baseline eine relevante Abweichung zeigt.
 - Center Link
 - aktuelle Tie-Rod-Winkel bei Ride Height
 - reale Bump-/Droop-Reserve
-- Howe Ball Joint geometrische Höhe gegenüber Serie
+- geometrische Höhe der verbauten Ball Joints gegenüber Serie (Bestückung: [`00_PROJECT.md`](00_PROJECT.md) §3)
 - Einfluss des vorhandenen Shelby Drop
 - ob ein Bump-Steer-Kit bereits vorhanden ist
 - welches Messgerät verwendet werden soll

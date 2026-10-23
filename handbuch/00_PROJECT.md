@@ -52,7 +52,7 @@ Verbindlicher Setup-Ablauf: siehe [`02_WORKFLOW.md`](02_WORKFLOW.md).
 | LCA Camber Kit | Street or Track `SOT-LCACK65-66`, eingeschweißt; ±3/8" Verschiebung des LCA gegenüber Serie (Herstellerangabe, siehe unter der Tabelle) | Verifiziert (Halter, nach Umbau, 2026-10-23); Plattenposition Offen |
 | LCA | Street or Track Tubular Lower Roller Control Arm, `SOT-LCA6566` | Verifiziert (Halter, nach Umbau, 2026-10-23) |
 | Strut Rods | Global West `ASR-4` (Standardausführung 1964–66, Clevis in der serienmäßigen Rahmenaufnahme), einstellbar | Verifiziert (Halter, nach Umbau, 2026-10-23); Einstelllänge je Seite Offen |
-| Ball Joints | Howe | Projektangabe |
+| Ball Joints | oben: Moog nach Lieferzustand der SoT-UCA; unten: Howe — Teileidentifikation siehe unten | Verifiziert (Halter, nach Umbau, 2026-10-23); Teilenummern Offen |
 | Steering Box | Flaming River FR1497-1Q, 1" sector, 16:1 | Projektangabe |
 | Federn | genaue Rate/Ausführung noch erfassen | Offen |
 | Dämpfer | genaue Ausführung/Einstellung noch erfassen | Offen |
@@ -81,6 +81,17 @@ Mit dem `SOT-UCA65-66` hat das Fahrzeug **vier** Verstellebenen an der Vorderach
 Damit entspricht die Hardware **derselben Konfiguration, mit der Street or Track sein dokumentiertes Track-Setup erreicht hat**: Tubular UCA, Tubular LCA (`SOT-LCA6566`, seit dem Umbau bestätigt) und LCA Camber Kit. Das Beispiel −2,75° Camber / +5° Castor ist deshalb als Referenz übertragbar — unter dem Vorbehalt, dass Cross-Shaft-Variante des SoT-Testwagens unbekannt ist und die Reifen abweichen.
 
 Einstellmechanik und Reihenfolge: [`CHAPTER_FRONT_ADJUSTMENT_UCA_LCA.md`](CHAPTER_FRONT_ADJUSTMENT_UCA_LCA.md).
+
+### Ball Joints — Teileidentifikation
+
+> **Eintragen und stehenlassen.** Teilenummern in die Spalte „Wert" nachtragen, sobald sie vorliegen.
+
+| Feld | Wert | Einheit | Status |
+|---|---|---|---|
+| `ball_joint_upper_manufacturer` | **Moog** | | Verifiziert (Halter: „nach Spec von SoT", 2026-10-23); Hersteller laut SoT-Produktseite `SOT-UCA65-66`: „Moog ball joints" |
+| `ball_joint_upper_part_no` | | Teilenummer | Offen |
+| `ball_joint_lower_manufacturer` | **Howe** | | Verifiziert (Halter, nach Umbau, 2026-10-23) |
+| `ball_joint_lower_part_no` | | Teilenummer | Offen |
 
 ### Frontfedern — Teileidentifikation
 
