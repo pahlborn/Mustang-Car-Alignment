@@ -283,8 +283,8 @@ Keine Korrekturmaßnahme allein aus dieser Beobachtung ableiten.
 |---|---|---|
 | Getriebe | **Ford Toploader (Original)**. Ein späterer Wechsel auf das Jerico DR4 ist geplant, Zeitpunkt offen. | Verifiziert (Halter, 2026-10-23) |
 | Hinterachse | Ford 9", 3.50:1, Eaton TrueTrac | Verifiziert (Halter, 2026-10-23) |
-| Kardanwelle | Projekt enthält 3"/3.5"-Diskussion; aktuelle verbaute Ausführung verifizieren | Offen |
-| U-Joints | genaue Ausführung dokumentieren | Offen |
+| Kardanwelle | Hersteller unbekannt; Rohrdurchmesser (3" / 3,5") am Fahrzeug messen | Hersteller: unbekannt (Halter, 2026-10-23); Durchmesser Offen |
+| U-Joints | **Spicer (Dana)**; Baureihe (z. B. 1310 / 1330 / 1350) am Gelenk ablesen | Hersteller: Verifiziert (Halter, 2026-10-23); Baureihe Offen |
 | Pinion / Yoke | Winkel vollständig neu vermessen | Offen |
 
 > **Getriebewechsel ist ein Eingriff in die Driveline.** Weichen Länge oder Lage des Getriebeausgangs beim Jerico vom Toploader ab, ändern sich Kardanwelle und Winkel mit. Nach dem Wechsel ist Phase 16 (Driveline / Pinion) daher neu zu messen; Driveline-Werte, die mit dem Toploader gemessen wurden, gelten dann nicht mehr.
