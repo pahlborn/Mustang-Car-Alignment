@@ -5,32 +5,43 @@
       <stop offset="100%" style="stop-color:#2b6cb0"/>
     </linearGradient>
   </defs>
-  <!-- Hintergrund -->
+  <!-- Hintergrund - wie gt40-engine und jerico -->
   <rect width="512" height="512" rx="96" fill="url(#bg)"/>
-  <!-- Text: JERICO -->
-  <text x="256" y="92" text-anchor="middle" font-family="system-ui,sans-serif" font-weight="700" font-size="36" fill="rgba(255,255,255,0.9)">JERICO</text>
-  <!-- Text: RH02374 -->
-  <text x="256" y="140" text-anchor="middle" font-family="system-ui,sans-serif" font-weight="800" font-size="46" fill="#ed8936">RH02374</text>
-  <!-- Dog Ring: Aussenkranz mit Klauen -->
-  <g transform="translate(256,300)">
-    <circle r="108" fill="none" stroke="#e2e8f0" stroke-width="26"/>
-    <circle r="56" fill="none" stroke="#a0aec0" stroke-width="14"/>
-    <!-- Sechs Mitnehmerklauen (Dog Ring statt Synchronring) -->
-    <g fill="#cbd5e0">
-      <rect x="-17" y="-142" width="34" height="42" rx="6"/>
-      <rect x="-17" y="-142" width="34" height="42" rx="6" transform="rotate(60)"/>
-      <rect x="-17" y="-142" width="34" height="42" rx="6" transform="rotate(120)"/>
-      <rect x="-17" y="-142" width="34" height="42" rx="6" transform="rotate(180)"/>
-      <rect x="-17" y="-142" width="34" height="42" rx="6" transform="rotate(240)"/>
-      <rect x="-17" y="-142" width="34" height="42" rx="6" transform="rotate(300)"/>
-    </g>
-    <!-- Keilwelle -->
-    <g stroke="#718096" stroke-width="9" stroke-linecap="round">
-      <line x1="0" y1="-40" x2="0" y2="40"/>
-      <line x1="-40" y1="0" x2="40" y2="0"/>
-      <line x1="-28" y1="-28" x2="28" y2="28"/>
-      <line x1="-28" y1="28" x2="28" y2="-28"/>
-    </g>
+  <!-- Text: MUSTANG -->
+  <text x="256" y="92" text-anchor="middle" font-family="system-ui,sans-serif" font-weight="700" font-size="36" fill="rgba(255,255,255,0.9)">MUSTANG</text>
+  <!-- Text: 1966 -->
+  <text x="256" y="146" text-anchor="middle" font-family="system-ui,sans-serif" font-weight="800" font-size="58" fill="#ed8936">1966</text>
+
+  <!-- Vorderachse von vorn: Rahmen, Querlenker, Rad mit negativem Sturz.
+       Radmitte (330,312), Sturz -10 Grad. -->
+  <!-- Fahrbahn -->
+  <rect x="110" y="428" width="300" height="6" rx="3" fill="#a0aec0"/>
+  <!-- Rahmen / Federbeindom -->
+  <rect x="104" y="218" width="40" height="164" rx="8" fill="#a0aec0" stroke="#718096" stroke-width="3"/>
+  <!-- Rad, oben nach innen geneigt -->
+  <g transform="rotate(-10 330 312)">
+    <rect x="290" y="212" width="80" height="200" rx="22" fill="#e2e8f0" stroke="#a0aec0" stroke-width="6"/>
+    <rect x="316" y="254" width="28" height="116" rx="8" fill="#a0aec0"/>
   </g>
-  <text x="256" y="486" text-anchor="middle" font-family="system-ui,sans-serif" font-weight="600" font-size="26" fill="rgba(255,255,255,0.6)">ASSEMBLY MANUAL</text>
+  <!-- Senkrechte Bezugslinie durch die Radmitte - ueber dem Rad, sonst
+       verschwindet sie dahinter -->
+  <line x1="330" y1="172" x2="330" y2="436" stroke="rgba(255,255,255,0.7)" stroke-width="4" stroke-dasharray="10 8"/>
+  <!-- Querlenker oben (kurz) und unten (lang), bis zum Achsschenkel -->
+  <g stroke="#cbd5e0" stroke-width="14" stroke-linecap="round">
+    <line x1="142" y1="248" x2="321.3" y2="262.8"/>
+    <line x1="142" y1="350" x2="338.7" y2="361.2"/>
+  </g>
+  <!-- Gelenke -->
+  <g fill="#718096">
+    <circle cx="321.3" cy="262.8" r="11"/>
+    <circle cx="338.7" cy="361.2" r="11"/>
+    <circle cx="142" cy="248" r="8"/>
+    <circle cx="142" cy="350" r="8"/>
+  </g>
+  <!-- Radachse oberhalb des Reifens und Sturzwinkel -->
+  <line x1="311.6" y1="207.6" x2="306.4" y2="178.1" stroke="#ed8936" stroke-width="6" stroke-linecap="round"/>
+  <path d="M 330 184 A 128 128 0 0 0 307.8 185.9" fill="none" stroke="#ed8936" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Untertitel -->
+  <text x="256" y="486" text-anchor="middle" font-family="system-ui,sans-serif" font-weight="600" font-size="26" fill="rgba(255,255,255,0.6)">CHASSIS SETUP</text>
 </svg>

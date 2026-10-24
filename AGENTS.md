@@ -516,6 +516,14 @@ den Inhalt pruefen, sondern auch, was unsichtbar mitkommt. Dasselbe galt fuer
 den Paketspiegel in v2 - die interne Registry-Adresse stand im Lockfile und
 war von CI aus nicht erreichbar.
 
+**Fuenfzehnter Vorfall, v18 - das Gesicht der App.** `icon-192.png`,
+`icon-512.png` und `icon.svg` waren seit v1 byte-gleich mit jerico. Auf dem
+Homescreen stand achtzehn Versionen lang "JERICO RH02374" mit einem Dog Ring.
+Kein Test schaute hin, weil Bilder nicht als ausgeliefert gelten (Regel 1
+zaehlt nur `.html`, `.js`, `.css`). Aufgefallen ist es erst auf die Frage,
+ob es schon ein eigenes Icon gibt. `tests/ui.test.mjs` vergleicht jetzt mit
+den Hashes der Schwesterprojekte und den Text in `icon.svg`.
+
 ### 12a. Was nicht festgenagelt ist, wird irgendwann weitergedreht
 
 **Elfter Vorfall, v14.** Der Push von v14 war rot. Nicht wegen des Codes:

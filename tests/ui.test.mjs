@@ -9,6 +9,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import {
   startServer, REPO_ROOT, browserStarten, neuerKontext,
   suite, test, assert, assertEqual, summary
@@ -201,6 +202,32 @@ await test('sw.js cacht jede ausgelieferte Seite', async () => {
   assert(seiten.length > 0, 'Keine HTML-Seite im Wurzelverzeichnis');
   const fehlend = seiten.filter((s) => !sw.includes("'./" + s + "'"));
   assertEqual(fehlend, [], 'Seite fehlt in urlsToCache');
+});
+
+await test('das Homescreen-Icon gehoert zu diesem Projekt', async () => {
+  // Bis v18 waren icon-192.png, icon-512.png und icon.svg Kopien aus jerico:
+  // auf dem Homescreen stand "JERICO RH02374" mit einem Dog Ring. Mitgekommen
+  // beim Kopieren in v1 - derselbe Fall wie die Zeilenenden (Regel 12).
+  const svg = lies('icon.svg');
+  assert(/MUSTANG/.test(svg), 'icon.svg nennt das Fahrzeug nicht');
+  const fremdText = svg.match(/JERICO|RH02374|BOSS|BUILD LOG|ASSEMBLY MANUAL/g);
+  assertEqual(fremdText, null, 'Text eines Schwesterprojekts in icon.svg');
+
+  // SHA-256 der Icons aus jerico und gt40-engine (Stand 2026-10-24). Eine
+  // Erlaubnisliste ginge hier nicht - das eigene Icon darf sich aendern.
+  const fremd = {
+    d2def98c735ce1ad7099e95c3d2c70034141b47ebef98d0d37a17adc03897b8d: 'jerico icon-192',
+    fe81cd12b4f8c9799aed78630240961cfb5c99a77333d2f0dea82946b0feefe8: 'jerico icon-512',
+    a19853858a9530ad6c7c4a6ef7007563e2357d0b27b22132fd8a8af945e009b1: 'gt40 icon-192',
+    '91a8ec51e5e64cacb3d6253506291a681d9591fa3c17a41435aed03837c80473': 'gt40 icon-512'
+  };
+  for (const [datei, groesse] of [['icon-192.png', 192], ['icon-512.png', 512]]) {
+    const b = fs.readFileSync(path.join(REPO_ROOT, datei));
+    const h = crypto.createHash('sha256').update(b).digest('hex');
+    assert(!fremd[h], datei + ' ist das Icon aus ' + fremd[h]);
+    // Die Groesse steht im PNG-Kopf; sie muss zur Angabe im Manifest passen.
+    assertEqual([b.readUInt32BE(16), b.readUInt32BE(20)], [groesse, groesse], 'Abmessung von ' + datei);
+  }
 });
 
 for (const file of PAGES) {
