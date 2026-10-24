@@ -194,7 +194,7 @@ Bezogen auf den verbauten 1"-Stab:
 | Achsübersetzung | 3.50:1 | Projektangabe |
 | Federung | Blattfedern Street or Track `SCD-C5ZZ-5560-4ME`, 4,5 Lagen Mid-Eye, 175 lb/in — siehe „Blattfedern — Teileidentifikation" | Verifiziert (Halter, nach Umbau, 2026-10-23) |
 | Federhistorie | 4-leaf Reverse-Eye → Mid-Eye | Legacy-Angabe |
-| Panhard Bar | vorhanden; Maier-Kontext | Projektangabe; Geometrie/Höhe offen |
+| Panhard Bar | **Maier Racing**, Kit-Version offen; in der Höhe verstellbar — siehe „Panhard — Teileidentifikation"; Länge und Höhen: §9 | Hersteller: Verifiziert (Halter, nach Umbau, 2026-10-23); Version und Geometrie Offen |
 | Bushings | vordere und hintere Federaugenbuchsen Del-A-Lum, abschmierbar — Teil des Shackle-Kits `106SH` | Verifiziert (Halter, nach Umbau, 2026-10-23); Lieferumfang laut Hersteller |
 | Shackles | **Global West `106SH`**, „Del-A-Lum Bushings and Shackle Kit" für 1964–73 Mustang, bezogen über Summit Racing; Geometrie/Winkel vermessen | Verifiziert (Halter, nach Umbau, 2026-10-23); Shackle-Winkel Offen |
 
@@ -234,6 +234,18 @@ Bezogen auf den verbauten 1"-Stab:
 ### Offene Entscheidung: Blattfedern nach Delrin-Shackle-Umbau
 
 Im Projekt steht die Frage, ob nach Einbau von Delrin-Shackles auf Federn von **Mike Maier Inc.** oder **Maier Racing** gewechselt werden soll. Optionsvergleich und Bewertung: [`DECISION_LEAF_SPRINGS.md`](DECISION_LEAF_SPRINGS.md).
+
+### Panhard — Teileidentifikation
+
+> **Eintragen und stehenlassen.** Länge, Befestigungshöhen und Winkel sind Messwerte und stehen in §9; das hintere Rollzentrum in §8.2 (`roll_center_rear`).
+
+| Feld | Wert | Einheit | Status |
+|---|---|---|---|
+| `panhard_manufacturer` | **Maier Racing** | | Verifiziert (Halter, nach Umbau, 2026-10-23) |
+| `panhard_kit_version` | | Kit 2015 / ältere Version | Offen |
+| `panhard_mount_position` | | gewählte Höhenposition (Loch) je Aufnahme | Offen |
+
+**Herstellerangaben** (Maier Racing FAQ, https://www.maierracing.com/faq/, abgerufen 2026-10-23): Das Kit wird „from the rear end housing to the frame (both sides)" montiert, „with some welding"; „if you raise it or lower it … adjusting the 'roll center'". Die FAQ beschreibt „Our current kit, May 2015" und „our 2 versions that we have been selling" — welche Version verbaut ist, lässt sich online nicht klären. Im aktuellen Shop (abgerufen 2026-10-23) ist kein Panhard-Kit gelistet. Lochzahl, Lochabstand, Stangenlänge und Gelenkart nennt der Hersteller nicht.
 
 ### Hinterer Stabilisator
 
