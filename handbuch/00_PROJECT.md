@@ -189,9 +189,9 @@ Bezogen auf den verbauten 1"-Stab:
 
 | Bauteil / Geometrie | Projektstand | Status |
 |---|---|---|
-| Achse | Ford 9" | Projektangabe |
-| Differential | Eaton TrueTrac | Projektangabe |
-| Achsübersetzung | 3.50:1 | Projektangabe |
+| Achse | Ford 9" | Verifiziert (Halter, nach Umbau, 2026-10-23) |
+| Differential | Eaton TrueTrac | Verifiziert (Halter, nach Umbau, 2026-10-23) |
+| Achsübersetzung | 3.50:1 | Verifiziert (Halter, nach Umbau, 2026-10-23) |
 | Federung | Blattfedern Street or Track `SCD-C5ZZ-5560-4ME`, 4,5 Lagen Mid-Eye, 175 lb/in — siehe „Blattfedern — Teileidentifikation" | Verifiziert (Halter, nach Umbau, 2026-10-23) |
 | Federhistorie | 4-leaf Reverse-Eye → Mid-Eye | Legacy-Angabe |
 | Panhard Bar | **Maier Racing**, Kit-Version offen; in der Höhe verstellbar — siehe „Panhard — Teileidentifikation"; Länge und Höhen: §9 | Hersteller: Verifiziert (Halter, nach Umbau, 2026-10-23); Version und Geometrie Offen |
@@ -279,13 +279,15 @@ Keine Korrekturmaßnahme allein aus dieser Beobachtung ableiten.
 
 ## 5. Driveline
 
-| Bauteil | Projektstand |
-|---|---|
-| Getriebe | Jerico DR4 im aktuellen Rennfahrzeug-Projekt |
-| Hinterachse | Ford 9", 3.50:1 |
-| Kardanwelle | Projekt enthält 3"/3.5"-Diskussion; aktuelle verbaute Ausführung verifizieren |
-| U-Joints | genaue Ausführung dokumentieren |
-| Pinion / Yoke | Winkel vollständig neu vermessen |
+| Bauteil | Projektstand | Status |
+|---|---|---|
+| Getriebe | **Ford Toploader (Original)**. Ein späterer Wechsel auf das Jerico DR4 ist geplant, Zeitpunkt offen. | Verifiziert (Halter, 2026-10-23) |
+| Hinterachse | Ford 9", 3.50:1, Eaton TrueTrac | Verifiziert (Halter, 2026-10-23) |
+| Kardanwelle | Projekt enthält 3"/3.5"-Diskussion; aktuelle verbaute Ausführung verifizieren | Offen |
+| U-Joints | genaue Ausführung dokumentieren | Offen |
+| Pinion / Yoke | Winkel vollständig neu vermessen | Offen |
+
+> **Getriebewechsel ist ein Eingriff in die Driveline.** Weichen Länge oder Lage des Getriebeausgangs beim Jerico vom Toploader ab, ändern sich Kardanwelle und Winkel mit. Nach dem Wechsel ist Phase 16 (Driveline / Pinion) daher neu zu messen; Driveline-Werte, die mit dem Toploader gemessen wurden, gelten dann nicht mehr.
 
 ### Legacy-/Arbeitswerte
 
