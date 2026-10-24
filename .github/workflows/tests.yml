@@ -82,6 +82,12 @@ jobs:
       - name: Bind-Befund auf Werkstatt und Uebersicht
         run: node tests/bind-warnung.test.mjs
 
+      - name: Geraeteabgleich (Ablauf, Fehler, Reihenfolge)
+        run: node tests/abgleich.test.mjs
+
+      - name: Geraeteabgleich mit zwei Geraeten
+        run: node tests/abgleich-ui.test.mjs
+
   # Wer eine ausgelieferte Datei aendert, zaehlt die Version hoch. Sonst gehen
   # zwei verschiedene Staende unter derselben Nummer raus - genau so ist es in
   # gt40-engine bei v54 und in jerico bei v13 passiert, dort zwoelf Minuten

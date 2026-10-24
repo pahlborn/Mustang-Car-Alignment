@@ -303,6 +303,10 @@
     resizeTimer = setTimeout(zeichneAuswertung, 150);
   });
 
+  // Nach dem Abgleich stehen neue Werte in den Feldern (app.js traegt sie
+  // vorher ein) - die Auswertung muss mitziehen.
+  document.addEventListener('daten-abgeglichen', zeichneAuswertung);
+
   window.bumpsteerZeichnen = zeichneAuswertung;
   window.bumpsteerAufbauen = zeichnen;
 

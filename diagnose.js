@@ -160,7 +160,6 @@
   // ===========================================================================
 
   var _data = { version: 1, hypothesen: {} };
-  var _pushTimer = null;
   var _letzte = 0;
 
   // Siehe status.js: Date.now() hat Millisekundenaufloesung, und zwei
@@ -395,38 +394,25 @@
   // Abgleich
   // ===========================================================================
 
+  // Der Ablauf steht in abgleich.js (bis v17 eine wortgleiche Kopie der
+  // Fassung aus status.js, die jeden Fehler schluckte).
   function abgleichPlanen() {
-    clearTimeout(_pushTimer);
-    _pushTimer = setTimeout(abgleichen, 800);
-  }
-
-  async function abgleichen() {
-    if (typeof isGistConfigured !== 'function' || !isGistConfigured()) return false;
-    if (!navigator.onLine) return false;
-    var token = getGistConfig().token;
-    try {
-      var res = await fetch('https://api.github.com/gists/' + global.FIXED_GIST_ID,
-        { headers: { 'Authorization': 'Bearer ' + token } });
-      if (res.ok) {
-        var gist = await res.json();
-        var datei = gist.files && gist.files[GIST_FILE];
-        if (datei && datei.content) {
-          try { _data = mischen(JSON.parse(datei.content), _data); } catch (e) {}
-        }
-      }
-      var files = {};
-      files[GIST_FILE] = { content: JSON.stringify(_data, null, 2) };
-      await fetch('https://api.github.com/gists/' + global.FIXED_GIST_ID, {
-        method: 'PATCH',
-        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ files: files })
-      });
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(_data)); } catch (e) {}
-      return true;
-    } catch (e) { return false; }
+    if (typeof global.Abgleich !== 'undefined') global.Abgleich.planen();
   }
 
   laden();
+
+  if (typeof global.Abgleich !== 'undefined') {
+    global.Abgleich.anmelden({
+      datei: GIST_FILE,
+      lokal: function () { return _data; },
+      mischen: mischen,
+      uebernehmen: function (d) {
+        _data = { version: 1, hypothesen: d.hypothesen || {}, savedAt: d.savedAt };
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(_data)); } catch (e) {}
+      }
+    });
+  }
 
   global.Diagnose = {
     SYMPTOME: SYMPTOME,
@@ -449,7 +435,6 @@
     matrixFuer: matrixFuer,
     symptom: symptom,
     stufe: stufe,
-    abgleichen: abgleichen,
     _mischen: mischen,
     _roh: function () { return _data; },
     _setzeRoh: function (d) { _data = d; _letzte = 0; },

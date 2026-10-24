@@ -411,6 +411,51 @@ kam beim naechsten Laden zurueck.
 Dasselbe Prinzip bei Befunden: `remove()` schreibt einen **Grabstein**, keine
 Loeschung. Sonst bringt das zweite Geraet den Eintrag zurueck.
 
+### 9a. Leer ist nur dann eine Aussage, wenn vorher etwas da war
+
+**Dreizehnter Vorfall, v18 - die Kehrseite derselben Regel.**
+`mergeIntoExisting()` gab jedem leeren Feld einen frischen Zeitstempel, auch
+einem, das nie einen Wert hatte. Ein frisches Geraet, auf dem nur eine Seite
+geoeffnet und wieder verlassen wurde, stempelte damit jedes leere Feld mit
+"jetzt". Beim naechsten Mischen gewann dieses Leer gegen den aelteren Wert
+eines anderen Geraets - der Wert war weg, auf beiden Geraeten und im Gist.
+
+Gefunden hat es kein Test, sondern das Durchdenken des Zwei-Geraete-Falls
+beim Neubau des Abgleichs. Der neue Abgleich beim Oeffnen haette es
+verschaerft: er sichert vor dem Lesen die Felder - und haette jedes Mal
+gestempelt. Nachgewiesen mit drei Zeilen Node, bevor irgendetwas geaendert
+wurde.
+
+**Die Regel:** ein Zeitstempel markiert eine Aenderung. Leer nach leer ist
+keine. Ein bewusst geleertes Feld hatte vorher einen Wert und wird weiter
+gestempelt.
+
+**Was bleibt:** Altbestaende aus v17 und frueher koennen solche Stempel
+schon tragen. Sie sind von echten Leerungen nicht zu unterscheiden und
+werden nicht nachtraeglich bereinigt.
+
+**Seitdem geprueft:** `tests/abgleich.test.mjs` (beide Richtungen) und
+`tests/abgleich-ui.test.mjs` ("ein frisches Geraet loescht nichts").
+
+### 9b. Wer schreibt, liest vorher
+
+**Vierzehnter Vorfall, v18.** `saveData()` schrieb den lokalen Stand der
+Messwerte in den Gist, ohne ihn vorher zu lesen. Ein Geraet mit altem Stand
+ueberschrieb, was ein anderes inzwischen eingetragen hatte. Status und
+Diagnose lasen vorher - in zwei wortgleichen Kopien, die jeden Fehler
+schluckten und nur beim eigenen Schreiben liefen (Regel 4a: drei Fassungen
+derselben Sache, eine davon falsch).
+
+Jetzt gibt es einen Ablauf in `abgleich.js`: lesen, je Kanal mischen, lokal
+speichern, nur Geaendertes schreiben, melden. Die Kanaele melden sich an;
+das Modul kennt sie nicht. Konzept: Vault, `Projects/Geraeteabgleich/`.
+
+**Der Test dafuer braucht zwei Geraete:** zwei Browserkontexte mit eigenem
+`localStorage` und einem gemeinsamen, in Node nachgebauten Gist. Mit einem
+Kontext laesst sich ein verlorenes Update nicht zeigen - genau wie in v3, als
+der Seitenwechsel-Test mit zwei Kontexten etwas pruefte, das es nicht gab,
+nur umgekehrt.
+
 ## 10. Ein Setup hat einen Endzustand, ein Fahrwerk nicht
 
 Die Werkstattphasen 0-18 enden mit `Phase 18 - Werkstatt-Baseline einfrieren`

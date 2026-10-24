@@ -12,6 +12,20 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v18',
+      date: '2026-10-24',
+      time: '07:32',
+      title: 'Der Abgleich zwischen den Geraeten',
+      changes: [
+        { type: 'fix', text: 'Messwerte wurden in die Cloud geschrieben, ohne den Cloudstand vorher zu lesen. Ein Geraet mit altem Stand - etwa das iPad, das seit gestern in der Garage lag - ueberschrieb damit, was ein anderes inzwischen eingetragen hatte. Jetzt wird vor jedem Schreiben gelesen und gemischt.' },
+        { type: 'fix', text: '"Jetzt abgleichen" holte nur die Messwerte. Phasenstatus und Diagnose eines anderen Geraets kamen erst an, wenn man selbst etwas abhakte. Jetzt gleicht ein Lauf alle drei ab.' },
+        { type: 'neu', text: 'Abgeglichen wird beim Oeffnen der Seite, beim Zurueckholen des Reiters (hoechstens alle 30 Sekunden) und wenn nach einem Funkloch die Verbindung zurueck ist - nicht mehr nur per Knopf.' },
+        { type: 'fix', text: 'Nach dem Abgleich zogen abgeleitete Anzeigen nicht nach: Bind-Urteil, Schranke, Bereitschaft und Messblatt-Ergebnisse zeigten den alten Stand, bis man die Seite neu lud.' },
+        { type: 'fix', text: 'Fehler beim Abgleich von Status und Diagnose wurden still verschluckt. Jetzt steht jeder Fehler mit Status und Antworttext im Fehlerprotokoll, und der Kopf zeigt "Sync-Fehler" statt weiter "Cloud Sync".' },
+        { type: 'intern', text: 'Ein Modul abgleich.js statt drei Fassungen: app.js, status.js und diagnose.js melden nur noch ihren Kanal an. Ein Lauf liest den Gist einmal und schreibt nur die Dateien, die sich geaendert haben. Die Mischregeln - der juengere Zeitstempel gewinnt, auch ein Grabstein - bleiben unveraendert.' }
+      ]
+    },
+    {
       version: 'v17',
       date: '2026-10-23',
       time: '14:41',

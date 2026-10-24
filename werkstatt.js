@@ -276,6 +276,8 @@
     // status.js, weil er zu ausFeld() gehoert und nicht zu dieser Seite.
     // Hier wird nur die Anzeige nachgezogen.
     document.addEventListener('status-geaendert', zeichneAlles);
+    // Ein anderes Geraet hat Status oder Bind-Messwerte geaendert.
+    document.addEventListener('daten-abgeglichen', zeichneAlles);
 
     // Wer auf der Bind-Seite gemessen hat und zurueckwechselt, soll die
     // Schranke im neuen Stand sehen, ohne neu zu laden.

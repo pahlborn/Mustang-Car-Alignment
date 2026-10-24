@@ -102,7 +102,11 @@
             t._timer = setTimeout(function () { t.classList.remove('show'); }, 2500);
         }
         // errorlog.js schreibt zuerst lokal; der Gist ist nur der Spiegel.
-        if (opts.isError && typeof ErrorLog !== 'undefined') ErrorLog.add(msg, opts.detail);
+        // schonProtokolliert: der Abgleich traegt seine Fehler selbst ein,
+        // mit Status und Antworttext - ein zweiter Eintrag waere doppelt.
+        if (opts.isError && !opts.schonProtokolliert && typeof ErrorLog !== 'undefined') {
+            ErrorLog.add(msg, opts.detail);
+        }
     }
 
     /**
@@ -145,38 +149,35 @@
         return merged;
     }
 
+    // ==== ABGLEICH ====
+    // Der Ablauf steht in abgleich.js - hier meldet sich nur der Kanal der
+    // Messwerte an. Bis v17 schrieb saveData() den lokalen Stand in den Gist,
+    // ohne ihn vorher zu lesen: ein Geraet mit altem Stand ueberschrieb, was
+    // ein anderes eingetragen hatte.
+    if (typeof Abgleich !== 'undefined') {
+        Abgleich.anmelden({
+            datei: GIST_FILENAME,
+            // Was im Feld steht, aber noch nicht gesichert ist, bekommt jetzt
+            // seinen Zeitstempel - sonst gewaenne beim Mischen der aeltere
+            // Cloudwert ueber eine frische Eingabe.
+            vorher: function () { if (dataLoaded) saveFieldsLocal(); },
+            lokal: function () { return FieldSync.lesen(); },
+            // Pro Feld gewinnt der juengere Zeitstempel - auch ein leerer Wert.
+            mischen: FieldSync.mergeRecords,
+            uebernehmen: function (d) { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+        });
+    }
+
+    function abgleichen() {
+        return (typeof Abgleich !== 'undefined')
+            ? Abgleich.jetzt()
+            : Promise.resolve({ ok: false, grund: 'lokal' });
+    }
+
     async function saveData() {
-        var merged = saveFieldsLocal();
+        saveFieldsLocal();
         updateSaveStatus();
-        if (!isGistConfigured() || !navigator.onLine) return;   // still lokal
-        try {
-            var files = {};
-            files[GIST_FILENAME] = { content: JSON.stringify(merged, null, 2) };
-            var res = await fetch('https://api.github.com/gists/' + window.FIXED_GIST_ID, {
-                method: 'PATCH',
-                headers: {
-                    'Authorization': 'Bearer ' + getGistConfig().token,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ files: files })
-            });
-            if (!res.ok) {
-                // Erst den Rohtext, dann der Versuch, ihn als JSON zu lesen:
-                // res.json() verbraucht den Koerper, und genau der Rohtext ist
-                // es, der bei einem unerwarteten Fehler weiterhilft.
-                var roh = ''; try { roh = await res.text(); } catch (e) {}
-                var errText = ''; try { errText = (JSON.parse(roh).message) || ''; } catch (e) {}
-                showToast('Sync-Fehler: ' + (errText || 'Status ' + res.status), {
-                    sticky: true, isError: true,
-                    detail: { quelle: 'saveData', status: res.status, statusText: res.statusText, antwort: roh }
-                });
-            }
-        } catch (err) {
-            showToast('Sync-Fehler: ' + err.message, {
-                sticky: true, isError: true,
-                detail: { quelle: 'saveData', stack: err.stack }
-            });
-        }
+        return abgleichen();
     }
 
     function autoSave() {
@@ -185,43 +186,29 @@
         autoSaveTimer = setTimeout(saveData, 800);
     }
 
+    /** Der Knopf: alle Kanaele, und hier - anders als im Hintergrund - mit Meldung. */
     async function syncFromCloud() {
         if (!isGistConfigured()) { openSettings(); return; }
-        isLoading = true;
-        try {
-            var res = await fetch('https://api.github.com/gists/' + window.FIXED_GIST_ID,
-                { headers: { 'Authorization': 'Bearer ' + getGistConfig().token } });
-            if (!res.ok) {
-                isLoading = false;
-                var roh = ''; try { roh = await res.text(); } catch (e) {}
-                showToast('Sync-Fehler: Status ' + res.status, {
-                    sticky: true, isError: true,
-                    detail: { quelle: 'syncFromCloud', status: res.status, antwort: roh }
-                });
-                return;
-            }
-            var gist = await res.json();
-            var file = gist.files && gist.files[GIST_FILENAME];
-            if (!file) { isLoading = false; return; }
-            var cloudData = JSON.parse(file.content);
-            var localData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-            // Pro Feld gewinnt der juengere Zeitstempel - auch ein leerer
-            // Wert. Vorher galt "leer gewinnt nie", und ein geloeschter
-            // Messwert kam beim naechsten Laden zurueck.
-            var merged = FieldSync.mergeRecords(cloudData, localData);
-            applyData(merged);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-            isLoading = false;
-            updateSaveStatus();
-            // Erfolg: kein Toast
-        } catch (err) {
-            isLoading = false;
-            showToast('Sync-Fehler: ' + err.message, {
-                sticky: true, isError: true,
-                detail: { quelle: 'syncFromCloud', stack: err.stack }
-            });
+        var r = await abgleichen();
+        if (!r.ok && r.grund === 'offline') {
+            showToast('Offline - abgeglichen wird, sobald wieder Verbindung besteht.');
+        } else if (!r.ok) {
+            // Der Fehler steht schon im Protokoll (abgleich.js).
+            showToast('Sync-Fehler: ' + (r.fehler || 'unbekannt'),
+                { sticky: true, isError: true, schonProtokolliert: true });
         }
+        return r;
     }
+
+    // Neue Werte aus der Cloud in die Felder tragen. Die abgeleiteten
+    // Anzeigen lauschen selbst auf dasselbe Ereignis.
+    document.addEventListener('daten-abgeglichen', function (e) {
+        var k = (e.detail && e.detail.kanaele) || [];
+        if (k.indexOf(GIST_FILENAME) === -1) return;
+        applyData(FieldSync.lesen());
+        updateSaveStatus();
+    });
+    document.addEventListener('abgleich-zustand', function () { updateSyncBadge(); });
 
     function updateSaveStatus() {
         var el = document.getElementById('saveTime');
@@ -236,9 +223,23 @@
     function updateSyncBadge() {
         var b = document.getElementById('syncBadge');
         if (!b) return;
-        b.innerHTML = isGistConfigured()
-            ? '<span class="sync-badge online"><span class="sync-dot"></span>Cloud Sync</span>'
-            : '<span class="sync-badge offline"><span class="sync-dot"></span>Lokal</span>';
+        if (!isGistConfigured()) {
+            b.innerHTML = '<span class="sync-badge offline"><span class="sync-dot"></span>Lokal</span>';
+            return;
+        }
+        var z = (typeof Abgleich !== 'undefined') ? Abgleich.zustand() : { stand: 'ok' };
+        var text = 'Cloud Sync', art = 'online', titel = '';
+        if (z.stand === 'laeuft') text = 'gleicht ab \u2026';
+        else if (z.stand === 'offline') { text = 'Offline'; art = 'offline'; }
+        else if (z.stand === 'fehler') {
+            text = 'Sync-Fehler'; art = 'offline';
+            titel = z.fehler + (z.letzterErfolg
+                ? ' \u2013 zuletzt erfolgreich ' + new Date(z.letzterErfolg).toLocaleString('de-DE')
+                : '');
+        }
+        titel = titel.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        b.innerHTML = '<span class="sync-badge ' + art + '"' + (titel ? ' title="' + titel + '"' : '')
+            + ' data-stand="' + z.stand + '"><span class="sync-dot"></span>' + text + '</span>';
     }
 
     function updateConnectionStatus() {
@@ -303,6 +304,8 @@
             localStorage.setItem(GIST_ID_KEY, gid);
             window.FIXED_GIST_ID = gid;
             updateSyncBadge(); updateConnectionStatus(); closeSettings();
+            // Gleich holen, was die anderen Geraete schon eingetragen haben.
+            abgleichen();
             // Erfolg: kein Toast, der Badge wechselt auf gruen
         } catch (err) {
             showToast('Verbindungsfehler: ' + err.message, { sticky: true, isError: true });
@@ -477,6 +480,11 @@
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js').catch(function () {});
         }
+
+        // Beim Oeffnen holen, was andere Geraete eingetragen haben. Bis v17
+        // geschah das nur per Knopf. Einen Takt spaeter, damit die Seiten-
+        // module ihre Felder gebaut haben.
+        setTimeout(abgleichen, 0);
     }
 
     if (document.readyState === 'loading') {
@@ -498,11 +506,11 @@
 
     // Zurueck aus dem bfcache: Zustand wiederherstellen.
     window.addEventListener('pageshow', function (e) {
-        if (e.persisted) { restoreCollapseState(); restoreScroll(); }
+        if (e.persisted) { restoreCollapseState(); restoreScroll(); abgleichen(); }
     });
 
-    // Verbindung wieder da - still nachschieben.
-    window.addEventListener('online', function () { if (dataLoaded) saveData(); });
+    // Verbindung wieder da: das steht jetzt in abgleich.js und schiebt alle
+    // Kanaele nach, nicht nur die Messwerte.
 
     // ==== EXPORT ====
     window.showToast = showToast;

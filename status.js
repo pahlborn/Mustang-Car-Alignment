@@ -37,7 +37,6 @@
   };
 
   var _data = { version: 1, phasen: {}, journal: {} };
-  var _pushTimer = null;
 
   /**
    * Zeitstempel, der innerhalb einer Millisekunde nicht stehenbleibt.
@@ -367,52 +366,28 @@
   }
 
   // ==== Abgleich ====
+  // Der Ablauf steht in abgleich.js. Bis v17 stand hier eine eigene Fassung,
+  // wortgleich mit der in diagnose.js - sie schluckte jeden Fehler und wurde
+  // nur beim eigenen Schreiben ausgeloest: Status von anderen Geraeten kam
+  // erst an, wenn man selbst etwas abhakte.
 
   function abgleichPlanen() {
-    clearTimeout(_pushTimer);
-    _pushTimer = setTimeout(abgleichen, 800);
-  }
-
-  /** Erst den Cloud-Stand lesen und mischen, dann schreiben. */
-  async function abgleichen() {
-    if (typeof isGistConfigured !== 'function' || !isGistConfigured()) return false;
-    if (!navigator.onLine) return false;
-    var token = getGistConfig().token;
-    try {
-      var res = await fetch('https://api.github.com/gists/' + global.FIXED_GIST_ID,
-        { headers: { 'Authorization': 'Bearer ' + token } });
-      if (res.ok) {
-        var gist = await res.json();
-        var datei = gist.files && gist.files[GIST_FILE];
-        if (datei && datei.content) {
-          try { _data = mischen(JSON.parse(datei.content), _data); } catch (e) {}
-        }
-      }
-      var files = {};
-      files[GIST_FILE] = { content: JSON.stringify(_data, null, 2) };
-      await fetch('https://api.github.com/gists/' + global.FIXED_GIST_ID, {
-        method: 'PATCH',
-        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ files: files })
-      });
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(_data)); } catch (e) {}
-      return true;
-    } catch (e) { return false; }
-  }
-
-  /** Cloud-Stand uebernehmen. Gibt true, wenn sich etwas geaendert hat. */
-  async function holen(gist) {
-    var datei = gist && gist.files && gist.files[GIST_FILE];
-    if (!datei || !datei.content) return false;
-    try {
-      var vorher = JSON.stringify(_data);
-      _data = mischen(JSON.parse(datei.content), _data);
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(_data)); } catch (e) {}
-      return JSON.stringify(_data) !== vorher;
-    } catch (e) { return false; }
+    if (typeof global.Abgleich !== 'undefined') global.Abgleich.planen();
   }
 
   laden();
+
+  if (typeof global.Abgleich !== 'undefined') {
+    global.Abgleich.anmelden({
+      datei: GIST_FILE,
+      lokal: function () { return _data; },
+      mischen: mischen,
+      uebernehmen: function (d) {
+        _data = { version: 1, phasen: d.phasen || {}, journal: d.journal || {}, savedAt: d.savedAt };
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(_data)); } catch (e) {}
+      }
+    });
+  }
 
   // ==== Felder melden ihre Groesse selbst ====
   //
@@ -456,8 +431,6 @@
     rennstreckenbereit: rennstreckenbereit,
     bindStand: bindStand,
     uebersicht: uebersicht,
-    abgleichen: abgleichen,
-    holen: holen,
     _mischen: mischen,
     _roh: function () { return _data; },
     _setzeRoh: function (d) { _data = d; _letzte = 0; },

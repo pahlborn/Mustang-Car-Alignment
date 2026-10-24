@@ -111,10 +111,19 @@
       var next = current[key];
       var prev = existing[key];
       var clearing = isBlank(next) || next === false;
+      var warLeer = isBlank(prev) || prev === false;
 
       // Solange die Seite noch laedt, stehen alle Felder auf leer. Ein Save in
       // diesem Moment darf nichts loeschen.
-      if (clearing && !recordClears && !isBlank(prev) && prev !== false) continue;
+      if (clearing && !recordClears && !warLeer) continue;
+
+      // Leer bleibt leer - das ist keine Aenderung und bekommt keinen
+      // Zeitstempel. Bis v17 bekam es einen: ein frisches Geraet, auf dem
+      // nur eine Seite geoeffnet wurde, stempelte jedes leere Feld mit
+      // "jetzt", und beim Mischen gewann dieses Leer gegen den aelteren Wert
+      // eines anderen Geraets. Der Wert war weg. Ein bewusst geleertes Feld
+      // hatte vorher einen Wert und wird weiterhin gestempelt (Regel 9).
+      if (clearing && warLeer) continue;
 
       if (next !== prev) times[key] = now;
       data[key] = next;
@@ -224,11 +233,16 @@
    */
   function anwenden(daten, root) {
     daten = daten || {};
+    var aktiv = (typeof document !== 'undefined') ? document.activeElement : null;
     (root || document).querySelectorAll('[data-field]').forEach(function (el) {
       var v = daten[el.dataset.field];
       if (v === undefined) return;
-      if (el.type === 'checkbox') el.checked = !!v;
-      else el.value = v;
+      // Das Feld, in dem gerade getippt wird, bleibt unberuehrt. Der
+      // Abgleich sichert es vorher mit frischem Zeitstempel - der lokale Wert
+      // gewinnt ohnehin, und ein Neusetzen wuerfe den Cursor ans Ende.
+      if (el === aktiv) return;
+      if (el.type === 'checkbox') { if (el.checked !== !!v) el.checked = !!v; }
+      else if (el.value !== String(v)) el.value = v;
     });
   }
 

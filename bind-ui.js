@@ -423,6 +423,10 @@
     if (e.target && e.target.dataset && e.target.dataset.field) zeichneErgebnisse();
   });
 
+  // Nach dem Abgleich stehen neue Werte in den Feldern (app.js traegt sie
+  // vorher ein) - die Auswertung muss mitziehen.
+  document.addEventListener('daten-abgeglichen', zeichneErgebnisse);
+
   window.bindAktualisieren = zeichneErgebnisse;
   window.bindAufbauen = zeichnen;
 

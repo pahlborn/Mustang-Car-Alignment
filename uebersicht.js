@@ -95,6 +95,9 @@
 
     window.uebersichtZeichnen = zeichne;
 
+    // Ein anderes Geraet hat Status oder Messwerte geaendert.
+    document.addEventListener('daten-abgeglichen', zeichne);
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', zeichne);
     } else {

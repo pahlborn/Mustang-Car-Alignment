@@ -311,6 +311,9 @@
     window.hypotheseVerwerfen = hypotheseVerwerfen;
     window.diagnoseZeichnen = zeichneAlles;
 
+    // Hypothesen von einem anderen Geraet.
+    document.addEventListener('daten-abgeglichen', zeichneAlles);
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {

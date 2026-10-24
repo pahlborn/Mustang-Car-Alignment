@@ -69,6 +69,9 @@
 
   window.bindWarnungZeichnen = zeichne;
 
+  // Neue Bind-Messwerte von einem anderen Geraet.
+  document.addEventListener('daten-abgeglichen', zeichne);
+
   // Ein Reiter, der im Hintergrund stand, kann inzwischen einen anderen Stand
   // haben - der Befund wird aus dem Speicher gerechnet und ist damit aktuell.
   window.addEventListener('focus', zeichne);
