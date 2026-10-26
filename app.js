@@ -524,9 +524,9 @@
 
         restoreScroll();
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(function () {});
-        }
+        // Service Worker und neue Versionen: aktualisieren.js (seit v22). Bis
+        // dahin wurde hier nur angemeldet - eine offene Seite behielt ihren
+        // Code, bis man sie von Hand neu lud.
 
         // Beim Oeffnen holen, was andere Geraete eingetragen haben. Bis v17
         // geschah das nur per Knopf. Einen Takt spaeter, damit die Seiten-

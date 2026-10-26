@@ -12,6 +12,16 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v22',
+      date: '2026-10-26',
+      time: '17:58',
+      title: 'Neue Versionen kommen von selbst',
+      changes: [
+        { type: 'neu', text: 'Eine offene Seite laedt eine neue Version jetzt von selbst - bisher erst, wenn man sie von Hand neu lud. Sie fragt jede Minute und beim Zurueckkehren, etwa am iPad aus einer anderen App, und laedt erst neu, wenn kein Feld in Arbeit ist; beim allerersten Besuch gar nicht.' },
+        { type: 'intern', text: 'aktualisieren.js, wortgleich mit gt40-engine v114 und jerico v44; nur dort wird der Service Worker angemeldet, app.js tut es nicht mehr. Acht Tests; Gegenprobe mit dem alten Stand rot.' }
+      ]
+    },
+    {
       version: 'v21',
       date: '2026-10-26',
       time: '16:22',

@@ -250,6 +250,45 @@ for (const file of PAGES) {
   });
 }
 
+// ---------------------------------------------------------------------------
+suite('v22: Neue Versionen erreichen jede offene Seite (wie gt40-engine v114, jerico v44)');
+
+const ALLE_SEITEN = fs.readdirSync(REPO_ROOT).filter((f) => f.endsWith('.html')).sort();
+
+await test('Jede Seite laedt aktualisieren.js, nur dort wird der Service Worker angemeldet', async () => {
+  // Bis v21 meldete app.js den Service Worker nur an - eine offene Seite
+  // behielt ihren Code, bis man sie von Hand neu lud.
+  const ohne = ALLE_SEITEN.filter((f) => !/<script src="aktualisieren\.js"><\/script>/.test(lies(f)));
+  const anmelder = fs.readdirSync(REPO_ROOT).filter((f) => /\.(html|js)$/.test(f) && f !== 'sw.js')
+    .filter((f) => /serviceWorker\.register\(/.test(lies(f)));
+  assertEqual(ohne, [], 'Seiten ohne aktualisieren.js');
+  assertEqual(anmelder, ['aktualisieren.js'], 'Dateien, die den Service Worker anmelden');
+  assert(/'\.\/aktualisieren\.js'/.test(lies('sw.js')), 'sw.js haelt aktualisieren.js nicht vor');
+});
+
+for (const file of ALLE_SEITEN) {
+  await test(file + ': eine neue Version laedt erst neu, wenn kein Feld mehr in Arbeit ist', async () => {
+    const p = await open(file);
+    const r = await p.page.evaluate(async () => {
+      window.__neu = 0;
+      Aktualisieren.neuLaden = () => { window.__neu++; };
+      // Ein eigenes, sichtbares Feld - ein zugeklapptes bekommt keinen Fokus.
+      const el = document.createElement('input');
+      document.body.prepend(el);
+      el.focus();
+      if (document.activeElement !== el) return { testaufbau: 'kein Fokus' };
+      Aktualisieren.neueVersion();
+      await new Promise((res) => setTimeout(res, 1500));
+      const beimTippen = window.__neu;
+      el.blur();
+      await new Promise((res) => setTimeout(res, 1500));
+      return { beimTippen, danach: window.__neu };
+    });
+    await p.close();
+    assertEqual(r, { beimTippen: 0, danach: 1 }, 'Neu geladen waehrend / nach der Eingabe');
+  });
+}
+
 } finally {
   await browser.close();
   server.close();
