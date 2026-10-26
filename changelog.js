@@ -12,6 +12,19 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v20',
+      date: '2026-10-26',
+      time: '05:29',
+      title: 'Was nicht ankam, wird nachgeholt',
+      changes: [
+        { type: 'fix', text: 'Scheiterte das Hochladen, wurde es erst beim naechsten Oeffnen, Zurueckholen oder Eintragen wieder versucht, und der Kopf sagte das nicht. Jetzt merkt sich das Geraet "nicht hochgeladen", wiederholt selbst (nach 5 s, 15 s, 1 min, 2 min, dann alle 5 min; bei "zu viele Anfragen" fruehestens nach einer Minute) und zeigt oben orange "Nicht hochgeladen", bis es angekommen ist.' },
+        { type: 'fix', text: 'Eingaben werden 3 Sekunden gesammelt, bevor hochgeladen wird (bisher 0,8 s) - weniger Schreibvorgaenge, GitHub bremst nicht. "Speichern" laedt weiterhin sofort hoch.' },
+        { type: 'fix', text: 'Ein vergessener Tab mit aelterer Version schreibt nicht mehr ueber Neueres: Jede Datei in der Cloud traegt die Version, die sie geschrieben hat. Ein aelterer Tab schreibt dann nichts und laedt sich einmal neu; Eingetragenes bleibt erhalten.' },
+        { type: 'fix', text: 'Schreiben zwei Geraete fast gleichzeitig, prueft jedes zwei Sekunden spaeter nach und schreibt nach, falls dabei etwas verloren ging.' },
+        { type: 'intern', text: 'abgleich.js: Merkzeichen, Wiederholung, _neuesteVersion, Nachpruefung, planen() buendelt 3 s, hochladen() fuer den Knopf; Zustand meldet ungesendet. Regel 9d. Elf Modul- und ein Browsertest; Gegenprobe je Mechanismus rot.' }
+      ]
+    },
+    {
       version: 'v19',
       date: '2026-10-26',
       time: '05:04',

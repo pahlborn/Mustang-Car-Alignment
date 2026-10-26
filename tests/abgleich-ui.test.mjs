@@ -349,6 +349,26 @@ await test('ein Schreibfehler steht im Protokoll und im Kopf', async () => {
   assert(r.eintraege.some((e) => /500/.test(e)), 'Der Status fehlt im Protokoll: ' + r.eintraege.join(' | '));
 });
 
+await test('v20: der Kopf sagt "Nicht hochgeladen", und es wird von selbst nachgeholt', async () => {
+  // gt40-engine, 2026-10-24: nach einem 409 blieben die Werte nur auf dem
+  // iPad, und der Kopf sagte weiter "Cloud Sync".
+  neuerGist();
+  const a = await geraet('messblatt.html');
+  const [f1] = await zweiFelder(a.page);
+  await a.page.evaluate(() => { Abgleich.WIEDERHOLEN_MS = [1500]; Abgleich.BUENDELN_MS = 300; });
+  stoerung.patch = 409;
+  await tippe(a.page, f1, '3.3');
+  const badge = () => a.page.evaluate(() => (document.querySelector('#syncBadge .sync-badge') || {}).textContent || '');
+  const sichtbar = await warte(async () => /Nicht hochgeladen/.test(await badge()));
+  stoerung.patch = 0;
+  const angekommen = await warte(() => imGist(MESS)[f1] === '3.3');
+  const weg = await warte(async () => !/Nicht hochgeladen/.test(await badge()));
+  await a.close();
+  assert(sichtbar, 'Der Kopf zeigte nicht "Nicht hochgeladen"');
+  assert(angekommen, 'Der Wert wurde nicht nachgeholt');
+  assert(weg, 'Der Kopf zeigt nach dem Nachholen weiter "Nicht hochgeladen"');
+});
+
 await test('der Knopf meldet den Fehler, ohne ihn doppelt zu protokollieren', async () => {
   neuerGist();
   const a = await geraet('index.html');

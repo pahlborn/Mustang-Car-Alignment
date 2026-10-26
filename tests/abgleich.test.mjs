@@ -26,6 +26,12 @@ Object.defineProperty(globalThis, 'navigator', {
 const dok = new EventTarget();
 dok.hidden = false;
 globalThis.document = dok;
+globalThis.sessionStorage = {
+  _d: {},
+  getItem(k) { return Object.prototype.hasOwnProperty.call(this._d, k) ? this._d[k] : null; },
+  setItem(k, v) { this._d[k] = String(v); }
+};
+globalThis.APP_VERSION = 'v20';
 
 let verbunden = true;
 globalThis.isGistConfigured = () => verbunden;
@@ -280,10 +286,157 @@ await test('Laeufe ueberlappen nicht, und angeforderte gehen nicht verloren', as
 
 await test('planen() sammelt Eingaben zu einem Lauf', async () => {
   frisch();
+  A.BUENDELN_MS = 200;      // im Betrieb 3 s
   kanal('a.json', { a: 1 });
   A.planen(); A.planen(); A.planen();
-  await new Promise((r) => setTimeout(r, 1000));
+  await new Promise((r) => setTimeout(r, 600));
   assertEqual(gist.get, 1, 'Laeufe nach dreimal planen()');
+});
+
+const warte = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// ---------------------------------------------------------------------------
+suite('v20: nicht hochgeladen - vormerken, nachholen, wiederholen');
+
+await test('planen() merkt vor, ein gelungener Lauf loescht das Merkzeichen', async () => {
+  frisch();
+  A.BUENDELN_MS = 50;
+  kanal('a.json', { a: 1 });
+  A.planen();
+  const vorher = A.ungesendet();
+  await warte(300);
+  assertEqual([vorher, A.ungesendet(), A.zustand().ungesendet], [true, false, false], 'Merkzeichen vorher / nachher / im Zustand');
+});
+
+await test('kommt waehrend eines Laufs Neues dazu, bleibt das Merkzeichen stehen', async () => {
+  frisch();
+  A.BUENDELN_MS = 10000;
+  kanal('a.json', { a: 1 });
+  const p = A.hochladen();
+  A.planen();                       // Eingabe waehrend des Laufs
+  await p;
+  assertEqual(A.ungesendet(), true, 'Merkzeichen nach dem Lauf');
+  A._zuruecksetzen();
+});
+
+await test('nach einem Schreibfehler wird wiederholt, bis es ankommt', async () => {
+  // gt40-engine, 2026-10-24: das iPad bekam 409 - und versuchte es nie wieder.
+  frisch();
+  A.WIEDERHOLEN_MS = [50];
+  kanal('a.json', { a: 1 });
+  gist.fehlerPatch = 409;
+  const r = await A.hochladen();
+  gist.fehlerPatch = null;
+  await warte(300);
+  assertEqual([r.ok, gist.patch >= 2, A.ungesendet()], [false, true, false], 'erster Lauf / wiederholt / Merkzeichen');
+  assertEqual(JSON.parse(gist.files['a.json'].content).a, 1, 'Wert im Gist');
+});
+
+await test('ohne Liegengebliebenes wird nach einem Fehler nicht wiederholt', async () => {
+  frisch();
+  A.WIEDERHOLEN_MS = [50];
+  kanal('a.json', { a: 1 });
+  gist.fehlerGet = 500;
+  await A.jetzt();
+  await warte(300);
+  assertEqual(gist.get, 1, 'Lesezugriffe');
+});
+
+await test('bei "zu viele Anfragen" (403) wird fruehestens nach GEBREMST_MS wiederholt', async () => {
+  frisch();
+  A.WIEDERHOLEN_MS = [20];
+  A.GEBREMST_MS = 500;
+  kanal('a.json', { a: 1 });
+  gist.fehlerPatch = 403;
+  await A.hochladen();
+  gist.fehlerPatch = null;
+  await warte(250);
+  const frueh = gist.patch;
+  await warte(600);
+  assertEqual([frueh, gist.patch >= 2], [1, true], 'Schreibversuche nach 250 ms / spaeter wiederholt');
+});
+
+// ---------------------------------------------------------------------------
+suite('v20: ein alter Tab schreibt nicht ueber Neueres');
+
+await test('hat eine neuere Version geschrieben: nichts geschrieben, nichts uebernommen, einmal neu laden', async () => {
+  // gt40-engine, 2026-10-25, 04:57: ein vergessener Tab mit altem Code
+  // schrieb seinen Stand ueber die Werte vom Vorabend.
+  frisch();
+  sessionStorage._d = {};
+  let neu = 0;
+  A.neuLaden = () => { neu++; };
+  gist.files['a.json'] = { filename: 'a.json', content: JSON.stringify({ x: 'neu', _neuesteVersion: 'v999' }) };
+  const k = kanal('a.json', { y: 'lokal' });
+  const r = await A.hochladen();
+  await A.jetzt();
+  await warte(1800);
+  assertEqual([r.grund, gist.patch, JSON.stringify(k.stand), neu, A.ungesendet()],
+    ['veraltet', 0, JSON.stringify({ y: 'lokal' }), 1, true], 'Grund / Schreibvorgaenge / lokal / neu geladen / Merkzeichen');
+});
+
+await test('nach dem Neuladen wird fuer dieselbe Version nicht noch einmal neu geladen', async () => {
+  // Ist die ausgelieferte Seite selbst aelter als die Cloud (Version
+  // zurueckgenommen, Cache), kaeme sonst nach jedem Neuladen das naechste.
+  frisch();
+  sessionStorage._d = { abgleich_neugeladen: 'v999' };     // wie nach dem ersten Neuladen
+  let neu = 0;
+  A.neuLaden = () => { neu++; };
+  gist.files['a.json'] = { filename: 'a.json', content: JSON.stringify({ x: 'neu', _neuesteVersion: 'v999' }) };
+  kanal('a.json', { y: 'lokal' });
+  const r = await A.hochladen();
+  await warte(1800);
+  assertEqual([r.grund, gist.patch, neu], ['veraltet', 0, 0], 'Grund / Schreibvorgaenge / neu geladen');
+});
+
+await test('auf derselben Seite gibt es fuer eine neuere Version genau eine Meldung', async () => {
+  frisch();
+  sessionStorage._d = {};
+  const meldungen = [];
+  globalThis.showToast = (m) => meldungen.push(m);
+  A.neuLaden = () => {};
+  gist.files['a.json'] = { filename: 'a.json', content: JSON.stringify({ x: 'neu', _neuesteVersion: 'v999' }) };
+  kanal('a.json', { y: 'lokal' });
+  await A.hochladen(); await A.jetzt(); await A.jetzt();
+  delete globalThis.showToast;
+  assertEqual(meldungen.length, 1, 'Meldungen: ' + meldungen.join(' | '));
+});
+
+await test('jeder Schreibvorgang traegt die eigene Version, eine aeltere blockiert nicht', async () => {
+  frisch();
+  gist.files['a.json'] = { filename: 'a.json', content: JSON.stringify({ x: 'alt', _neuesteVersion: 'v1' }) };
+  kanal('a.json', { y: 'lokal' });
+  await A.hochladen();
+  const c = JSON.parse(gist.files['a.json'].content);
+  assertEqual([c._neuesteVersion, c.x, c.y], ['v20', 'alt', 'lokal'], 'Version / fremder Wert / eigener Wert');
+});
+
+// ---------------------------------------------------------------------------
+suite('v20: zwei Geraete fast gleichzeitig');
+
+await test('die Nachpruefung schreibt nach, was ein anderes Geraet ueberschrieben hat', async () => {
+  // Ein Gist kennt kein bedingtes Schreiben: liest B, bevor A geschrieben
+  // hat, schreibt B einen Stand ohne A.
+  frisch();
+  A.NACHPRUEFEN_MS = 100;
+  kanal('a.json', { a: 1 });
+  await A.hochladen();
+  gist.files['a.json'] = { filename: 'a.json', content: JSON.stringify({ b: 2 }) };   // B schreibt ohne A
+  await warte(400);
+  const c = JSON.parse(gist.files['a.json'].content);
+  assertEqual([c.a, c.b], [1, 2], 'Gist nach der Nachpruefung');
+});
+
+await test('die Nachpruefung laeuft hoechstens NACHPRUEFEN_MAX-mal in Folge', async () => {
+  frisch();
+  A.NACHPRUEFEN_MS = 30;
+  A.NACHPRUEFEN_MAX = 2;
+  const k = kanal('a.json', { n: 0 });
+  // Jeder Lauf findet etwas Neues - etwa zwei Geraete mit falscher Uhr.
+  k.lokal = () => ({ n: Date.now() });
+  await A.hochladen();
+  await warte(500);
+  assertEqual(gist.patch, 3, 'Schreibvorgaenge (einer plus zwei Nachpruefungen)');
 });
 
 // ---------------------------------------------------------------------------

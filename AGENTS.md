@@ -483,6 +483,35 @@ auch kein berührtes Feld mehr, nicht nur das fokussierte.
 angezeigt, Leer ohne Vermerk, Altbestand) und `tests/abgleich-ui.test.mjs`
 (Leeren wandert mit, Eingabe während eines Laufs, Import).
 
+### 9d. Was nicht ankam, wird nachgeholt, und ein alter Tab schreibt nicht
+
+**Aus `gt40-engine` und `jerico`, 2026-10-24/25.** Dort sind an einem Abend
+vier Dinge zusammengekommen, und keins davon war ein Fehler im Mischen:
+
+- Ein iPad bekam beim Schreiben 409 und 403 („rate limit"). Wiederholt wurde
+  nie, die Werte blieben nur dort, und der Kopf sagte weiter „Cloud Sync".
+- Jede Eingabe war ein eigener Schreibvorgang, rund 70 Gist-Stände in 14
+  Minuten. GitHub bremste das Konto.
+- Zwei Geräte schrieben fast gleichzeitig. Ein Gist kennt kein bedingtes
+  Schreiben, also fehlte die Änderung des einen.
+- Ein vergessener Tab mit altem Code schrieb seinen Stand über die Werte vom
+  Vorabend.
+
+**Seit v20 in `abgleich.js`:** gebündelt nach 3 s; Merkzeichen „nicht
+hochgeladen", das erst ein gelungener Lauf ohne neue Änderung löscht;
+Wiederholung nur, solange es steht (5 s … 5 min, bei 403/429 frühestens nach
+1 min); `_neuesteVersion` in jeder geschriebenen Datei. Ein älterer Tab
+schreibt dann nichts, weder in die Cloud noch lokal, und lädt höchstens einmal
+je Version und Sitzung neu. Nach jedem Schreiben folgt eine Nachprüfung, die
+nachschreibt, was fehlt (höchstens dreimal in Folge).
+
+**Zur Gegenprobe dabei (Regel 7a):** Der Schutz gegen doppeltes Neuladen auf
+derselben Seite blieb zuerst grün, weil der Sitzungsvermerk ihn verdeckte.
+Beide haben jetzt einen eigenen Test.
+
+**Seitdem geprüft:** `tests/abgleich.test.mjs` (Suiten „v20: …") und
+`tests/abgleich-ui.test.mjs` (Kopf „Nicht hochgeladen", Nachholen).
+
 ## 10. Ein Setup hat einen Endzustand, ein Fahrwerk nicht
 
 Die Werkstattphasen 0-18 enden mit `Phase 18 - Werkstatt-Baseline einfrieren`

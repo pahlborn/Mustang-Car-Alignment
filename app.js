@@ -174,16 +174,24 @@
             : Promise.resolve({ ok: false, grund: 'lokal' });
     }
 
+    /** Speichern-Knopf: lokal sichern, vormerken und sofort abgleichen. */
     async function saveData() {
         saveFieldsLocal();
         updateSaveStatus();
-        return abgleichen();
+        return (typeof Abgleich !== 'undefined')
+            ? Abgleich.hochladen()
+            : { ok: false, grund: 'lokal' };
     }
 
+    // Lokal nach 0,8 s; hochgeladen wird gebuendelt (abgleich.js, seit v20).
     function autoSave() {
         if (isLoading) return;
         clearTimeout(autoSaveTimer);
-        autoSaveTimer = setTimeout(saveData, 800);
+        autoSaveTimer = setTimeout(function () {
+            saveFieldsLocal();
+            updateSaveStatus();
+            if (typeof Abgleich !== 'undefined') Abgleich.planen();
+        }, 800);
     }
 
     /** Der Knopf: alle Kanaele, und hier - anders als im Hintergrund - mit Meldung. */
@@ -237,9 +245,20 @@
                 ? ' \u2013 zuletzt erfolgreich ' + new Date(z.letzterErfolg).toLocaleString('de-DE')
                 : '');
         }
+        else if (z.stand === 'veraltet') { text = 'Neue Version \u2013 l\u00e4dt neu'; art = 'offline'; titel = z.fehler; }
+        // Seit v20: Liegt etwas nur auf diesem Geraet, sagt der Kopf es. Es
+        // wird automatisch nachgeholt.
+        var nichtOben = z.ungesendet && z.stand !== 'laeuft' && z.stand !== 'veraltet';
+        if (nichtOben) {
+            text = (z.stand === 'fehler' ? 'Sync-Fehler \u2013 ' : z.stand === 'offline' ? 'Offline \u2013 ' : '')
+                + 'Nicht hochgeladen';
+            art = 'offline';
+            titel = (titel ? titel + ' \u2013 ' : '') + 'Noch nicht in der Cloud, wird automatisch nachgeholt';
+        }
         titel = titel.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         b.innerHTML = '<span class="sync-badge ' + art + '"' + (titel ? ' title="' + titel + '"' : '')
-            + ' data-stand="' + z.stand + '"><span class="sync-dot"></span>' + text + '</span>';
+            + (nichtOben ? ' style="background:#dd6b20;color:#fff"' : '')
+            + ' data-stand="' + z.stand + '" data-ungesendet="' + (z.ungesendet ? '1' : '0') + '"><span class="sync-dot"></span>' + text + '</span>';
     }
 
     function updateConnectionStatus() {
