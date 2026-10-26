@@ -512,6 +512,15 @@ Beide haben jetzt einen eigenen Test.
 **Seitdem geprüft:** `tests/abgleich.test.mjs` (Suiten „v20: …") und
 `tests/abgleich-ui.test.mjs` (Kopf „Nicht hochgeladen", Nachholen).
 
+**v21, Nachtrag aus gt40 (26.10.):** Dort kamen 409 auch von Schreibern
+neben den Messwerten, vor allem vom Fehlerprotokoll. Es schrieb bei jedem
+Fehler ungelesen, und ein Fehler bei jeder Eingabe ergab 48 Schreibvorgänge.
+Ein Gist lehnt zwei gleichzeitige Schreibvorgänge auch dann ab, wenn sie
+verschiedene Dateien betreffen. **Die Regel:** In diesen Gist schreibt nur
+`abgleich.js`. Wer etwas hochladen will, meldet einen Kanal an. Das
+Fehlerprotokoll ist seit v21 einer: Es löst keinen eigenen Lauf aus, geht
+spätestens nach 5 Minuten mit und vereinigt die Einträge aller Geräte.
+
 ## 10. Ein Setup hat einen Endzustand, ein Fahrwerk nicht
 
 Die Werkstattphasen 0-18 enden mit `Phase 18 - Werkstatt-Baseline einfrieren`

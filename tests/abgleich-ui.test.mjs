@@ -20,11 +20,13 @@ const browser = await browserStarten();
 
 const MESS = 'mustang-chassis-setup.json';
 const STATUS = 'mustang-chassis-status.json';
+const PROTOKOLL = 'mustang-chassis-setup-errors.json';
 
 // --- Nachgebauter Gist --------------------------------------------------------
 let gist = {};
 let stoerung = { get: 0, patch: 0 };
 let verzoegerung = { get: 0 };      // Antwortzeit beim Lesen, fuer Eingaben waehrend eines Laufs
+let schreibvorgaenge = [];          // Dateinamen je PATCH
 const CORS = {
   'access-control-allow-origin': '*',
   'access-control-allow-methods': 'GET, PATCH, OPTIONS',
@@ -44,13 +46,14 @@ async function gistRoute(route) {
   if (m === 'PATCH') {
     if (stoerung.patch) return route.fulfill({ status: stoerung.patch, headers: CORS, body: 'Server Error' });
     const b = JSON.parse(req.postData() || '{}');
+    schreibvorgaenge.push(Object.keys(b.files || {}));
     for (const [name, f] of Object.entries(b.files || {})) gist[name] = { filename: name, content: f.content };
     return route.fulfill({ status: 200, headers: CORS, contentType: 'application/json', body: '{}' });
   }
   return route.fulfill({ status: 405, headers: CORS });
 }
 
-function neuerGist() { gist = {}; stoerung = { get: 0, patch: 0 }; verzoegerung = { get: 0 }; }
+function neuerGist() { gist = {}; stoerung = { get: 0, patch: 0 }; verzoegerung = { get: 0 }; schreibvorgaenge = []; }
 function imGist(datei) { return gist[datei] ? JSON.parse(gist[datei].content) : {}; }
 
 /** Ein Geraet: eigener Kontext, mit dem Gist verbunden. */
@@ -133,8 +136,9 @@ await test('Messwerte und Status sind ueberall angemeldet, Diagnose auf ihrer Se
   const fehler = g.fehler.slice();
   await g.close();
   assertEqual(fehler, [], 'Fehler beim Laden');
-  assertEqual(diag, ['mustang-chassis-diagnose.json', MESS, STATUS], 'Kanaele auf diagnose.html');
-  assertEqual(werk, [MESS, STATUS], 'Kanaele auf werkstatt.html');
+  // Seit v21 ist auch das Fehlerprotokoll ein Kanal.
+  assertEqual(diag, ['mustang-chassis-diagnose.json', PROTOKOLL, MESS, STATUS], 'Kanaele auf diagnose.html');
+  assertEqual(werk, [PROTOKOLL, MESS, STATUS], 'Kanaele auf werkstatt.html');
 });
 
 // ---------------------------------------------------------------------------
@@ -367,6 +371,41 @@ await test('v20: der Kopf sagt "Nicht hochgeladen", und es wird von selbst nachg
   assert(sichtbar, 'Der Kopf zeigte nicht "Nicht hochgeladen"');
   assert(angekommen, 'Der Wert wurde nicht nachgeholt');
   assert(weg, 'Der Kopf zeigt nach dem Nachholen weiter "Nicht hochgeladen"');
+});
+
+await test('v21: das Fehlerprotokoll schreibt nicht selbst, geht mit dem naechsten Lauf und vereinigt die Geraete', async () => {
+  // Bis v20 schrieb jeder Fehler sofort und ungelesen in den Gist.
+  neuerGist();
+  gist[PROTOKOLL] = { filename: PROTOKOLL, content: JSON.stringify([
+    { zeit: '2026-10-20T10:00:00.000Z', geraet: 'dev-anderes', nachricht: 'vom anderen Geraet' }]) };
+  const a = await geraet('messblatt.html');
+  await a.page.waitForTimeout(2500);           // Lauf und Nachpruefung beim Oeffnen
+  const vorher = schreibvorgaenge.length;
+  await a.page.evaluate(async () => {
+    for (let i = 0; i < 3; i++) ErrorLog.add('Testfehler ' + i);
+    await new Promise((r) => setTimeout(r, 1000));
+  });
+  const ohneLauf = schreibvorgaenge.slice(vorher).filter((d) => d.includes(PROTOKOLL)).length;
+  await a.page.evaluate(() => Abgleich.jetzt());
+  const proto = imGist(PROTOKOLL);
+  await a.close();
+  assertEqual(ohneLauf, 0, 'Schreibvorgaenge nur durch Fehler');
+  const liste = proto.eintraege || [];
+  assert(liste.some((e) => e.nachricht === 'vom anderen Geraet'), 'Eintrag des anderen Geraets verloren');
+  assertEqual(liste.filter((e) => /^Testfehler/.test(e.nachricht)).length, 3, 'Eigene Eintraege im Spiegel');
+});
+
+await test('v21: das Fehlerprotokoll geht spaetestens nach PROTOKOLL_MS hoch', async () => {
+  neuerGist();
+  const a = await geraet('messblatt.html');
+  await a.page.waitForTimeout(2500);
+  await a.page.evaluate(async () => {
+    Abgleich.PROTOKOLL_MS = 300;
+    ErrorLog.add('allein');
+  });
+  const angekommen = await warte(() => ((imGist(PROTOKOLL).eintraege) || []).some((e) => e.nachricht === 'allein'));
+  await a.close();
+  assert(angekommen, 'Fehlerprotokoll wurde nicht nachgereicht');
 });
 
 await test('der Knopf meldet den Fehler, ohne ihn doppelt zu protokollieren', async () => {

@@ -12,6 +12,16 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v21',
+      date: '2026-10-26',
+      time: '16:22',
+      title: 'Das Fehlerprotokoll geht im Abgleich mit',
+      changes: [
+        { type: 'fix', text: 'Das Fehlerprotokoll schrieb bei jedem Fehler sofort und ungelesen in den Gist - neben dem Abgleich, mit dem es zusammenstossen konnte (409), und ueber die Eintraege der anderen Geraete hinweg. Jetzt geht es im Abgleich mit: kein eigener Schreibvorgang, spaetestens nach 5 Minuten, vereinigt mit den Eintraegen aller Geraete.' },
+        { type: 'intern', text: 'app.js: Fehlerprotokoll als Kanal in abgleich.js (mustang-chassis-setup-errors.json, jetzt { eintraege: [...] }; eine alte Liste wird uebernommen). In diesen Gist schreibt nur noch abgleich.js (Regel 9d). Zwei Browsertests; Gegenprobe mit dem alten Stand, ohne Vereinigung und ohne Nachreichen rot.' }
+      ]
+    },
+    {
       version: 'v20',
       date: '2026-10-26',
       time: '05:29',

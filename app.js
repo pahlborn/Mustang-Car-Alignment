@@ -110,28 +110,53 @@
     }
 
     /**
-     * Optionaler Gist-Spiegel des Fehlerprotokolls.
+     * Fehlerprotokoll im Gist - seit v21 ein Kanal im gemeinsamen Lauf von
+     * abgleich.js, kein eigener Schreibvorgang mehr.
      *
-     * In jerico schrieb der Vorgaenger den Eintrag ausschliesslich in den Gist
-     * - und las ihn vorher von dort. Beim Sync-Fehler, dem haeufigsten Fall,
-     * schlug beides fehl und es wurde nichts protokolliert. Jetzt liegt der
-     * Puffer lokal; schlaegt der Spiegel fehl, bleibt der Eintrag erhalten.
+     * Bis v20 schrieb jeder Fehler sofort und ungelesen in den Gist. In
+     * gt40-engine wurde so ein Fehler bei jeder Eingabe zu 48
+     * Schreibvorgaengen, die selbst 409 ausloesten, und der Spiegel ersetzte
+     * die Eintraege der anderen Geraete. Jetzt geht er mit dem naechsten Lauf
+     * mit - liegt keiner an, spaetestens nach PROTOKOLL_MS - und vereinigt die
+     * Eintraege aller Geraete. Das lokale Protokoll bleibt das eigene.
      */
-    function spiegleProtokollInGist(eintraege) {
-        if (!isGistConfigured() || !navigator.onLine) return;
-        var logFile = GIST_FILENAME.replace('.json', '-errors.json');
-        var files = {};
-        files[logFile] = { content: JSON.stringify(eintraege, null, 2) };
-        return fetch('https://api.github.com/gists/' + window.FIXED_GIST_ID, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': 'Bearer ' + getGistConfig().token,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ files: files })
-        }).catch(function () { /* lokal ist der Eintrag bereits sicher */ });
+    var PROTOKOLL_DATEI = GIST_FILENAME.replace('.json', '-errors.json');
+    var _protokollStand = null;
+    var _protokollTimer = null;
+    function protokollVereinigen(a, b) {
+        var gesehen = {}, alle = [];
+        (a || []).concat(b || []).forEach(function (e) {
+            if (!e) return;
+            var k = e.zeit + '|' + (e.geraet || '') + '|' + e.nachricht;
+            if (gesehen[k]) return;
+            gesehen[k] = 1;
+            alle.push(e);
+        });
+        alle.sort(function (x, y) { return String(x.zeit).localeCompare(String(y.zeit)); });
+        return { eintraege: alle.slice(-200) };
     }
-    if (typeof ErrorLog !== 'undefined') ErrorLog.spiegelSetzen(spiegleProtokollInGist);
+    if (typeof Abgleich !== 'undefined' && typeof ErrorLog !== 'undefined') {
+        Abgleich.anmelden({
+            datei: PROTOKOLL_DATEI,
+            lokal: function () {
+                return protokollVereinigen(_protokollStand ? _protokollStand.eintraege : [], ErrorLog.alle());
+            },
+            // Bis v20 lag hier eine nackte Liste; die wird uebernommen.
+            mischen: function (cloud, lokal) {
+                var liste = Array.isArray(cloud) ? cloud : ((cloud && cloud.eintraege) || []);
+                return protokollVereinigen(liste, lokal.eintraege);
+            },
+            uebernehmen: function (d) { _protokollStand = d; }
+        });
+        ErrorLog.spiegelSetzen(function () {
+            if (_protokollTimer) return;
+            var ms = (typeof Abgleich.PROTOKOLL_MS === 'number') ? Abgleich.PROTOKOLL_MS : 300000;
+            _protokollTimer = setTimeout(function () {
+                _protokollTimer = null;
+                if (isGistConfigured() && navigator.onLine !== false) abgleichen();
+            }, ms);
+        });
+    }
 
     // ==== DATEN ====
     function collectData() { return FieldSync.collectFields(document); }
