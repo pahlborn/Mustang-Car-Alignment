@@ -19,8 +19,9 @@
  * schon beim Speichern, spaetestens aber aus der Cloud.
  *
  * Stattdessen bekommt jedes Feld einen eigenen Zeitstempel (_fieldTimes).
- * Beim Merge gewinnt der juengere Eintrag - auch wenn er leer ist. Ein
- * geloeschter Wert ist damit eine ganz normale Aenderung.
+ * Beim Merge gewinnt der juengere Eintrag - ein geloeschter Wert ist damit
+ * eine ganz normale Aenderung. Seit v19 zaehlt ein Leer allerdings nur, wenn
+ * der Nutzer das Feld selbst geleert hat (_geleert, Regel 9c).
  *
  * Altbestand ohne _fieldTimes: fuer Felder, zu denen keine Seite einen
  * Zeitstempel hat, gilt weiter die alte Heuristik (nicht-leer gewinnt).
@@ -80,11 +81,31 @@
 
   function isBlank(v) { return v === undefined || v === '' || v === null; }
 
-  /** Zeitstempel eines Feldes, mit Rueckfall auf den Zeitstempel des ganzen Datensatzes. */
-  function fieldTime(data, times, key, fallback) {
-    if (times && times[key] !== undefined) return times[key];
-    return Object.prototype.hasOwnProperty.call(data, key) ? fallback : -1;
+  // ---- Beruehrte Felder (v19, wie gt40-engine v109 / jerico v41) ----
+  //
+  // Welche Felder hat der Nutzer seit dem letzten lokalen Speichern selbst
+  // veraendert - durch Tippen, Auswaehlen oder Antippen? Zwei Dinge haengen
+  // daran:
+  //  - Leeren zaehlt nur bei einem beruehrten Feld als Aussage (_geleert).
+  //    Ein Feld, das nur leer ANGEZEIGT wird - etwa weil es erst nach dem
+  //    Eintragen erzeugt wurde (messblatt.js) -, loescht nichts.
+  //  - Ein Abgleich ueberschreibt ein beruehrtes, noch nicht gespeichertes
+  //    Feld nicht (anwenden).
+  var GELEERT_KEY = '_geleert';
+  var _beruehrt = {};
+  function beruehrtMerken(e) {
+    var el = e.target && e.target.closest ? e.target.closest('[data-field]') : null;
+    if (!el) return;
+    if (e.type === 'click' && el.tagName !== 'BUTTON') return;
+    _beruehrt[el.dataset.field] = true;
   }
+  if (global.document && global.document.addEventListener) {
+    ['input', 'change', 'click'].forEach(function (t) { global.document.addEventListener(t, beruehrtMerken, true); });
+  }
+  /** Beruehrte Felder abholen und vergessen - beim lokalen Speichern. */
+  function beruehrteAbholen() { var b = _beruehrt; _beruehrt = {}; return b; }
+  function istBeruehrt(feld) { return !!_beruehrt[feld]; }
+  function hatBeruehrte() { for (var k in _beruehrt) { if (_beruehrt[k]) return true; } return false; }
 
   /**
    * Aktuelle Feldwerte in den bestehenden Datensatz uebernehmen.
@@ -103,6 +124,8 @@
 
     var data = Object.assign({}, existing);
     var times = Object.assign({}, existing[TIMES_KEY] || {});
+    var geleert = Object.assign({}, existing[GELEERT_KEY] || {});
+    var beruehrt = opts.beruehrt || null;
 
     for (var key in current) {
       if (!Object.prototype.hasOwnProperty.call(current, key)) continue;
@@ -125,11 +148,21 @@
       // hatte vorher einen Wert und wird weiterhin gestempelt (Regel 9).
       if (clearing && warLeer) continue;
 
-      if (next !== prev) times[key] = now;
+      // Seit v19: Kommt die Seite mit der Liste der beruehrten Felder, zaehlt
+      // ein Leeren nur dort - sonst bleibt der gespeicherte Wert (Regel 9c).
+      var bewusst = !!(beruehrt && beruehrt[key]);
+      if (clearing && beruehrt && !bewusst) continue;
+
+      if (next !== prev) {
+        times[key] = now;
+        if (clearing && bewusst) geleert[key] = now;
+        else if (!clearing) delete geleert[key];
+      }
       data[key] = next;
     }
 
     data[TIMES_KEY] = times;
+    data[GELEERT_KEY] = geleert;
     data._savedAt = new Date(now).toISOString();
     stampDevice(data);
     return data;
@@ -137,7 +170,14 @@
 
   /**
    * Cloud- und lokalen Datensatz zusammenfuehren. Pro Feld gewinnt der
-   * juengere Zeitstempel - ein geloeschter Wert also auch.
+   * juengere Zeitstempel - mit zwei Ausnahmen (v19, wie in den
+   * Schwesterprojekten):
+   *
+   *  - Steht nur auf einer Seite ein Wert, gewinnt das Leer der anderen Seite
+   *    nur, wenn es als bewusstes Leeren vermerkt ist (_geleert) und juenger
+   *    ist als der Wert (Regel 9c).
+   *  - Hat nur eine Seite einen Stempel, gewinnt sie. Ein Feld ohne Stempel
+   *    ist Altbestand und sagt nichts darueber, wann es geaendert wurde.
    */
   function mergeRecords(cloudData, localData) {
     cloudData = cloudData || {};
@@ -145,6 +185,8 @@
 
     var cloudTimes = cloudData[TIMES_KEY] || {};
     var localTimes = localData[TIMES_KEY] || {};
+    var cloudGeleert = cloudData[GELEERT_KEY] || {};
+    var localGeleert = localData[GELEERT_KEY] || {};
     var cloudFallback = new Date(cloudData._savedAt || 0).getTime();
     var localFallback = new Date(localData._savedAt || 0).getTime();
 
@@ -174,14 +216,31 @@
         continue;
       }
 
-      var ct = fieldTime(cloudData, cloudTimes, k, cloudFallback);
-      var lt = fieldTime(localData, localTimes, k, localFallback);
-      if (ct >= lt) { merged[k] = cVal; mergedTimes[k] = ct; }
-      else { merged[k] = lVal; mergedTimes[k] = lt; }
+      var ct = hasC ? cloudTimes[k] : -1;
+      var lt = hasL ? localTimes[k] : -1;
+      var cLeer = isBlank(cVal), lLeer = isBlank(lVal);
+      var nimmCloud;
+      if (cLeer !== lLeer) {
+        var leerStempel = cLeer ? cloudGeleert[k] : localGeleert[k];
+        var leerZaehlt = leerStempel !== undefined && leerStempel > (cLeer ? lt : ct);
+        nimmCloud = cLeer ? leerZaehlt : !leerZaehlt;
+      } else {
+        nimmCloud = ct >= lt;
+      }
+      if (nimmCloud) { merged[k] = cVal; if (ct >= 0) mergedTimes[k] = ct; }
+      else { merged[k] = lVal; if (lt >= 0) mergedTimes[k] = lt; }
       if (merged[k] === undefined) delete merged[k];
     }
 
     merged[TIMES_KEY] = mergedTimes;
+    // Ein bewusstes Leeren bleibt vermerkt, solange das Feld leer ist.
+    var mergedGeleert = {};
+    for (var gk in merged) {
+      if (gk.charAt(0) === '_' || !isBlank(merged[gk])) continue;
+      var gz = Math.max(cloudGeleert[gk] || 0, localGeleert[gk] || 0);
+      if (gz) mergedGeleert[gk] = gz;
+    }
+    merged[GELEERT_KEY] = mergedGeleert;
     merged._savedAt = new Date(Math.max(cloudFallback, localFallback) || Date.now()).toISOString();
     // Geraeteregister aus beiden Quellen zusammenfuehren
     var cDevices = cloudData[DEVICES_KEY] || {};
@@ -241,6 +300,9 @@
       // Abgleich sichert es vorher mit frischem Zeitstempel - der lokale Wert
       // gewinnt ohnehin, und ein Neusetzen wuerfe den Cursor ans Ende.
       if (el === aktiv) return;
+      // Ebenso jedes andere Feld, das seit dem letzten Speichern beruehrt
+      // wurde - etwa ein Haken, der nicht den Fokus behaelt (v19).
+      if (_beruehrt[el.dataset.field]) return;
       if (el.type === 'checkbox') { if (el.checked !== !!v) el.checked = !!v; }
       else if (el.value !== String(v)) el.value = v;
     });
@@ -257,6 +319,10 @@
     anwenden: anwenden,
     mergeIntoExisting: mergeIntoExisting,
     mergeRecords: mergeRecords,
+    GELEERT_KEY: GELEERT_KEY,
+    beruehrteAbholen: beruehrteAbholen,
+    istBeruehrt: istBeruehrt,
+    hatBeruehrte: hatBeruehrte,
     getDeviceId: getDeviceId,
     getDeviceName: getDeviceName,
     setDeviceName: setDeviceName,

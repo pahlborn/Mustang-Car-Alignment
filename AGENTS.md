@@ -456,6 +456,33 @@ Kontext laesst sich ein verlorenes Update nicht zeigen - genau wie in v3, als
 der Seitenwechsel-Test mit zwei Kontexten etwas pruefte, das es nicht gab,
 nur umgekehrt.
 
+### 9c. Leer ist nur dann eine Aussage, wenn jemand geleert hat
+
+**Aus `gt40-engine`, 2026-10-25.** Dort schrieb die Anzeige alte Statuswerte
+(`"false"`) beim Darstellen auf leer um. Das nächste Speichern, egal welches
+Feld, stempelte daraus ein Leeren, das niemand gemacht hatte. Nachgerechnet
+mit dem echten Code: Das „erledigt" eines anderen Geräts wäre verloren
+gegangen. Dieselbe Falle steht hier offen. `messblatt.js` erzeugt Felder erst,
+nachdem `app.js` die gespeicherten Werte eingetragen hat. Bis zum
+Nachtragen stehen sie leer da, und Regel 9a hilft nicht, weil vorher ein Wert
+da war.
+
+**Die Regel seit v19:** Ein Leeren zählt nur bei einem Feld, das der Nutzer
+seit dem letzten Speichern selbst berührt hat (Tippen, Auswählen,
+Antippen). `mergeIntoExisting` vermerkt es in `_geleert`, und
+`mergeRecords` lässt ein Leer nur mit diesem Vermerk gegen einen Wert
+gewinnen. Ein nur angezeigtes Leer behält den gespeicherten Wert.
+
+**Dazu, aus denselben Vorfällen:** Hat nur eine Seite einen Zeitstempel,
+gewinnt sie. Bis v18 galt für die Seite ohne Stempel `_savedAt` des ganzen
+Datensatzes. In gt40 schlug damit ein veralteter Stand, der irgendein anderes
+Feld speicherte, einen gestempelten Wert. `anwenden()` überschreibt seit v19
+auch kein berührtes Feld mehr, nicht nur das fokussierte.
+
+**Seitdem geprüft:** `tests/abgleich.test.mjs` (geleert mit Vermerk, nur
+angezeigt, Leer ohne Vermerk, Altbestand) und `tests/abgleich-ui.test.mjs`
+(Leeren wandert mit, Eingabe während eines Laufs, Import).
+
 ## 10. Ein Setup hat einen Endzustand, ein Fahrwerk nicht
 
 Die Werkstattphasen 0-18 enden mit `Phase 18 - Werkstatt-Baseline einfrieren`

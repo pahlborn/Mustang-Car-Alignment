@@ -144,7 +144,7 @@
 
     function saveFieldsLocal() {
         var existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-        var merged = FieldSync.mergeIntoExisting(existing, collectData(), { recordClears: dataLoaded });
+        var merged = FieldSync.mergeIntoExisting(existing, collectData(), { recordClears: dataLoaded, beruehrt: FieldSync.beruehrteAbholen() });
         localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
         return merged;
     }
@@ -354,6 +354,9 @@
                 applyData(merged);
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
                 updateSaveStatus();
+                // Bis v18 blieb der Import auf diesem Geraet, bis zufaellig ein
+                // Abgleich lief.
+                if (typeof Abgleich !== 'undefined') Abgleich.planen();
             } catch (err) {
                 showToast('Import fehlgeschlagen: ' + err.message, { sticky: true, isError: true });
             }

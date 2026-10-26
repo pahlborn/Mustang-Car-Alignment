@@ -24,6 +24,7 @@ const STATUS = 'mustang-chassis-status.json';
 // --- Nachgebauter Gist --------------------------------------------------------
 let gist = {};
 let stoerung = { get: 0, patch: 0 };
+let verzoegerung = { get: 0 };      // Antwortzeit beim Lesen, fuer Eingaben waehrend eines Laufs
 const CORS = {
   'access-control-allow-origin': '*',
   'access-control-allow-methods': 'GET, PATCH, OPTIONS',
@@ -35,6 +36,7 @@ async function gistRoute(route) {
   const m = req.method();
   if (m === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
   if (m === 'GET') {
+    if (verzoegerung.get) await new Promise((r) => setTimeout(r, verzoegerung.get));
     if (stoerung.get) return route.fulfill({ status: stoerung.get, headers: CORS, body: 'nope' });
     return route.fulfill({ status: 200, headers: CORS, contentType: 'application/json',
                            body: JSON.stringify({ files: gist }) });
@@ -48,7 +50,7 @@ async function gistRoute(route) {
   return route.fulfill({ status: 405, headers: CORS });
 }
 
-function neuerGist() { gist = {}; stoerung = { get: 0, patch: 0 }; }
+function neuerGist() { gist = {}; stoerung = { get: 0, patch: 0 }; verzoegerung = { get: 0 }; }
 function imGist(datei) { return gist[datei] ? JSON.parse(gist[datei].content) : {}; }
 
 /** Ein Geraet: eigener Kontext, mit dem Gist verbunden. */
@@ -194,6 +196,87 @@ await test('ein frisches Geraet loescht nichts', async () => {
   await b.close();
   assertEqual(imGist(MESS)[f1], '7.5', 'Wert im Gist');
   assertEqual(wert, '7.5', 'Wert auf dem frischen Geraet');
+});
+
+// ---------------------------------------------------------------------------
+suite('v19: Leeren, Eingaben waehrend eines Laufs, Import');
+
+await test('ein bewusst geleertes Feld bleibt leer und kommt so beim anderen Geraet an', async () => {
+  neuerGist();
+  const a = await geraet('messblatt.html');
+  const [f1] = await zweiFelder(a.page);
+  await tippe(a.page, f1, '9.5');
+  assert(await warte(() => imGist(MESS)[f1] === '9.5'), 'Wert von A kam nicht an');
+  await tippe(a.page, f1, '');
+  assert(await warte(() => imGist(MESS)[f1] === ''), 'Das Leeren kam nicht im Gist an');
+  await a.close();
+  const b = await geraet('messblatt.html');
+  const wert = await b.page.inputValue('[data-field="' + f1 + '"]');
+  await b.close();
+  assertEqual(wert, '', 'Feld auf Geraet B');
+});
+
+await test('ein nur leer angezeigtes Feld loescht nichts', async () => {
+  neuerGist();
+  const a = await geraet('messblatt.html');
+  const [f1] = await zweiFelder(a.page);
+  await tippe(a.page, f1, '4.4');
+  assert(await warte(() => imGist(MESS)[f1] === '4.4'), 'Wert von A kam nicht an');
+  await a.close();
+  const b = await geraet('messblatt.html');
+  await b.page.evaluate((f) => {
+    document.querySelector('[data-field="' + f + '"]').value = '';      // ohne Eingabe
+    return saveData();
+  }, f1);
+  await b.page.waitForTimeout(500);
+  const lokal = await b.page.evaluate((f) => FieldSync.lesen()[f], f1);
+  await b.close();
+  assertEqual([lokal, imGist(MESS)[f1]], ['4.4', '4.4'], 'Wert lokal / im Gist');
+});
+
+await test('was waehrend eines Laufs eingegeben wird, ueberschreibt der Lauf nicht', async () => {
+  // Bis v18 schuetzte anwenden() nur das Feld mit dem Fokus. Wer tippte und
+  // dann woanders hintippte, sah den alten Wert zurueckspringen.
+  neuerGist();
+  const a = await geraet('messblatt.html');
+  const [f1, f2] = await zweiFelder(a.page);
+  await tippe(a.page, f1, 'alt');
+  assert(await warte(() => imGist(MESS)[f1] === 'alt'), 'Wert kam nicht an');
+  await a.page.waitForTimeout(1500);
+  // Ein anderes Geraet traegt etwas ein - der naechste Lauf bringt Neues.
+  const stand = imGist(MESS);
+  stand[f2] = 'vom anderen Geraet';
+  stand._fieldTimes = Object.assign({}, stand._fieldTimes, { [f2]: Date.now() + 60000 });
+  gist[MESS] = { filename: MESS, content: JSON.stringify(stand) };
+  verzoegerung.get = 700;
+  const r = await a.page.evaluate(async ([f1, f2]) => {
+    const lauf = Abgleich.jetzt();
+    await new Promise((res) => setTimeout(res, 150));
+    const el = document.querySelector('[data-field="' + f1 + '"]');
+    el.value = 'getippt'; el.dispatchEvent(new Event('input', { bubbles: true }));
+    if (document.activeElement) document.activeElement.blur();
+    await lauf;
+    return { direkt: el.value, anderes: document.querySelector('[data-field="' + f2 + '"]').value };
+  }, [f1, f2]);
+  verzoegerung.get = 0;
+  assert(await warte(() => imGist(MESS)[f1] === 'getippt'), 'Eingabe kam nicht im Gist an');
+  await a.close();
+  assertEqual(r.anderes, 'vom anderen Geraet', 'Testaufbau: der Lauf hat Neues gebracht');
+  assertEqual(r.direkt, 'getippt', 'Feld direkt nach dem Lauf');
+});
+
+await test('ein Import geht in die Cloud', async () => {
+  // Bis v18 blieb er auf dem Geraet, bis zufaellig ein Lauf kam.
+  neuerGist();
+  const a = await geraet('messblatt.html');
+  const [f1] = await zweiFelder(a.page);
+  await a.page.evaluate((f) => {
+    const datei = { felder: { [f]: '6.6', _fieldTimes: { [f]: Date.now() - 1000 } } };
+    importJSON({ target: { files: [new File([JSON.stringify(datei)], 'sicherung.json')], value: '' } });
+  }, f1);
+  const angekommen = await warte(() => imGist(MESS)[f1] === '6.6');
+  await a.close();
+  assert(angekommen, 'Import kam nicht im Gist an');
 });
 
 await test('Phasenstatus kommt ohne eigene Aenderung an', async () => {

@@ -318,11 +318,40 @@ await test('ein nie ausgefuelltes Feld bekommt keinen Zeitstempel', async () => 
   assertEqual(F.mergeRecords(vonA, frischesB).druck_lf, '2.2', 'Wert nach dem Mischen');
 });
 
-await test('ein bewusst geleertes Feld bleibt geleert (Regel 9)', async () => {
+await test('ein bewusst geleertes Feld bleibt geleert (Regel 9, 9c)', async () => {
+  // Seit v19 mit der Liste der beruehrten Felder - so speichert app.js.
   const vonA = F.mergeIntoExisting({}, { druck_lf: '2.2' }, { now: 1000 });
-  const geleert = F.mergeIntoExisting(vonA, { druck_lf: '' }, { now: 2000 });
+  const geleert = F.mergeIntoExisting(vonA, { druck_lf: '' }, { now: 2000, beruehrt: { druck_lf: true } });
   assertEqual(geleert._fieldTimes.druck_lf, 2000, 'Zeitstempel des Leerens');
-  assertEqual(F.mergeRecords(vonA, geleert).druck_lf, '', 'Wert nach dem Mischen');
+  assertEqual(geleert._geleert.druck_lf, 2000, 'Vermerk des Leerens');
+  assertEqual([F.mergeRecords(vonA, geleert).druck_lf, F.mergeRecords(geleert, vonA).druck_lf], ['', ''],
+    'Wert nach dem Mischen (lokal geleert / in der Cloud geleert)');
+});
+
+await test('ein nur leer angezeigtes Feld loescht nichts (Regel 9c)', async () => {
+  // Ein Feld, das erst nach dem Eintragen erzeugt wird, steht leer da, ohne
+  // dass jemand es geleert hat (messblatt.js). Bis v18 wurde dieses Leer
+  // gestempelt und gewann gegen den Wert.
+  const vonA = F.mergeIntoExisting({}, { druck_lf: '2.2' }, { now: 1000 });
+  const angezeigt = F.mergeIntoExisting(vonA, { druck_lf: '' }, { now: 2000, beruehrt: {} });
+  assertEqual([angezeigt.druck_lf, angezeigt._fieldTimes.druck_lf], ['2.2', 1000], 'Wert / Stempel');
+});
+
+await test('ein Leer ohne Vermerk schlaegt keinen Wert, auch wenn es juenger ist (Regel 9c)', async () => {
+  // So sieht ein Leer aus, das alter Code oder ein nur angezeigtes Feld
+  // gestempelt hat.
+  const wert = { druck_lf: '2.2', _fieldTimes: { druck_lf: 1000 } };
+  const leer = { druck_lf: '', _fieldTimes: { druck_lf: 2000 } };
+  assertEqual([F.mergeRecords(wert, leer).druck_lf, F.mergeRecords(leer, wert).druck_lf], ['2.2', '2.2'], 'Wert nach dem Mischen');
+});
+
+await test('ein gestempelter Wert schlaegt Altbestand ohne Stempel', async () => {
+  // In gt40-engine gewann bis v107 ein veralteter Stand, der irgendein
+  // anderes Feld speicherte, alle Felder ohne Stempel.
+  const gestempelt = { druck_lf: '2.2', _fieldTimes: { druck_lf: 1000 }, _savedAt: '2026-10-25T10:00:00Z' };
+  const veraltet = { druck_lf: '1.8', x: '1', _fieldTimes: { x: 5000 }, _savedAt: '2026-10-26T10:00:00Z' };
+  assertEqual([F.mergeRecords(gestempelt, veraltet).druck_lf, F.mergeRecords(veraltet, gestempelt).druck_lf],
+    ['2.2', '2.2'], 'Wert nach dem Mischen');
 });
 
 } finally {

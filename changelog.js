@@ -12,6 +12,18 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v19',
+      date: '2026-10-26',
+      time: '05:04',
+      title: 'Leeren nur bei eigener Eingabe, Import in die Cloud',
+      changes: [
+        { type: 'fix', text: 'Ein leeres Feld zaehlt nur noch als geloescht, wenn man es selbst geleert hat. Felder, die das Messblatt erst nach dem Laden erzeugt, standen kurz leer da - ein Speichern in diesem Moment haette ihre Werte geloescht, beim Abgleich auch auf den anderen Geraeten.' },
+        { type: 'fix', text: 'Was man waehrend eines Abgleichs eintraegt, springt nicht mehr auf den alten Wert zurueck - auch nicht, wenn man schon im naechsten Feld ist.' },
+        { type: 'fix', text: 'Ein Import geht jetzt in die Cloud, statt auf diesem Geraet zu warten, bis zufaellig abgeglichen wird.' },
+        { type: 'intern', text: 'field-sync.js wie gt40-engine v109 und jerico v41: beruehrte Felder, _geleert, ein gestempelter Wert schlaegt Altbestand ohne Stempel. Regel 9c im Unfallregister. Vier Modul- und vier Browsertests; Gegenprobe je Aenderung rot.' }
+      ]
+    },
+    {
       version: 'v18',
       date: '2026-10-24',
       time: '07:32',
