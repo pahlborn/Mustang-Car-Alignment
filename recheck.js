@@ -204,6 +204,56 @@
   // steht - die Phasen danach gelten erst mit bestandenem Test.
   var BIND_TEST_NACH = 'phase3';
 
+  // Was einen bestandenen Bind-Test ungueltig macht: CHAPTER_BIND_DIAGNOSIS
+  // §8 Regel 4, gleichlautend in 02_WORKFLOW §6 - "Jede Buchsenaenderung an
+  // der Hinterachse und jede Aenderung an Laenge oder Hoehe des Panhard
+  // erfordert einen neuen Bind-Test". Steht hier einmal, neben der Schranke;
+  // status.js wertet es aus, die Werkstatt bietet es zum Eintragen an.
+  // Die Buchsen beruehren keine Phase, nur den Test - darum stehen sie nicht
+  // in der Matrix (v24).
+  var BIND_UNGUELTIG_NACH = ['buchsen_hinterachse', 'panhard_laenge', 'panhard_hoehe'];
+
+  // Anzeigenamen. Eine Kennung wie `mech_spielfreiheit` ist ein Schluessel,
+  // kein Text fuer die Werkstatt (Pruefung aus Mechanikersicht, 2026-10-28).
+  // Groessen mit eigener Matrixzeile tragen deren Wortlaut aus dem Handbuch
+  // und stehen hier nicht - sonst haetten sie zwei Namen (Regel 4).
+  var NAMEN = {
+    achszentrierung: 'Achszentrierung',
+    ackermann: 'Ackermann',
+    arb_preload: 'Stabi-Vorspannung (ARB-Preload)',
+    baseline_id: 'Werkstatt-Baseline',
+    bump_steer: 'Bump Steer',
+    bump_stop_abstand: 'Abstand zum Anschlagpuffer',
+    buchsen_hinterachse: 'Buchsen Hinterachse',
+    camber_gain: 'Camber Gain',
+    cross: 'Cross Weight',
+    freigaengigkeit: 'Freigängigkeit',
+    hardware_stand: 'Hardware-Stand',
+    kpi: 'KPI (Spreizung)',
+    lateral_position: 'Seitenlage der Hinterachse',
+    mech_spielfreiheit: 'Spielfreiheit der Lager und Gelenke',
+    pad_ebene: 'Ebenheit der Setup-Pads',
+    panhard_winkel: 'Panhard-Winkel',
+    pinion_slope: 'Pinion-Winkel',
+    race_ready_zustand: 'Race-Ready-Zustand',
+    radlasten: 'Radlasten',
+    radstand_lr: 'Radstand links/rechts',
+    rake: 'Rake',
+    rear_roll_geometry: 'Rollgeometrie hinten',
+    steering_center: 'Lenkungsmitte',
+    thrust_angle: 'Thrust Angle (Fahrachse)',
+    track_daten: 'Streckendaten',
+    u_bolt_klemmung: 'U-Bolt-Klemmung',
+    u_joint_winkel: 'Kardanwinkel (U-Joint)'
+  };
+
+  /** Lesbarer Name einer Groesse - Matrixzeile oder NAMEN, nie die Kennung. */
+  function name(g) {
+    if (NAMEN[g]) return NAMEN[g];
+    for (var i = 0; i < MATRIX.length; i++) if (MATRIX[i].groesse === g) return MATRIX[i].zeile;
+    return String(g);
+  }
+
   // Die Datei, aus der Phasen und Matrix stammen.
   var WORKFLOW = '02_WORKFLOW.md';
 
@@ -343,6 +393,7 @@
     for (var p = 0; p < PHASEN.length; p++) {
       for (var l = 0; l < PHASEN[p].liefert.length; l++) set[PHASEN[p].liefert[l]] = true;
     }
+    for (var b = 0; b < BIND_UNGUELTIG_NACH.length; b++) set[BIND_UNGUELTIG_NACH[b]] = true;
     return Object.keys(set).sort();
   }
 
@@ -356,6 +407,9 @@
     MATRIX: MATRIX,
     PHASEN: PHASEN,
     BIND_TEST_NACH: BIND_TEST_NACH,
+    BIND_UNGUELTIG_NACH: BIND_UNGUELTIG_NACH,
+    NAMEN: NAMEN,
+    name: name,
     WORKFLOW: WORKFLOW,
     phasenAbschnitt: phasenAbschnitt,
     SAMMEL: SAMMEL,

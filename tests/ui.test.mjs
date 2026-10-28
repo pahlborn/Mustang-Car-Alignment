@@ -289,6 +289,31 @@ for (const file of ALLE_SEITEN) {
   });
 }
 
+// ---------------------------------------------------------------------------
+suite('v24: iOS zoomt nicht in die Eingabefelder');
+
+for (const file of ALLE_SEITEN) {
+  await test(file + ': jedes Eingabefeld hat mindestens 16 px Schrift', async () => {
+    // Unter 16 px vergroessert iOS die Seite beim Antippen - mitten in der
+    // Messung (Pruefung aus Mechanikersicht, 2026-10-28). Gemessen wird der
+    // berechnete Wert, nicht das Stylesheet: es zaehlt, was ankommt.
+    const p = await open(file);
+    const r = await p.page.evaluate(() => {
+      const felder = [...document.querySelectorAll('input, select, textarea')]
+        .filter((e) => !['checkbox', 'radio', 'range', 'hidden', 'button', 'submit', 'file', 'color'].includes(e.type));
+      return {
+        anzahl: felder.length,
+        zuKlein: felder.map((e) => ({ f: e.dataset.field || e.id || e.name || e.className || e.tagName,
+                                       px: parseFloat(getComputedStyle(e).fontSize) }))
+          .filter((x) => x.px < 16)
+          .map((x) => x.f + ' ' + x.px + 'px')
+      };
+    });
+    await p.close();
+    assertEqual(r.zuKlein, [], 'Eingabefelder unter 16 px (' + r.anzahl + ' geprueft)');
+  });
+}
+
 } finally {
   await browser.close();
   server.close();

@@ -34,7 +34,7 @@
     if (typeof Bind === 'undefined' || typeof FieldSync === 'undefined') return;
 
     // Eine Stelle fuer den Befund: Status.bindStand() - dort steht auch, dass
-    // eine Panhard-Aenderung einen bestandenen Test ueberholt (v23).
+    // eine Panhard- oder Buchsenaenderung einen bestandenen Test ueberholt.
     var bf = (typeof Status !== 'undefined' && Status.bindStand)
       ? Status.bindStand() : Bind.befund(FieldSync.lesen());
 
@@ -65,8 +65,9 @@
     if (bf.ueberholt && bf.ueberholt.length) {
       ziel.innerHTML = '<div class="warning-box">'
         + '<strong>&#9878; Bind-Test wiederholen</strong>'
-        + '<div style="margin-top:0.3rem;">Der Panhard wurde nach dem letzten Test ge&auml;ndert. '
-        + 'Eine falsche Panhard-L&auml;nge erzeugt Bind &ndash; der Test nach 6.1 gilt erst wieder, '
+        + '<div style="margin-top:0.3rem;">Nach dem letzten Test ge&auml;ndert: '
+        + esc(Status.ueberholtText(bf.ueberholt)) + '. '
+        + 'Das kann Bind erzeugen (Bind-Kapitel &sect;8 Regel 4) &ndash; der Test nach 6.1 gilt erst wieder, '
         + 'wenn er danach wiederholt wurde.</div>'
         + '<div style="margin-top:0.3rem;"><a href="bind.html">Zur Bind-Diagnose</a></div>'
         + '</div>';

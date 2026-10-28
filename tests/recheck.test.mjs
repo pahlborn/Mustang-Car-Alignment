@@ -402,6 +402,48 @@ await test('02_WORKFLOW.md fuehrt die Schranke im Abschnitt genau dieser Phase',
   assert(/Projektfestlegung/.test(block), 'Die Schranke ist nicht als Projektfestlegung markiert');
 });
 
+await test('was den Bind-Test ungueltig macht, steht so im Bind-Kapitel §8 Regel 4', async () => {
+  // v24: die Liste steht in recheck.js; ihr Beleg ist dieser eine Satz.
+  const bind = fs.readFileSync(path.join(REPO_ROOT, 'handbuch', 'CHAPTER_BIND_DIAGNOSIS.md'), 'utf8');
+  const regel = (bind.split(/\r?\n/).find((z) => /^4\. \*\*Jede Buchsen/.test(z)) || '');
+  assert(regel, 'Regel 4 nicht gefunden');
+  assert(/Buchsen\u00e4nderung\*\* an der Hinterachse/.test(regel), 'Buchsen fehlen in Regel 4: ' + regel);
+  assert(/L\u00e4nge oder H\u00f6he des Panhard/.test(regel), 'Panhard fehlt in Regel 4: ' + regel);
+  assertEqual([...R.BIND_UNGUELTIG_NACH].sort(), ['buchsen_hinterachse', 'panhard_hoehe', 'panhard_laenge'],
+    'BIND_UNGUELTIG_NACH weicht von Regel 4 ab');
+});
+
+// ---------------------------------------------------------------------------
+suite('v24: Jede Groesse hat genau einen lesbaren Namen');
+
+await test('jede Groesse hat einen Namen, und der ist keine Kennung', async () => {
+  const ohne = R.alleGroessen().filter((g) => {
+    const n = R.name(g);
+    return n === g || /_/.test(n) || !n.trim();
+  });
+  assertEqual(ohne, [], 'Groessen ohne lesbaren Namen');
+});
+
+await test('keine Groesse hat zwei Namen (Regel 4)', async () => {
+  // Wer eine Matrixzeile hat, heisst wie im Handbuch - NAMEN darf sie nicht
+  // zusaetzlich fuehren.
+  const doppelt = R.MATRIX.map((m) => m.groesse).filter((g) => g in R.NAMEN);
+  assertEqual([...new Set(doppelt)], [], 'In NAMEN und als Matrixzeile');
+  const unbenutzt = Object.keys(R.NAMEN).filter((g) => !R.alleGroessen().includes(g));
+  assertEqual(unbenutzt, [], 'NAMEN fuer Groessen, die es nicht gibt');
+});
+
+await test('zwei Groessen tragen nie denselben Namen', async () => {
+  const gesehen = {};
+  const gleich = [];
+  for (const g of R.alleGroessen()) {
+    const n = R.name(g);
+    if (gesehen[n] && gesehen[n] !== g) gleich.push(n + ': ' + gesehen[n] + '/' + g);
+    gesehen[n] = g;
+  }
+  assertEqual(gleich, [], 'Namensgleichheit');
+});
+
 } finally {
   // kein Server, kein Browser
 }

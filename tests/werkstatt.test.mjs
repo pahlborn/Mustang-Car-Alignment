@@ -88,6 +88,8 @@ await test('die Auswahlliste nennt nur Groessen mit Wirkung', async () => {
     return {
       werte,
       ohneWirkung: werte.filter((g) => {
+        // Wirkung hat auch, was nur den Bind-Test ungueltig macht (v24).
+        if (Recheck.BIND_UNGUELTIG_NACH.includes(g)) return false;
         const f = Recheck.phasenNach(g);
         return !f.veraltet.length && !f.mitmessen.length && !f.hinweis.length;
       })
@@ -96,6 +98,8 @@ await test('die Auswahlliste nennt nur Groessen mit Wirkung', async () => {
   await p.close();
   assert(r.werte.length > 0, 'Keine Auswahl gebaut');
   assertEqual(r.ohneWirkung, [], 'Auswahl enthaelt Groessen ohne Wirkung');
+  // Bind-Kapitel §8 Regel 4: ein Buchsentausch hinten ist ein Eingriff (v24).
+  assert(r.werte.includes('buchsen_hinterachse'), 'Buchsen Hinterachse fehlt in der Auswahl');
 });
 
 // ---------------------------------------------------------------------------
@@ -511,6 +515,99 @@ await test('der Stand ueberlebt den Seitenwechsel', async () => {
   assertEqual(fehler, [], 'Fehler beim Seitenwechsel');
   assert(/veraltet/.test(t), 'Die Startseite kennt den Stand der Werkstatt nicht: ' + t);
   assert(/Nicht rennstreckenbereit/i.test(aussage), 'Aussage: ' + aussage);
+});
+
+// ---------------------------------------------------------------------------
+suite('v24: Bedienung mit Werkstatthaenden');
+
+await test('der Statusknopf ist mindestens 44 px gross', async () => {
+  // Apple HIG: 44 pt Tippflaeche. Bis v23 waren es 22 px.
+  const p = await oeffne('werkstatt.html');
+  const r = await p.page.evaluate(() => [...document.querySelectorAll('#phasenListe .step-status')]
+    .map((b) => { const q = b.getBoundingClientRect(); return Math.min(q.width, q.height); }));
+  await p.close();
+  assertEqual(r.length, 19, 'Anzahl Knoepfe');
+  assert(Math.min(...r) >= 44, 'Kleinster Statusknopf: ' + Math.min(...r) + ' px');
+});
+
+await test('erledigt wird nur nach Rueckfrage wieder offen', async () => {
+  // Beide Richtungen (Regel 7, dritter Vorfall): Abbrechen laesst den
+  // Abschluss stehen, Bestaetigen setzt zurueck.
+  const p = await oeffne('werkstatt.html');
+  const knopf = '#phasenListe .step-status[data-phase="phase4"]';
+  const fragen = [];
+  await p.page.click(knopf);
+  await p.page.click(knopf);
+  assertEqual(await p.page.getAttribute(knopf, 'value'), 'done', 'Vorbedingung');
+  assertEqual(fragen.length, 0, 'Rueckfrage schon auf dem Weg zu erledigt');
+
+  p.page.once('dialog', (d) => { fragen.push(d.message()); d.dismiss(); });
+  await p.page.click(knopf);
+  await p.page.waitForTimeout(150);
+  assertEqual(fragen.length, 1, 'Keine Rueckfrage vor dem Zuruecksetzen');
+  assert(/Phase 4/.test(fragen[0]), 'Die Rueckfrage nennt die Phase nicht: ' + fragen[0]);
+  assertEqual(await p.page.getAttribute(knopf, 'value'), 'done', 'Abbrechen hat trotzdem zurueckgesetzt');
+
+  p.page.once('dialog', (d) => { fragen.push(d.message()); d.accept(); });
+  await p.page.click(knopf);
+  await p.page.waitForTimeout(150);
+  const stufe = await p.page.getAttribute(knopf, 'value');
+  await p.close();
+  assertEqual(stufe, '', 'Bestaetigen hat nicht zurueckgesetzt');
+});
+
+await test('die Werkstatt zeigt Namen, keine Kennungen', async () => {
+  // Bis v23: "Legt fest: Mech Spielfreiheit, Pad Ebene, Radstand Lr".
+  // Geprueft wird jede Groesse einmal, ueber alle Karten und das Journal.
+  const p = await oeffne('werkstatt.html');
+  const r = await p.page.evaluate(() => {
+    for (const g of Recheck.alleGroessen()) Status.eintragen(g);
+    werkstattZeichnen();
+    document.querySelectorAll('#phasenListe .section-body').forEach((b) => b.classList.remove('collapsed'));
+    const roh = Recheck.alleGroessen();
+    const text = document.getElementById('phasenListe').innerText + '\n'
+      + document.getElementById('journalListe').innerText + '\n'
+      + [...document.querySelectorAll('#eingriffGroesse option')].map((o) => o.textContent).join('\n');
+    // Handbuchtext in den Karten darf Kennungen in Codespannen tragen -
+    // gesucht wird deshalb nur, was die Anzeige selbst schreibt.
+    const spec = [...document.querySelectorAll('#phasenListe .spec-value, #journalListe .spec-value, #phasenListe .warning-box, #phasenListe .info-box, #eingriffGroesse option')]
+      .map((e) => e.textContent).join('\n');
+    return { treffer: roh.filter((g) => g.includes('_') && spec.includes(g))
+                         .concat((spec.match(/\b(Mech Spielfreiheit|Pad Ebene|Radstand Lr|Arb Preload|U Joint Winkel)\b/g) || [])),
+             leer: text.length < 100 };
+  });
+  await p.close();
+  assert(!r.leer, 'Nichts gezeichnet');
+  assertEqual(r.treffer, [], 'Kennungen in der Anzeige');
+});
+
+await test('die Startseite nennt veraltete Groessen mit Namen', async () => {
+  const p = await oeffne('index.html');
+  await p.page.evaluate(() => {
+    for (const ph of Recheck.PHASEN) Status.setzen(ph.id, 'done');
+    Status.eintragen('u_joint_winkel');
+    Status.eintragen('stabilisator');
+  });
+  await p.page.reload();
+  await p.page.waitForTimeout(400);
+  const text = await p.page.evaluate(() => document.getElementById('veraltetListe').textContent);
+  await p.close();
+  assert(/Stabilisator\/Endlink/.test(text), 'Matrixname fehlt: ' + text);
+  assert(!/_|U Joint/.test(text), 'Kennung in der Anzeige: ' + text);
+});
+
+await test('Buchsen Hinterachse: Vorschau verlangt einen neuen Bind-Test', async () => {
+  const p = await oeffne('werkstatt.html');
+  const r = await p.page.evaluate(() => {
+    const sel = document.getElementById('eingriffGroesse');
+    sel.value = 'buchsen_hinterachse';
+    sel.dispatchEvent(new Event('change', { bubbles: true }));
+    const box = document.getElementById('eingriffWirkung');
+    return { name: sel.selectedOptions[0].textContent, text: box.textContent };
+  });
+  await p.close();
+  assertEqual(r.name, 'Buchsen Hinterachse', 'Name in der Auswahl');
+  assert(/Bind-Test \(6\.1\) wiederholen/.test(r.text), 'Vorschau: ' + r.text);
 });
 
 } finally {

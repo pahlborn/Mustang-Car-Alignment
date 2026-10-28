@@ -322,21 +322,30 @@
     var bf = Bind.befund(daten);
     var stand = { bekannt: true, geprueft: bf.geprueft, sperrt: bf.sperrt, gruende: bf.gruende, ueberholt: [] };
 
-    // Nach einer Aenderung an Laenge oder Hoehe des Panhard gilt ein
-    // bestandener Test nicht mehr (v23; 02_WORKFLOW §6, Bind-Kapitel §8
-    // Regel 4): eine falsche Panhard-Laenge erzeugt Bind (§6.3). Massgeblich
-    // ist der Zeitpunkt der letzten Eingabe im Test nach 6.1.
+    // Nach einer Aenderung an Buchsen der Hinterachse oder an Laenge oder
+    // Hoehe des Panhard gilt ein bestandener Test nicht mehr (v23/v24;
+    // Liste und Beleg in recheck.js). Massgeblich ist der Zeitpunkt der
+    // letzten Eingabe im Test nach 6.1.
     if (bf.geprueft) {
       var testZeit = bindTestZeit(daten);
+      var nach = Recheck.BIND_UNGUELTIG_NACH;
       stand.ueberholt = journal().filter(function (e) {
-        return BIND_UNGUELTIG_NACH.indexOf(e.groesse) > -1 && e.zeit > testZeit;
+        return nach.indexOf(e.groesse) > -1 && e.zeit > testZeit;
       });
       if (stand.ueberholt.length) stand.geprueft = false;
     }
     return stand;
   }
 
-  var BIND_UNGUELTIG_NACH = ['panhard_laenge', 'panhard_hoehe'];
+  /** Was nach dem Test geaendert wurde, lesbar und ohne Doppelte. */
+  function ueberholtText(liste) {
+    var namen = [];
+    for (var i = 0; i < liste.length; i++) {
+      var n = Recheck.name(liste[i].groesse);
+      if (namen.indexOf(n) < 0) namen.push(n);
+    }
+    return namen.join(', ');
+  }
 
   /** Zeitpunkt der juengsten Eingabe im Reproduzierbarkeitstest (6.1). */
   function bindTestZeit(daten) {
@@ -374,7 +383,7 @@
     var grund = [];
     if (b.sperrt) grund.push('Bind-Befund: ' + b.gruende.join('; '));
     else if (!b.bekannt) grund.push('Bind-Befund nicht ermittelbar');
-    else if (!b.geprueft && b.ueberholt && b.ueberholt.length) grund.push('Bind-Test (6.1) nach Panhard-Aenderung wiederholen');
+    else if (!b.geprueft && b.ueberholt && b.ueberholt.length) grund.push('Bind-Test (6.1) wiederholen, danach geändert: ' + ueberholtText(b.ueberholt));
     else if (!b.geprueft) grund.push('Bind-Test (6.1) nicht erfasst');
     if (f.veraltet) grund.push(f.veraltet + ' Phase(n) veraltet');
     if (f.wip) grund.push(f.wip + ' in Arbeit');
@@ -461,6 +470,7 @@
     fortschritt: fortschritt,
     rennstreckenbereit: rennstreckenbereit,
     bindStand: bindStand,
+    ueberholtText: ueberholtText,
     uebersicht: uebersicht,
     _mischen: mischen,
     _roh: function () { return _data; },

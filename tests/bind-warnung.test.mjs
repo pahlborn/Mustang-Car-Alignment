@@ -352,6 +352,18 @@ for (const datei of SEITEN) {
   });
 }
 
+await test('v24: ein Buchsentausch hinten nach dem Test verlangt ihn ebenfalls neu', async () => {
+  // Bind-Kapitel §8 Regel 4 nennt Buchsen vor dem Panhard. Bis v23 liessen
+  // sie sich gar nicht eintragen.
+  const p = await oeffne('index.html');
+  await mitStand(p.page, SAUBER_ZU('Date.now() - 60000') + '; Status.eintragen("buchsen_hinterachse")');
+  const r = await stand(p.page);
+  await p.close();
+  assertEqual(r.versteckt, false, 'Die Anzeige schweigt nach dem Buchsentausch');
+  assert(/Buchsen Hinterachse/.test(r.text) && /wiederholen/i.test(r.text), 'Warnung: ' + r.text);
+  assert(!/_/.test(r.text), 'Kennung in der Warnung: ' + r.text);
+});
+
 } finally {
   await browser.close();
   server.close();

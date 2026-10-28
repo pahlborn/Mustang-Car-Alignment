@@ -22,10 +22,9 @@
             .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
+    /** Lesbarer Name einer Groesse - eine Liste, in recheck.js (v24). */
     function nameVon(g) {
-        return String(g).split('_').map(function (t) {
-            return t.charAt(0).toUpperCase() + t.slice(1);
-        }).join(' ');
+        return Recheck.name(g);
     }
 
     function zeichne() {

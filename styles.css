@@ -266,12 +266,14 @@ body {
 /* Dreistufiger Statusknopf: leer -> in Arbeit -> erledigt.
    Der Zustand steht im value-Attribut, nicht in einer Klasse - so liest ihn
    derselbe Code, der ihn setzt. */
+/* 44 px: Mindestgroesse einer Tippflaeche nach Apple HIG. 22 px waren mit
+   Werkstatthaenden kaum zu treffen (Pruefung aus Mechanikersicht, v24). */
 .step-status {
-    width: 22px; height: 22px; min-width: 22px;
-    border: 2px solid var(--border); border-radius: 5px;
+    width: 44px; height: 44px; min-width: 44px;
+    border: 2px solid var(--border); border-radius: 8px;
     background: white; cursor: pointer; padding: 0;
     display: inline-flex; align-items: center; justify-content: center;
-    font-size: var(--fs-sm); line-height: 1;
+    font-size: 1.3rem; line-height: 1;
     touch-action: manipulation; flex-shrink: 0;
 }
 .step-status[value="wip"] { border-color: var(--warning); color: var(--warning); }
@@ -704,4 +706,15 @@ mark.suche-treffer.aktiv { background: var(--accent); color: white; }
         border: 1px solid #ccc; margin-bottom: 0.5rem;
     }
     .section-body.collapsed { display: block; }  /* gedruckt wird alles */
+}
+
+/* iOS vergroessert die Seite beim Antippen jedes Eingabefelds unter 16 px
+   Schrift - mitten in der Messung (Pruefung aus Mechanikersicht, v24).
+   !important, weil die Feldstile als style="...font-size:0.82rem" an elf
+   Stellen in acht Dateien stehen; eine Regel hier schlaegt sie alle, auch
+   kuenftige Kopien. tests/ui.test.mjs misst den berechneten Wert. */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+select,
+textarea {
+    font-size: 16px !important;
 }

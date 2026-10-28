@@ -12,6 +12,20 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v24',
+      date: '2026-10-28',
+      time: '17:10',
+      title: 'Bedienung in der Werkstatt',
+      changes: [
+        { type: 'fix', text: 'Statusknopf der Phasen jetzt 44 px gross statt 22 px - mit Werkstatthaenden treffbar.' },
+        { type: 'fix', text: 'Ein Tipp auf eine erledigte Phase setzt sie nicht mehr kommentarlos zurueck: die App fragt erst "Wieder auf offen setzen?".' },
+        { type: 'fix', text: 'Klartext statt Kennungen: Werkstatt, Journal und Uebersicht zeigen z. B. "Spielfreiheit der Lager und Gelenke" statt "Mech Spielfreiheit", "Kardanwinkel (U-Joint)" statt "U Joint Winkel".' },
+        { type: 'fix', text: 'iPhone/iPad zoomen beim Antippen eines Eingabefelds nicht mehr in die Seite: alle Felder haben mindestens 16 px Schrift.' },
+        { type: 'neu', text: '"Aenderung eintragen" kennt jetzt "Buchsen Hinterachse". Danach verlangen Werkstatt und Uebersicht einen neuen Bind-Test (Bind-Kapitel 8 Regel 4); die Warnung nennt, was nach dem Test geaendert wurde.' },
+        { type: 'intern', text: 'Recheck.name() und Recheck.NAMEN als einzige Namensliste (nameVon() stand doppelt); BIND_UNGUELTIG_NACH von status.js nach recheck.js, neben die Bind-Schranke, mit Belegtest gegen Regel 4. Unfallregister: siebzehnter Vorfall (Inline-Stile an elf Stellen). Zehn Tests neu, zehn Gegenproben rot.' }
+      ]
+    },
+    {
       version: 'v23',
       date: '2026-10-28',
       time: '15:34',

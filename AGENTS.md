@@ -97,6 +97,17 @@ erlaubt es nur in `field-sync.js`. Das Anfuehrungszeichen ist der
 Unterschied: ein Literal ist Code, dasselbe Wort in einem Kommentar
 beschreibt nur.
 
+**Siebzehnter Vorfall, v24: ein Stil an elf Stellen.** Gegen den iOS-Zoom
+bekam `styles.css` eine Regel „Eingabefelder mindestens 16 px". Sie wirkte
+nirgends: Der Feldstil stand als `style="…font-size:0.82rem"` direkt an den
+Feldern, an elf Stellen in acht Dateien, und ein Inline-Stil schlägt jedes
+Stylesheet. Gemerkt hat es nur der Test, der den **berechneten** Wert im
+Browser misst, nicht das Stylesheet liest. Die Regel steht jetzt mit
+`!important` da; die Kopien bleiben ein Altbestand, der aufzuräumen ist.
+Ebenso die Anzeigenamen: `nameVon()` stand wortgleich in `werkstatt.js` und
+`uebersicht.js` und machte aus `mech_spielfreiheit` „Mech Spielfreiheit".
+Namen kommen jetzt aus `Recheck.name()`.
+
 **Die Probe beim Hinzufuegen eines Moduls:** woher nimmt es seine Daten? Wenn
 die Antwort eine Zeichenkette ist, die anderswo schon steht, ist das Modul
 nicht die Ursache - es macht nur sichtbar, was schon vorher doppelt war.

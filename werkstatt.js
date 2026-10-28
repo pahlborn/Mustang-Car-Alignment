@@ -19,11 +19,9 @@
             .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    /** Lesbarer Name einer Groesse: camber -> Camber, ride_height -> Ride Height */
+    /** Lesbarer Name einer Groesse - eine Liste, in recheck.js (v24). */
     function nameVon(g) {
-        return String(g).split('_').map(function (t) {
-            return t.charAt(0).toUpperCase() + t.slice(1);
-        }).join(' ');
+        return Recheck.name(g);
     }
 
     function zeit(ms) {
@@ -43,11 +41,14 @@
         // Wirkung. Alles andere waere ein Knopf, der nichts tut.
         var gesehen = {};
         var html = ['<option value="">&ndash; bitte w&auml;hlen &ndash;</option>'];
-        for (var i = 0; i < Recheck.MATRIX.length; i++) {
-            var g = Recheck.MATRIX[i].groesse;
+        // Dazu, was nur den Bind-Test beruehrt (Buchsen Hinterachse, v24).
+        var liste = Recheck.MATRIX.map(function (m) { return m.groesse; })
+            .concat(Recheck.BIND_UNGUELTIG_NACH);
+        for (var i = 0; i < liste.length; i++) {
+            var g = liste[i];
             if (gesehen[g]) continue;
             gesehen[g] = true;
-            html.push('<option value="' + esc(g) + '">' + esc(Recheck.MATRIX[i].zeile) + '</option>');
+            html.push('<option value="' + esc(g) + '">' + esc(nameVon(g)) + '</option>');
         }
         sel.innerHTML = html.join('');
         sel.dataset.gebaut = '1';
@@ -79,6 +80,9 @@
         }
         if (f.hinweis.length) {
             teile.push('ggf. betroffen: ' + f.hinweis.map(function (p) { return p.nr; }).join(', '));
+        }
+        if (Recheck.BIND_UNGUELTIG_NACH.indexOf(sel.value) > -1) {
+            teile.push('<strong>Bind-Test (6.1) wiederholen</strong> (Bind-Kapitel &sect;8 Regel 4)');
         }
         box.innerHTML = teile.length ? teile.join('<br>') : 'Keine Phase betroffen.';
         box.style.display = '';
@@ -263,6 +267,14 @@
 
     function phaseWeiter(btn) {
         var id = btn.dataset.phase;
+        // Von "erledigt" fuehrt der naechste Tipp zurueck auf offen. Mit
+        // schmutzigen Haenden ist das schnell passiert und loescht einen
+        // Abschluss - darum nur mit Rueckfrage (v24).
+        if (btn.value === 'done') {
+            var p = Recheck.phase(id);
+            if (!confirm('Phase ' + (p ? p.nr + ' \u201E' + p.titel + '\u201C' : id)
+                + ' ist erledigt. Wieder auf offen setzen?')) return;
+        }
         Status.setzen(id, Status.naechste(btn.value));
         zeichneAlles();
     }
