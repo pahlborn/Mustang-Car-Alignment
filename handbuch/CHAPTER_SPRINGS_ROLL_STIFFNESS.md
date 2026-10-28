@@ -62,7 +62,7 @@ Beide zusammen ergeben den Gesamttransfer der Achse. Der geometrische Anteil ist
 
 ### 3.1 Motion Ratio
 
-Die Feder sitzt beim Mustang **nicht am Rad**, sondern auf dem unteren Querlenker. Sie sieht deshalb weniger Weg als das Rad.
+Die Feder sitzt beim Mustang **nicht am Rad**, sondern **auf dem oberen Querlenker**, oben im Federturm abgestützt: „A coil spring seats between the upper arm and the top of the spring housing" (Quelle A-11). Der Federteller liegt näher an der Lagerachse des Querlenkers als das Kugelgelenk. Die Feder sieht deshalb weniger Weg als das Rad.
 
 ```text
 MR = Federweg / Radweg
@@ -168,7 +168,7 @@ Damit schließt sich die Kette: Eine steifere Achse bekommt mehr Rollmoment, als
 
 | Merkmal | Konsequenz |
 |---|---|
-| Schraubenfeder auf dem LCA | Motion Ratio deutlich unter 1 → quadratischer Einfluss |
+| Schraubenfeder auf dem UCA (im Federturm) | Motion Ratio deutlich unter 1 → quadratischer Einfluss |
 | SLA-Geometrie | Rollzentrum wandert über Federweg |
 | Shelby Drop vorhanden | Rollzentrum **angehoben** → mehr geometrischer Anteil |
 | Stabilisator vorhanden | Hardware und Durchmesser noch nicht erfasst |
@@ -300,6 +300,10 @@ Ohne diese Werte lässt sich die Rollsteifigkeitsverteilung **nicht berechnen**.
 **Quelle B-01 — Arning/Shelby Control Arm Drop**
 `docs/quellen/B-01-arning-shelby-suspension-drop.pdf`
 Belegt: Der Shelby Drop hebt das vordere Rollzentrum und wirkt „as though a larger sway bar were installed".
+
+**Quelle A-11 — Ford Shop Manual 1966**, Kapitel Front Suspension, *Description and Operation*
+`docs/quellen/A-11-ford-1966-shop-manual-ocr.txt`
+Belegt: Die vordere Schraubenfeder sitzt zwischen oberem Querlenker und Federturm („A coil spring seats between the upper arm and the top of the spring housing").
 
 **Quelle C-01 / Maier Racing** und `CHAPTER_REAR_SUSPENSION_PANHARD_PINION` §20
 Belegt: Einschätzung zum hinteren Stabilisator bei Mustang-Road-Race-Setups.

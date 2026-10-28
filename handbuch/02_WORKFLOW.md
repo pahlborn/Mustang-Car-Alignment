@@ -206,7 +206,9 @@ Begründung: Das Bind-Kapitel verlangt den Test „vor jeder Setup-Session" (§8
 | grenzwertig | Ursache suchen, Test wiederholen |
 | Bind | §7 des Bind-Kapitels — keine Setup-Arbeit, bevor das geklärt ist |
 
-Nach jeder Buchsenänderung an der Hinterachse ist der Test zu wiederholen (Bind-Kapitel §8, Regel 4).
+**Der Panhard muss dafür nicht ausgerichtet sein.** Voraussetzung ist nur, dass sich sein Bolzen kraftfrei einführen lässt (Bind-Kapitel §8, Regel 3). Ausgerichtet wird er erst in Phase 5 – Achse mittig, Winkel –, weil das die Fahrhöhe aus Phase 4 braucht.
+
+Nach jeder Buchsenänderung an der Hinterachse **und nach jeder Änderung an Länge oder Höhe des Panhard** in Phase 5 ist der Test zu wiederholen (Bind-Kapitel §8, Regel 4). Eine falsche Panhard-Länge erzeugt Bind (Bind-Kapitel §6.3).
 
 > **Projektfestlegung** vom 2026-10-23: Die Stelle im Ablauf ist aus den Voraussetzungen des Tests abgeleitet, keine Herstellerangabe.
 
@@ -273,7 +275,7 @@ Ziel ist noch nicht absolute Finalität, sondern eine brauchbare Basis.
 
 ### Warum Castor vor Camber?
 
-Beim 65/66 Mustang koppeln UCA-Shims und Strut Rods Castor und Camber. Deshalb wird zunächst der gewünschte Castor-Bereich hergestellt, dann Camber, anschließend beide erneut geprüft.
+Beim 65/66 Mustang verstellt der Strut Rod (Castor grob) Camber gering mit, ebenso ein Shim, der nur an einem Bolzen geändert wird. Gegenläufige und gleichsinnige Shims trennen Castor und Camber dagegen sauber (Ford, siehe [`CHAPTER_FRONT_ADJUSTMENT_UCA_LCA.md`](CHAPTER_FRONT_ADJUSTMENT_UCA_LCA.md) §2.4 und §5). Deshalb wird zunächst der gewünschte Castor-Bereich hergestellt, dann Camber, anschließend beide erneut geprüft.
 
 ### KPI
 - messen und dokumentieren

@@ -121,7 +121,7 @@ Eine Kuppe bei hoher Geschwindigkeit erzeugt eine **Entlastung** — das Fahrzeu
 
 > **Slovakiaring ist die Strecke, auf der ein ungemessener Bump Steer am deutlichsten auffällt.** Entlastung plus Federbewegung plus hohe Geschwindigkeit — wenn sich dabei die Spur ändert, wird das Fahrzeug nervös.
 >
-> **Das ist ein starkes Argument, die Bump-Steer-Messvorrichtung zu beschaffen** ([`00_PROJECT.md`](00_PROJECT.md) §7), bevor hier gefahren wird.
+> **Das ist ein starkes Argument, Bump Steer zu messen, bevor hier gefahren wird.** Die Messvorrichtung ist vorhanden (B-G Racing BGR310, [`00_PROJECT.md`](00_PROJECT.md) §7), die Messung steht noch aus ([`CHAPTER_BUMP_STEER.md`](CHAPTER_BUMP_STEER.md)).
 
 ### Setup-Hypothesen
 

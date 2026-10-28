@@ -117,8 +117,8 @@ Aus den beiden Ford-Regeln folgt die vollständige Mechanik:
 |---|---|---|
 | beide Bolzen gleich **hinzufügen** | — | **+1/3° je 1/16"** |
 | beide Bolzen gleich **entfernen** | — | **−1/3° je 1/16"** |
-| vorn **hinzufügen**, hinten **entfernen** (gleiche Dicke) | **+1° je 1/32"** | — |
-| vorn **entfernen**, hinten **hinzufügen** (gleiche Dicke) | **−1° je 1/32"** | — |
+| vorn **hinzufügen**, hinten **entfernen** (gleiche Dicke) | **+1° je 1/32" an jedem Bolzen** (2 × ½°) | — |
+| vorn **entfernen**, hinten **hinzufügen** (gleiche Dicke) | **−1° je 1/32" an jedem Bolzen** (2 × ½°) | — |
 | nur an **einem** Bolzen ändern | halbe Castorwirkung | halbe Camberwirkung |
 
 **Das ist der zentrale Punkt dieses Kapitels:** Die Kopplung von Castor und Camber ist **nicht zwangsläufig**. Wer gegenläufig shimt, verstellt nur Castor. Wer gleichsinnig shimt, verstellt nur Camber.
@@ -230,10 +230,12 @@ Frontansicht, schematisch
 |---|---|---|
 | **Camber statisch** | ja (1/3° je 1/16") | ja |
 | **Castor** | ja, bei gegenläufiger Änderung | **nein** |
-| **KPI / SAI** | ändert sich gegensinnig zum Camber | ändert sich **gleichsinnig** zum Camber |
+| **KPI / SAI** | ändert sich gegensinnig zum Camber | ändert sich **ebenfalls gegensinnig** zum Camber |
 | **Spurweite** | gering | **bis ±9,5 mm je Rad** |
 | **Roll Center** | gering | **relevant** |
 | **Camber Gain** | über wirksame UCA-Länge | über LCA-Geometrie |
+
+**Zur KPI-Zeile:** Der Achsschenkel ist ein starres Teil und dreht sich in der Vorderansicht als Ganzes – gleich, ob das obere Kugelgelenk nach innen oder das untere nach außen wandert. Kippt er oben nach innen, wird Camber negativer und KPI im selben Maß größer. Ein Unterschied zwischen UCA- und LCA-Verstellung liegt deshalb nicht im Verhältnis von Camber zu KPI, sondern in Spurweite, Roll Center und Camber Gain (Zeilen darunter).
 
 **Die beiden sind keine austauschbaren Wege zum selben Camberwert.** Gleicher statischer Camber, unterschiedliche Fahrzeuggeometrie.
 
@@ -328,9 +330,9 @@ Castor über UCA-Geometrie zu erzeugen **schont also die Freigängigkeit**. Bei 
 | **UCA Heim beide gleich** ± | — | **voll** | gegensinnig | **ja** | — | *Grundeinstellung, nicht Alignment-Schraube* |
 | **UCA Heim vorn ≠ hinten** | **voll** | gering | gering | gering | — | Auslieferung: 3 Umdr. ≈ +3° |
 | Shims **beide gleich** ± | — | **1/3° je 1/16"** | gegensinnig | gering | — | max. 9/16" je Bolzen |
-| Shims **gegenläufig** | **1/2° je 1/32"** | — | gering | — | — | max. 1/16" Differenz ≈ ±1° |
+| Shims **gegenläufig** | **1° je 1/32" an jedem Bolzen** (Ford: ½° je 1/32" an einem Bolzen) | — | gering | — | — | max. 1/16" Differenz ≈ ±1° |
 | Shim **nur ein Bolzen** | halb | halb | ja | gering | — | erzeugt Kopplung — vermeiden |
-| **LCA Camber Kit** | **—** | **voll** | gleichsinnig | **bis ±9,5 mm** | — | ±3/8", diskrete Stufen |
+| **LCA Camber Kit** | **—** | **voll** | gegensinnig | **bis ±9,5 mm** | — | ±3/8", diskrete Stufen |
 | **Strut Rod** ± | **voll** | gering | gering | — | **ja** | Freigängigkeit vorn |
 | Ride Height | ja | ja | gering | ja | gering | siehe Ride-Height-Kapitel |
 
@@ -343,7 +345,7 @@ Castor über UCA-Geometrie zu erzeugen **schont also die Freigängigkeit**. Bei 
 | Shims gegenläufig | **Castor fein** | ±1° |
 | Strut Rod | **Castor grob** | groß, Freigängigkeit beachten |
 
-Castor und Camber sind an diesem Fahrzeug damit **vollständig getrennt einstellbar**.
+Castor und Camber sind an diesem Fahrzeug damit **weitgehend getrennt einstellbar**: Gegenläufige und gleichsinnige Shims trennen die beiden nach Ford sauber (§2.4). Der Strut Rod verstellt Camber aber gering mit, ebenso ein Shim, der nur an einem Bolzen geändert wird. Deshalb im Workflow erst Castor, dann Camber ([`02_WORKFLOW.md`](02_WORKFLOW.md) §9).
 
 ### Warum nicht die UCA-Länge als Camber-Regler?
 

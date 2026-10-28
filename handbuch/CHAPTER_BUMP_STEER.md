@@ -604,7 +604,6 @@ Nur wenn die Baseline eine relevante Abweichung zeigt.
 - geometrische Höhe der verbauten Ball Joints gegenüber Serie (Bestückung: [`00_PROJECT.md`](00_PROJECT.md) §3)
 - Einfluss des vorhandenen Shelby Drop
 - Distanzstück-Stapel des Bump-Steer-Kits je Seite (Kit: [`00_PROJECT.md`](00_PROJECT.md) §3)
-- welches Messgerät verwendet werden soll
 
 ---
 
@@ -667,7 +666,7 @@ https://streetortrack.com/baer-tracker-bump-steer-kit-for-1965-66-ford-mustangs-
 - [x] final Toe danach
 - [x] Symptome nicht als Beweis behandelt
 - [ ] exakte reale Lenkungsteile dokumentiert
-- [ ] Messgerät festgelegt
+- [x] Messgerät festgelegt (B-G Racing BGR310, Kopf dieses Kapitels und [`00_PROJECT.md`](00_PROJECT.md) §7)
 - [ ] Baseline-Kurven LF/RF gemessen
 - [ ] Track-Federweg definiert
 - [ ] verbindlicher Zielbereich anhand zusätzlicher Road-Racing-Quellen validiert

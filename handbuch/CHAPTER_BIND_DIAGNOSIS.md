@@ -99,7 +99,7 @@ Das ist zugleich ein **Diagnosemittel**: Bewegt sich die Platte sichtbar, war Bi
 
 ### Das Prinzip
 
-Jedes Bauteil, das eine Bewegung festlegt, nimmt einen **Freiheitsgrad**. Eine Starrachse hat sechs: drei Verschiebungen, drei Drehungen. Davon sollen fünf geführt und einer frei beweglich sein — das Einfedern.
+Jedes Bauteil, das eine Bewegung festlegt, nimmt einen **Freiheitsgrad**. Eine Starrachse hat sechs: drei Verschiebungen, drei Drehungen. Davon sollen **vier geführt und zwei frei** sein: das **Einfedern** beider Seiten zusammen und das **Verschränken**, bei dem eine Seite ein- und die andere ausfedert. Beide fängt nur die Federung ab — keine Führung darf sie behindern.
 
 ```text
 Freiheitsgrad          soll geführt werden durch
@@ -109,7 +109,7 @@ längs                  → Blattfeder (vorderes Auge)
 lateral                → Panhard Bar
 Gieren                 → Blattfeder (beide Seiten)
 Nicken (Axle Wrap)     → Blattfeder (Wickelsteifigkeit)
-Rollen                 → Blattfedern über Federbasis
+Rollen (Verschränken)  → FREI, nur gefedert (Blattfedern über Federbasis)
 ```
 
 **Überbestimmung liegt vor, wenn ein Freiheitsgrad von zwei Bauteilen gleichzeitig festgelegt wird.** Dann müssen beide exakt dieselbe Bewegungsbahn beschreiben — sonst verspannen sie sich gegeneinander.
@@ -351,7 +351,7 @@ Bremse, Handbremse?  → gelöst?
 1. **Vor jeder Setup-Session:** Reproduzierbarkeitstest nach §6.1. Ohne bestandenen Test keine Zehntelarbeit.
 2. **ARB beim Wiegen immer gelöst** oder nachweislich neutral.
 3. **Panhard-Bolzen muss kraftfrei passen.** Wenn nicht: Länge korrigieren, nicht hebeln.
-4. **Jede Buchsenänderung** an der Hinterachse erfordert einen neuen Bind-Test.
+4. **Jede Buchsenänderung** an der Hinterachse **und jede Änderung an Länge oder Höhe des Panhard** erfordert einen neuen Bind-Test – eine falsche Panhard-Länge erzeugt Bind (§6.3).
 5. **Bei Streuung über 1 %:** Ursache suchen, nicht mitteln.
 6. **Keine Setup-Schlüsse** aus Messungen mit bekanntem Bind.
 
