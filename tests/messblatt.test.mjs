@@ -242,29 +242,63 @@ await test('fuer abgeleitete Werte gibt es kein Eingabefeld', async () => {
 // ---------------------------------------------------------------------------
 suite('Eingetragene Werte wirken auf den Phasenstatus');
 
-await test('ein Camber-Feld entwertet dieselben Phasen wie der Knopf', async () => {
-  // DAS ist die Kopplung, um die es geht: in der Werkstatt traegt man
-  // Messwerte ein, und der Status folgt von selbst.
+await test('ein Messwert meldet keine Verstellung - Camber und Radlast nicht (v23)', async () => {
+  // Pruefung aus Mechanikersicht, 2026-10-28: bis v22 galt jedes Eintragen
+  // eines Messwerts als Verstellung. Wer in Phase 15 nur die Radlasten
+  // eintrug, machte damit fruehere Phasen "veraltet" - 100 % waren nicht
+  // erreichbar. Messen verstellt nichts.
   const p = await oeffne();
   const r = await p.page.evaluate(() => {
     for (const ph of Recheck.PHASEN) Status.setzen(ph.id, 'done');
-    const vorher = Status.fortschritt().veraltet;
-
-    const el = document.querySelector('[data-field="al_camber_lf"]');
-    el.value = '-2.1';
-    el.dispatchEvent(new Event('change', { bubbles: true }));
-
-    return {
-      vorher,
-      nachher: Status.fortschritt().veraltet,
-      phasen: Status.uebersicht().filter((x) => x.veraltet).map((x) => x.nr),
-      journal: Status.journal().length
-    };
+    for (const [f, v] of [['al_camber_lf', '-2.1'], ['cw_lf', '312']]) {
+      const el = document.querySelector('[data-field="' + f + '"]');
+      el.value = v;
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    return { journal: Status.journal().length, veraltet: Status.fortschritt().veraltet };
   });
   await p.close();
-  assertEqual(r.vorher, 0, 'Ausgangslage');
-  assertEqual(r.journal, 1, 'Das Feld hat sich nicht gemeldet');
-  assertEqual(r.phasen, [3, 6, 13], 'Andere Phasen als beim Knopf');
+  assertEqual(r, { journal: 0, veraltet: 0 }, 'Journal / veraltete Phasen nach zwei Messwerten');
+});
+
+await test('eine Stellgroesse entwertet dieselben Phasen wie der Knopf', async () => {
+  // DAS ist die Kopplung, um die es geht: wer in der Werkstatt einen Shim
+  // aendert, hat verstellt - der Status folgt von selbst.
+  const perFeld = await oeffne();
+  const r = await perFeld.page.evaluate(() => {
+    for (const ph of Recheck.PHASEN) Status.setzen(ph.id, 'done');
+    const el = document.querySelector('[data-field="st_shim_vorn_lf"]');
+    el.value = '3.2';
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+    return { journal: Status.journal().map((e) => e.groesse),
+             phasen: Status.uebersicht().filter((x) => x.veraltet).map((x) => x.nr) };
+  });
+  await perFeld.close();
+  const perKnopf = await oeffne();
+  const k = await perKnopf.page.evaluate(() => {
+    for (const ph of Recheck.PHASEN) Status.setzen(ph.id, 'done');
+    Status.eintragen('castor');
+    return Status.uebersicht().filter((x) => x.veraltet).map((x) => x.nr);
+  });
+  await perKnopf.close();
+  assertEqual(r.journal, ['castor'], 'Das Feld hat sich nicht gemeldet');
+  assert(r.phasen.length > 0, 'Testaufbau: der Knopf entwertet nichts');
+  assertEqual(r.phasen, k, 'Andere Phasen als beim Knopf');
+});
+
+await test('auch der hintere Shim meldet Castor (v23)', async () => {
+  // Ford: 1/32" an einem Bolzen verstellt Castor um etwa 1/2 Grad (A-11).
+  // Bis v22 meldete der hintere Shim "camber" - dann zog die Matrix Castor
+  // und Freigaengigkeit nicht nach.
+  const p = await oeffne();
+  const g = await p.page.evaluate(() => {
+    const el = document.querySelector('[data-field="st_shim_hinten_lf"]');
+    el.value = '3.2';
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+    return Status.journal().map((e) => e.groesse);
+  });
+  await p.close();
+  assertEqual(g, ['castor'], 'Gemeldete Groesse');
 });
 
 await test('ein Feld ohne data-groesse meldet nichts', async () => {

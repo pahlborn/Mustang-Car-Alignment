@@ -369,21 +369,20 @@ await test('die Seite nennt keinen Zielwert', async () => {
   assert(/nicht belegt/.test(t), 'Der Hinweis auf den unbelegten Richtwert fehlt');
 });
 
-await test('ein Messwert meldet sich beim Phasenstatus', async () => {
+await test('ein Bump-Steer-Messwert meldet keine Verstellung (v23)', async () => {
+  // Bis v22 entwertete jede neue Messung die Phase. Messen verstellt nichts;
+  // verstellt wird die Tie-Rod-Hoehe, und die steht im Journal.
   const p = await oeffne();
   const r = await p.page.evaluate(() => {
     for (const ph of Recheck.PHASEN) Status.setzen(ph.id, 'done');
     const el = document.querySelector('[data-field="' + BumpSteer.feldName('LF', 12) + '"]');
     el.value = '0.2';
     el.dispatchEvent(new Event('change', { bubbles: true }));
-    return {
-      journal: Status.journal().length,
-      veraltet: Status.uebersicht().filter((x) => x.veraltet).map((x) => x.nr)
-    };
+    return { journal: Status.journal().length,
+             veraltet: Status.uebersicht().filter((x) => x.veraltet).map((x) => x.nr) };
   });
   await p.close();
-  assertEqual(r.journal, 1, 'Das Feld hat sich nicht gemeldet');
-  assert(r.veraltet.includes(10), 'Phase 10 Bump Steer muss veralten');
+  assertEqual(r, { journal: 0, veraltet: [] }, 'Journal / veraltete Phasen nach einer Messung');
 });
 
 await test('ein Wert ueberlebt das Neuladen', async () => {

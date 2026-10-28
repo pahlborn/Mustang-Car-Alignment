@@ -99,7 +99,9 @@
         + label + '</td>'
         + BumpSteer.SEITEN.map(function (s) {
             return '<td>' + eingabe(BumpSteer.feldName(s, w),
-              { regel: 'numeric:-20:20', groesse: 'bump_steer' }) + '</td>';
+              // Ein Bump-Steer-Wert ist eine Messung - er meldet keine
+              // Verstellung (seit v23). Verstellt wird die Tie-Rod-Hoehe.
+              { regel: 'numeric:-20:20' }) + '</td>';
           }).join('')
         + '</tr>';
     }).join('');

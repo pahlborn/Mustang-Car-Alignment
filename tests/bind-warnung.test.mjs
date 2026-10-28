@@ -314,6 +314,44 @@ await test('bind-warnung.js ist offline dabei', async () => {
   assertEqual(fehlend, [], 'Skript fehlt in urlsToCache');
 });
 
+// ---------------------------------------------------------------------------
+suite('v23: eine Panhard-Aenderung ueberholt den Bind-Test');
+
+/** Bestandener Test, dessen Eingaben zum Zeitpunkt t gestempelt sind. */
+const SAUBER_ZU = (t) => `(() => {
+  const reihen = [[400, 380, 300, 290], [401, 379, 300, 290], [400, 380, 301, 290]];
+  const d = { _fieldTimes: {} };
+  reihen.forEach((r, i) => {
+    Bind.RAEDER.forEach((rad, k) => { const f = Bind.feldRadlast(i + 1, rad); d[f] = r[k]; d._fieldTimes[f] = ${t}; });
+  });
+  localStorage.setItem(FieldSync.STORAGE_KEY, JSON.stringify(d));
+})()`;
+
+for (const datei of SEITEN) {
+  await test(datei + ': nach einer Panhard-Aenderung verlangt die Anzeige einen neuen Bind-Test', async () => {
+    // 02_WORKFLOW §6 und Bind-Kapitel §8 Regel 4 (seit 2026-10-28): eine
+    // falsche Panhard-Laenge erzeugt Bind - der Test muss danach wiederholt
+    // werden. Bis v22 blieb er in der App bestanden.
+    const p = await oeffne(datei);
+    await mitStand(p.page, SAUBER_ZU('Date.now() - 60000') + '; Status.eintragen("panhard_laenge")');
+    const r = await stand(p.page);
+    const bereit = await p.page.evaluate(() => Status.rennstreckenbereit().grund.join(' | '));
+    await p.close();
+    assertEqual(r.versteckt, false, 'Die Anzeige schweigt nach der Panhard-Aenderung');
+    assert(/wiederholen/i.test(r.text) && /Panhard/.test(r.text), 'Kein Hinweis auf den Panhard: ' + r.text);
+    assert(r.verweise.includes('bind.html'), 'Kein Weg zur Bind-Diagnose');
+    assert(/Panhard/.test(bereit), 'Rennstreckenbereit nennt den Grund nicht: ' + bereit);
+  });
+
+  await test(datei + ': eine Panhard-Aenderung vor dem Test ueberholt nichts', async () => {
+    const p = await oeffne(datei);
+    await mitStand(p.page, 'Status.eintragen("panhard_hoehe"); ' + SAUBER_ZU('Date.now() + 60000'));
+    const r = await stand(p.page);
+    await p.close();
+    assertEqual(r.versteckt, true, 'Die Anzeige meldet etwas: ' + r.text);
+  });
+}
+
 } finally {
   await browser.close();
   server.close();

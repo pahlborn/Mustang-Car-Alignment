@@ -50,7 +50,7 @@
                             + 'Winkelangaben.' },
         alignment: { titel: 'Alignment',          icon: '\ud83d\udcd0',
                      hinweis: 'Was dabei herauskommt. Castor vor Camber messen: '
-                            + 'UCA-Shims und Strut Rods koppeln beide.' },
+                            + 'der Strut Rod verstellt Camber leicht mit.' },
         toe:       { titel: 'Toe',                icon: '\u2194' },
         ridehoehe: { titel: 'Ride Height',        icon: '\ud83d\udccf' },
         radlast:   { titel: 'Radlasten',          icon: '\u2696',
@@ -68,7 +68,10 @@
 
     function baueFeld(f) {
         var attr = ' data-field="' + esc(f.id) + '"';
-        if (f.groesse) attr += ' data-groesse="' + esc(f.groesse) + '"';
+        // Nur eine Stellgroesse meldet sich: wer eine Shimdicke eintraegt, hat
+        // verstellt. Wer einen Winkel oder eine Radlast eintraegt, hat gemessen -
+        // bis v22 entwertete auch das die Phasen (Pruefung 2026-10-28).
+        if (f.groesse && f.art === 'stell') attr += ' data-groesse="' + esc(f.groesse) + '"';
         if (f.regel) attr += ' data-validate="' + esc(f.regel) + '"';
         if (f.platzhalter) attr += ' placeholder="' + esc(f.platzhalter) + '"';
 

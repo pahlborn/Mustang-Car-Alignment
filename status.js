@@ -14,8 +14,9 @@
  *
  * ZWEI WEGE, EINE AENDERUNG ZU MELDEN
  *
- * In der Werkstatt traegt man Messwerte in Felder ein; `ausFeld()` meldet die
- * zugehoerige Groesse automatisch. An der Strecke verstellt man Camber, ohne
+ * In der Werkstatt traegt man Stellgroessen in Felder ein (Shims, Platten,
+ * Strut Rod, Kaltdruck); `ausFeld()` meldet die zugehoerige Groesse
+ * automatisch. Messwerte melden nichts - Messen verstellt nichts (seit v23). An der Strecke verstellt man Camber, ohne
  * vorher ein Formular auszufuellen - dafuer gibt es `eintragen()` und einen
  * Knopf. Ohne den zweiten Weg waere das Journal genau dort blind, wo die
  * meisten Eingriffe passieren.
@@ -244,11 +245,10 @@
       // Eine Phase, die diese Groesse selbst liefert, ist durch ihre
       // Neuerfassung ueberholt - ohne Umweg ueber die Matrix.
       //
-      // Das betrifft reine Messgroessen: Bump Steer steht in der Matrix nur
-      // rechts, weil man nicht "Bump Steer" verstellt, sondern die
-      // Tie-Rod-Hoehe. Trotzdem entwertet eine neue Bump-Steer-Messung die
-      // alte - sonst meldete sich ein Messfeld, ohne dass irgendetwas
-      // geschaehe.
+      // Beispiel: ein geaenderter Shim meldet "castor" - die Phasen, die
+      // Castor liefern, sind damit ueberholt. Messungen melden seit v23
+      // nichts mehr; bis dahin entwertete eine neue Radlast-Messung in
+      // Phase 15 die Phasen davor, und 100 % waren nicht erreichbar.
       if (p.liefert.indexOf(e.groesse) > -1) {
         veraltet = true;
         wegen.push({ groesse: e.groesse, zeit: e.zeit, art: 'neu erfasst',
@@ -316,10 +316,39 @@
    */
   function bindStand() {
     if (typeof Bind === 'undefined' || typeof FieldSync === 'undefined') {
-      return { bekannt: false, geprueft: false, sperrt: false, gruende: [] };
+      return { bekannt: false, geprueft: false, sperrt: false, gruende: [], ueberholt: [] };
     }
-    var bf = Bind.befund(FieldSync.lesen());
-    return { bekannt: true, geprueft: bf.geprueft, sperrt: bf.sperrt, gruende: bf.gruende };
+    var daten = FieldSync.lesen();
+    var bf = Bind.befund(daten);
+    var stand = { bekannt: true, geprueft: bf.geprueft, sperrt: bf.sperrt, gruende: bf.gruende, ueberholt: [] };
+
+    // Nach einer Aenderung an Laenge oder Hoehe des Panhard gilt ein
+    // bestandener Test nicht mehr (v23; 02_WORKFLOW §6, Bind-Kapitel §8
+    // Regel 4): eine falsche Panhard-Laenge erzeugt Bind (§6.3). Massgeblich
+    // ist der Zeitpunkt der letzten Eingabe im Test nach 6.1.
+    if (bf.geprueft) {
+      var testZeit = bindTestZeit(daten);
+      stand.ueberholt = journal().filter(function (e) {
+        return BIND_UNGUELTIG_NACH.indexOf(e.groesse) > -1 && e.zeit > testZeit;
+      });
+      if (stand.ueberholt.length) stand.geprueft = false;
+    }
+    return stand;
+  }
+
+  var BIND_UNGUELTIG_NACH = ['panhard_laenge', 'panhard_hoehe'];
+
+  /** Zeitpunkt der juengsten Eingabe im Reproduzierbarkeitstest (6.1). */
+  function bindTestZeit(daten) {
+    var t = (daten && daten[FieldSync.TIMES_KEY]) || {};
+    var max = 0;
+    for (var d = 1; d <= 3; d++) {
+      for (var i = 0; i < Bind.RAEDER.length; i++) {
+        var z = t[Bind.feldRadlast(d, Bind.RAEDER[i])];
+        if (typeof z === 'number' && z > max) max = z;
+      }
+    }
+    return max;
   }
 
   /**
@@ -345,6 +374,7 @@
     var grund = [];
     if (b.sperrt) grund.push('Bind-Befund: ' + b.gruende.join('; '));
     else if (!b.bekannt) grund.push('Bind-Befund nicht ermittelbar');
+    else if (!b.geprueft && b.ueberholt && b.ueberholt.length) grund.push('Bind-Test (6.1) nach Panhard-Aenderung wiederholen');
     else if (!b.geprueft) grund.push('Bind-Test (6.1) nicht erfasst');
     if (f.veraltet) grund.push(f.veraltet + ' Phase(n) veraltet');
     if (f.wip) grund.push(f.wip + ' in Arbeit');
@@ -391,9 +421,10 @@
 
   // ==== Felder melden ihre Groesse selbst ====
   //
-  // Ein Eingabefeld traegt data-groesse="camber". Wird es geaendert, gilt die
-  // Groesse als neu erfasst - ohne dass jemand daran denken muss. Dasselbe
-  // Ereignis wie ein Eingriff, nur ohne eigenen Knopf.
+  // Ein Feld einer Stellgroesse traegt data-groesse="castor". Wird es
+  // geaendert, ist das eine Verstellung - ohne dass jemand daran denken muss.
+  // Dasselbe Ereignis wie ein Eingriff, nur ohne eigenen Knopf. Messfelder
+  // tragen das Attribut nicht (messblatt.js, seit v23).
   //
   // Der Lauscher steht hier und nicht in einer Seitendatei: er gehoert zu
   // ausFeld(). In v3 lag er in werkstatt.js, und als die Messfelder auf einer

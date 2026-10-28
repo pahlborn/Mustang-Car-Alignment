@@ -40,8 +40,10 @@
   // `id`       Feldname im Speicher, zugleich data-field
   // `gruppe`   Messblatt-Abschnitt
   // `art`      'stell' oder 'mess' - siehe Kopfkommentar
-  // `groesse`  Kennung aus recheck.js. Nur wo es eine gibt: eine Aenderung
-  //            daran meldet sich dann selbst und entwertet die Phasen.
+  // `groesse`  Kennung aus recheck.js. Nur bei art 'stell' meldet eine
+  //            Aenderung sich selbst und entwertet die Phasen - das ist eine
+  //            Verstellung. Bei art 'mess' ordnet sie nur zu: Messen
+  //            verstellt nichts (seit v23).
   // `einheit`  wird angezeigt, nicht mitgespeichert
   // `regel`    fuer validation.js
   // `grenze`   Projektgrenze als Text, aus dem Template
@@ -77,7 +79,10 @@
            grenze: 'Paket max. 9/16" = 14,3 mm (Ford)', groesse: 'castor' });
     feld({ id: 'st_shim_hinten_' + r.toLowerCase(), gruppe: 'stell', art: 'stell', rad: r,
            label: 'Shim hinterer Bolzen', einheit: 'mm', regel: 'numeric:0:14.3',
-           grenze: 'Paket max. 9/16" = 14,3 mm (Ford)', groesse: 'camber' });
+           // castor, nicht camber: 1/32" an einem Bolzen verstellt Castor um
+           // etwa 1/2 Grad (Ford Shop Manual 1966, A-11). Die Castor-Zeile der
+           // Matrix zieht Camber und Toe mit; bis v22 entfiel hier der Castor.
+           grenze: 'Paket max. 9/16" = 14,3 mm (Ford)', groesse: 'castor' });
     feld({ id: 'st_lca_platte_' + r.toLowerCase(), gruppe: 'stell', art: 'stell', rad: r,
            label: 'LCA Camber Kit Platte', einheit: 'Nr.', regel: 'integer:1:5',
            grenze: '#1 = Serienposition', groesse: 'camber' });

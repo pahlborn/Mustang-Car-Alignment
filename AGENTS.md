@@ -548,6 +548,16 @@ Darum unterscheidet die Matrix seit v2 **neu messen** von **mitmessen**, und
 nur das erste pflanzt sich fort. Eine Warnung, der niemand glaubt, ist
 schlechter als keine.
 
+**Sechzehnter Vorfall, v23: Messen war Verstellen.** Bis v22 meldete jedes
+Messfeld seine Größe, wie eine Verstellung. Wer in Phase 15 die Radlasten
+eintrug, machte frühere Phasen „veraltet", und 100 % waren nicht erreichbar.
+Gefunden hat es eine Prüfung aus Mechanikersicht (2026-10-28), kein Test. Die
+Tests prüften ausdrücklich das Falsche („ein Messwert meldet sich").
+**Die Regel:** Nur eine Stellgröße (`art: 'stell'` in `messwerte.js`) meldet
+eine Verstellung. Ein Messwert meldet nichts. Dabei fiel noch etwas auf: Der
+hintere Shim meldete `camber`, obwohl er laut Ford den Castor verstellt. Die
+Matrix zog Castor deshalb nicht nach.
+
 ## 11. Kein Rueckblick im Seitentext
 
 Was in einer frueheren Version falsch war, gehoert in `changelog.js` und in die

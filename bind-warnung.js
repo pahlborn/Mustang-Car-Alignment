@@ -33,7 +33,10 @@
     if (!ziel) return;
     if (typeof Bind === 'undefined' || typeof FieldSync === 'undefined') return;
 
-    var bf = Bind.befund(FieldSync.lesen());
+    // Eine Stelle fuer den Befund: Status.bindStand() - dort steht auch, dass
+    // eine Panhard-Aenderung einen bestandenen Test ueberholt (v23).
+    var bf = (typeof Status !== 'undefined' && Status.bindStand)
+      ? Status.bindStand() : Bind.befund(FieldSync.lesen());
 
     // Bestanden heisst: der Test nach 6.1 ist vollstaendig (drei Durchgaenge)
     // und keine der beiden Schwellen ist gerissen. Nur dann schweigt die
@@ -54,6 +57,17 @@
         + '<ul style="margin:0.3rem 0 0 1.2rem;">'
         + bf.gruende.map(function (g) { return '<li>' + esc(g) + '</li>'; }).join('')
         + '</ul>'
+        + '<div style="margin-top:0.3rem;"><a href="bind.html">Zur Bind-Diagnose</a></div>'
+        + '</div>';
+      return;
+    }
+
+    if (bf.ueberholt && bf.ueberholt.length) {
+      ziel.innerHTML = '<div class="warning-box">'
+        + '<strong>&#9878; Bind-Test wiederholen</strong>'
+        + '<div style="margin-top:0.3rem;">Der Panhard wurde nach dem letzten Test ge&auml;ndert. '
+        + 'Eine falsche Panhard-L&auml;nge erzeugt Bind &ndash; der Test nach 6.1 gilt erst wieder, '
+        + 'wenn er danach wiederholt wurde.</div>'
         + '<div style="margin-top:0.3rem;"><a href="bind.html">Zur Bind-Diagnose</a></div>'
         + '</div>';
       return;

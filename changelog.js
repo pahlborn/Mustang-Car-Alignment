@@ -12,6 +12,18 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v23',
+      date: '2026-10-28',
+      time: '15:34',
+      title: 'Messen ist kein Verstellen',
+      changes: [
+        { type: 'fix', text: 'Messen ist kein Verstellen: Bisher galt jedes Eintragen eines Messwerts - Camber, Radlast, Ride Height, Bump Steer - als Verstellung und machte fruehere Phasen "veraltet". Wer in Phase 15 nur die Radlasten eintrug, erreichte nie 100 %. Jetzt melden sich nur noch Stellgroessen: Shims, Heim-Gelenke, LCA-Platte, Strut Rod, Kaltdruck.' },
+        { type: 'fix', text: 'Der Shim am hinteren Bolzen meldete Camber. Er verstellt laut Ford aber den Castor (1/32" an einem Bolzen etwa 1/2 Grad) - jetzt werden danach auch Castor und Freigaengigkeit neu verlangt.' },
+        { type: 'neu', text: 'Wird nach dem Bind-Test die Laenge oder Hoehe des Panhard geaendert, verlangt die App einen neuen Test: Werkstatt und Uebersicht sagen "Bind-Test wiederholen", und das Fahrzeug gilt bis dahin nicht als rennstreckenbereit (Handbuch: Workflow 6, Bind-Kapitel 8 Regel 4).' },
+        { type: 'intern', text: 'messblatt.js setzt data-groesse nur bei art \'stell\'; bumpsteer-ui.js meldet nicht mehr. Status.bindStand() wertet Panhard-Eintraege nach dem Test aus, bind-warnung.js nutzt diese eine Stelle. Unfallregister: sechzehnter Vorfall. Sieben Tests neu oder umgestellt; Gegenproben rot.' }
+      ]
+    },
+    {
       version: 'v22',
       date: '2026-10-26',
       time: '17:58',
