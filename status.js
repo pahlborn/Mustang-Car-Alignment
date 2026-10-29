@@ -224,6 +224,11 @@
    * nicht: wer Camber verstellt und danach das Alignment neu macht, hat die
    * Sache erledigt. Ohne den Zeitvergleich bliebe die Phase fuer immer rot.
    *
+   * Eine Groesse, die eine SPAETERE Phase nach der Aenderung neu erfasst und
+   * abgeschlossen hat, zaehlt ebenfalls nicht (v25, `abgedeckt()`): Phase 6
+   * ist durch Phase 13 planmaessig ersetzt (02_WORKFLOW §2), nicht ungueltig.
+   * `wegen` nennt nur, was nicht abgedeckt ist.
+   *
    * @returns {{veraltet: boolean, mitmessen: boolean, wegen: object[]}}
    */
   function pruefen(phaseId) {
@@ -249,7 +254,7 @@
       // Castor liefern, sind damit ueberholt. Messungen melden seit v23
       // nichts mehr; bis dahin entwertete eine neue Radlast-Messung in
       // Phase 15 die Phasen davor, und 100 % waren nicht erreichbar.
-      if (p.liefert.indexOf(e.groesse) > -1) {
+      if (p.liefert.indexOf(e.groesse) > -1 && !abgedeckt(p, e.groesse, e.zeit)) {
         veraltet = true;
         wegen.push({ groesse: e.groesse, zeit: e.zeit, art: 'neu erfasst',
                      felder: [e.groesse] });
@@ -258,19 +263,52 @@
 
       var folge = Recheck.phasenNach(e.groesse);
       var alt = folge.veraltet.filter(function (x) { return x.id === phaseId; });
-      if (alt.length) {
+      var offenAlt = alt.length ? nichtAbgedeckt(p, alt[0].wegen, e.zeit) : [];
+      if (offenAlt.length) {
         veraltet = true;
-        wegen.push({ groesse: e.groesse, zeit: e.zeit, art: 'neu messen', felder: alt[0].wegen });
+        wegen.push({ groesse: e.groesse, zeit: e.zeit, art: 'neu messen', felder: offenAlt });
         continue;
       }
       var mit = folge.mitmessen.filter(function (x) { return x.id === phaseId; });
-      if (mit.length) {
+      var offenMit = mit.length ? nichtAbgedeckt(p, mit[0].wegen, e.zeit) : [];
+      if (offenMit.length) {
         mitmessen = true;
-        wegen.push({ groesse: e.groesse, zeit: e.zeit, art: 'mitmessen', felder: mit[0].wegen });
+        wegen.push({ groesse: e.groesse, zeit: e.zeit, art: 'mitmessen', felder: offenMit });
       }
     }
     // Die staerkere Aussage gewinnt, wie in recheck.js.
     return { veraltet: veraltet, mitmessen: veraltet ? false : mitmessen, wegen: wegen };
+  }
+
+  /**
+   * Hat eine spaetere Phase die Groesse nach der Aenderung neu erfasst?
+   *
+   * Drei Bedingungen, alle noetig (Auftrag v25):
+   *   - Q steht im Ablauf nach P
+   *   - Q liefert g - berechnet aus Recheck.PHASEN, nicht von Hand gelistet
+   *   - Q ist erledigt, und zwar NACH der Aenderung
+   *
+   * Die dritte ist der Kern. Es reicht nicht, dass es Q im Ablauf gibt:
+   * sonst veraltete Phase 7 nach einer Balanceaenderung in Phase 8 nie, und
+   * Phase 9 ("nach Balance alles erneut pruefen") verloere ihre Wirkung.
+   * Phase 5 hat keine spaetere Phase mit ihren Groessen - sie muss nach
+   * Phase 8 erneut bestaetigt werden, so will es der Ablauf.
+   *
+   * Strikt "nach": now() zaehlt innerhalb einer Millisekunde hoch (Regel 7b),
+   * die Reihenfolge der Eingaben entscheidet, nicht der Zufall.
+   */
+  function abgedeckt(p, g, t) {
+    for (var i = 0; i < Recheck.PHASEN.length; i++) {
+      var q = Recheck.PHASEN[i];
+      if (q.nr <= p.nr) continue;
+      if (q.liefert.indexOf(g) < 0) continue;
+      if (stufe(q.id) === 'done' && gesetztAm(q.id) > t) return true;
+    }
+    return false;
+  }
+
+  function nichtAbgedeckt(p, felder, t) {
+    return felder.filter(function (g) { return !abgedeckt(p, g, t); });
   }
 
   /**

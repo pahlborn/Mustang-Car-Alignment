@@ -569,6 +569,22 @@ eine Verstellung. Ein Messwert meldet nichts. Dabei fiel noch etwas auf: Der
 hintere Shim meldete `camber`, obwohl er laut Ford den Castor verstellt. Die
 Matrix zog Castor deshalb nicht nach.
 
+**Achtzehnter Vorfall, v25: ersetzt ist nicht veraltet.** Auch nach v23 kam
+nicht auf 100 %, wer den Ablauf genau einhielt. Die Shimänderung in Phase 13
+meldet `castor`, und damit galten Phase 6 (liefert Castor) und über die Kette
+Toe → Lenkungsmitte auch Phase 3 als veraltet. Dabei ist Phase 6 durch
+Phase 13 planmäßig ersetzt (02_WORKFLOW §2). Gefunden hat es die Nachprüfung
+aus Mechanikersicht (2026-10-29), nicht ein Test: Die Tests haken alle
+Phasen auf einmal ab und tragen die Änderung erst danach ein. Den Ablauf
+selbst hatte nie einer durchgespielt.
+**Die Regel:** Eine Größe zählt nicht, wenn eine **spätere** Phase sie
+liefert und **nach** der Änderung erledigt wurde (`abgedeckt()` in
+`status.js`, berechnet aus `Recheck.PHASEN`). Beide Bedingungen tragen:
+Ohne „nach" veraltete Phase 7 nach der Balance nie, ohne „später" ersetzte
+ein Neuabhaken von Phase 6 die Phase 13. Ein Test, der eine Anzeige prüft,
+spielt den Ablauf so durch, wie ihn das Handbuch vorschreibt
+(`tests/status.test.mjs`, Suite „v25").
+
 ## 11. Kein Rueckblick im Seitentext
 
 Was in einer frueheren Version falsch war, gehoert in `changelog.js` und in die

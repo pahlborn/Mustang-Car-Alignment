@@ -67,6 +67,12 @@ Ziel:
 
 Longacre selbst zeigt diese Rückkopplung indirekt: Für finales Scaling soll das Auto bereits race-ready sein, einschließlich Ride Height, Camber, Caster, Rear-End-Squareness und Toe; für finales Toe wiederum sollen Ride Height, Gewicht, Bump Steer, Camber, Caster und Ackermann bereits definiert sein. Daraus folgt für unser Projekt bewusst ein **iterativer Zyklus statt einer starren Einmal-Reihenfolge**.
 
+### Eine frühe Phase wird ersetzt, nicht wiederholt
+
+Eine frühe Phase gilt als ersetzt, sobald eine spätere Phase dieselben Werte nach der Änderung neu erfasst hat. Sie muss dann nicht erneut bestätigt werden. Beispiel: Phase 13 setzt Castor, Camber und Toe nach den Shimänderungen neu; Phase 6 ist damit erledigt.
+
+Das gilt nur für Werte, die eine spätere Phase tatsächlich neu erfasst. Die Hinterachsreferenz (Phase 5) hat keine solche Phase: Nach einer Balanceänderung in Phase 8 wird sie in Phase 9 erneut bestätigt. Und wer nach Phase 13 noch einmal verstellt, muss Phase 13 wiederholen.
+
 ---
 
 ## 3. Phase 0 — Hardware-Inventar

@@ -610,6 +610,40 @@ await test('Buchsen Hinterachse: Vorschau verlangt einen neuen Bind-Test', async
   assert(/Bind-Test \(6\.1\) wiederholen/.test(r.text), 'Vorschau: ' + r.text);
 });
 
+// ---------------------------------------------------------------------------
+suite('v25: wer den Ablauf einhaelt, sieht keine Phase veraltet');
+
+/** Phase 0-18 in Reihenfolge, mit den Eingriffen des Ablaufs - echte Uhr. */
+const DURCHLAUF = (phase5Bestaetigt) => `
+  ${BIND_SAUBER}
+  for (const p of Recheck.PHASEN) {
+    if (p.nr === 6) Status.eintragen('camber', 'Shims, grobes Ausrichten');
+    if (p.nr === 8) Status.eintragen('ride_height', 'Balance');
+    if (${phase5Bestaetigt} && p.nr === 9) Status.setzen('phase5', 'done');
+    if (p.nr === 13) Status.eintragen('castor', 'Shims, finales Ausrichten');
+    Status.setzen(p.id, 'done');
+  }
+  werkstattZeichnen();
+`;
+const MARKEN = `[...document.querySelectorAll('#phasenListe .section')]
+  .filter((s) => s.querySelector('.marke-veraltet')).map((s) => s.id)`;
+
+await test('kompletter Durchlauf: 100 Prozent, keine Marke "veraltet"', async () => {
+  const p = await oeffne('werkstatt.html');
+  const r = await p.page.evaluate(`(() => { ${DURCHLAUF(true)}
+    return { marken: ${MARKEN}, prozent: Status.fortschritt().prozent }; })()`);
+  await p.close();
+  assertEqual(r.marken, [], 'Als veraltet markiert');
+  assertEqual(r.prozent, 100, 'Prozent');
+});
+
+await test('ohne Neubestaetigung in Phase 9 traegt nur Phase 5 die Marke', async () => {
+  const p = await oeffne('werkstatt.html');
+  const marken = await p.page.evaluate(`(() => { ${DURCHLAUF(false)} return ${MARKEN}; })()`);
+  await p.close();
+  assertEqual(marken, ['sec-phase5'], 'Als veraltet markiert');
+});
+
 } finally {
   await browser.close();
   server.close();

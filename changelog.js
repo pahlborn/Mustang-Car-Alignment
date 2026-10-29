@@ -12,6 +12,17 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v25',
+      date: '2026-10-29',
+      time: '15:15',
+      title: 'Erstphasen ersetzt statt veraltet',
+      changes: [
+        { type: 'fix', text: 'Wer den Ablauf genau einhaelt, kommt jetzt auf 100 %: Phase 6 (grobes Ausrichten) und Phase 3 gelten nach den Shimaenderungen in Phase 13 nicht mehr als veraltet. Eine fruehe Phase ist ersetzt, sobald eine spaetere Phase dieselben Werte nach der Aenderung neu erfasst hat.' },
+        { type: 'fix', text: 'Weiter gilt: Phase 5 (Hinterachsreferenz) muss nach einer Balanceaenderung in Phase 8 in Phase 9 erneut bestaetigt werden, und wer nach Phase 13 noch verstellt, muss Phase 13 wiederholen.' },
+        { type: 'intern', text: 'status.js: abgedeckt() - spaetere Phase (nr groesser), liefert die Groesse, erledigt nach der Aenderung; berechnet aus Recheck.PHASEN. pruefen() nennt in wegen nur nicht abgedeckte Groessen. Handbuch 02_WORKFLOW Abschnitt 2 ergaenzt. Unfallregister: achtzehnter Vorfall. Neun Tests (sieben Modul, zwei Browser), sechs Gegenproben rot.' }
+      ]
+    },
+    {
       version: 'v24',
       date: '2026-10-28',
       time: '17:10',

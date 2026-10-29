@@ -298,6 +298,118 @@ await test('Phase 9 und 14 veralten nie', async () => {
 });
 
 // ---------------------------------------------------------------------------
+suite('v25: eine spaetere Phase ersetzt eine fruehe');
+
+/**
+ * Der Ablauf nach 02_WORKFLOW, Phase 0 bis 18 in Reihenfolge, mit den
+ * Eingriffen, die er selbst vorsieht: Shims in Phase 6 und 13, Balance
+ * (Ride Height) in Phase 8. Eine Minute zwischen allen Schritten.
+ */
+function durchlauf({ phase5Bestaetigt }) {
+  bindReihe(BIND_SAUBER);
+  for (const p of R.PHASEN) {
+    uhr += 60_000;
+    if (p.nr === 6) S.eintragen('camber', 'Shims, grobes Ausrichten');
+    if (p.nr === 8) S.eintragen('ride_height', 'Balance');
+    if (p.nr === 9 && phase5Bestaetigt) S.setzen('phase5', 'done');
+    if (p.nr === 13) S.eintragen('castor', 'Shims, finales Ausrichten');
+    uhr += 60_000;
+    S.setzen(p.id, 'done');
+  }
+}
+const veraltetNr = () => S.uebersicht().filter((p) => p.veraltet).map((p) => p.nr);
+
+await test('wer den Ablauf einhaelt, kommt auf 100 Prozent', async () => {
+  // Bis v24 standen danach Phase 3 und 6 als veraltet da - ersetzt durch
+  // Phase 13, nicht ungueltig (Pruefung aus Mechanikersicht, 2026-10-29).
+  zuruecksetzen();
+  durchlauf({ phase5Bestaetigt: true });
+  assertEqual(veraltetNr(), [], 'Veraltete Phasen');
+  assertEqual(S.fortschritt().prozent, 100, 'Prozent');
+  assertEqual(S.rennstreckenbereit().bereit, true, 'bereit');
+});
+
+await test('ohne erneute Bestaetigung bleibt genau Phase 5 veraltet', async () => {
+  // Die Hinterachsreferenz hat keine spaetere Phase mit denselben Groessen.
+  // Nach der Balance in Phase 8 muss sie in Phase 9 neu bestaetigt werden.
+  zuruecksetzen();
+  durchlauf({ phase5Bestaetigt: false });
+  assertEqual(veraltetNr(), [5], 'Veraltete Phasen');
+});
+
+await test('Camber an der Strecke: 13 neu abhaken ersetzt auch 6', async () => {
+  zuruecksetzen();
+  durchlauf({ phase5Bestaetigt: true });
+  uhr += 60_000;
+  S.eintragen('camber', 'Strecke');
+  const nachher = veraltetNr();
+  assert(nachher.includes(6) && nachher.includes(13), 'Nach der Aenderung: ' + nachher);
+  assertEqual(nachher, [3, 6, 13], 'Nach der Aenderung');
+
+  uhr += 60_000;
+  S.setzen('phase13', 'done');
+  assertEqual(veraltetNr(), [], 'Nach erneutem Abhaken von Phase 13');
+});
+
+await test('nur eine SPAETERE Phase ersetzt: 3 und 6 neu abhaken laesst 13 veraltet', async () => {
+  // 3 und 6 zusammen liefern alles, was die Aenderung in Phase 13 trifft
+  // (Camber, Toe, Lenkungsmitte). Mit nur Phase 6 bliebe 13 schon wegen der
+  // Lenkungsmitte veraltet - der Test haette den Fehler nicht unterschieden
+  // (Regel 7d; aufgefallen an der gruenen Gegenprobe).
+  zuruecksetzen();
+  durchlauf({ phase5Bestaetigt: true });
+  uhr += 60_000;
+  S.eintragen('camber', 'Strecke');
+  uhr += 60_000;
+  S.setzen('phase3', 'done');
+  S.setzen('phase6', 'done');
+  assertEqual(veraltetNr(), [13], 'Fruehere Phasen duerfen Phase 13 nicht ersetzen');
+});
+
+await test('eine Aenderung NACH der spaeteren Phase macht die fruehe wieder veraltet', async () => {
+  // Genau der Fall, den die Abdeckung nicht schlucken darf: Phase 13 gibt
+  // es im Ablauf, sie ist erledigt - aber vor der Aenderung.
+  zuruecksetzen();
+  durchlauf({ phase5Bestaetigt: true });
+  uhr += 60_000;
+  S.eintragen('castor', 'Shim nach Phase 13');
+  const alt = veraltetNr();
+  assert(alt.includes(6), 'Phase 6 nicht veraltet: ' + alt);
+  assert(alt.includes(13), 'Phase 13 nicht veraltet: ' + alt);
+});
+
+await test('dieselbe Millisekunde: die Reihenfolge entscheidet, nicht der Zufall', async () => {
+  // Regel 7b. Die Uhr steht still; now() zaehlt hoch.
+  for (const zuerst of ['aenderung', 'abhaken']) {
+    zuruecksetzen();
+    for (const p of R.PHASEN) if (p.nr <= 12) S.setzen(p.id, 'done');
+    if (zuerst === 'aenderung') { S.eintragen('castor'); S.setzen('phase13', 'done'); }
+    else { S.setzen('phase13', 'done'); S.eintragen('castor'); }
+    const sechs = S.pruefen('phase6').veraltet;
+    assertEqual(sechs, zuerst === 'abhaken',
+      'Phase 6 bei ' + zuerst + ' zuerst: veraltet=' + sechs);
+  }
+});
+
+await test('wegen nennt nur, was nicht abgedeckt ist', async () => {
+  // Ride Height nach Phase 13 und 15: Phase 4 ist ueber Phase 15 ersetzt,
+  // Phase 5 nicht. Die Groessen in wegen muessen das widerspiegeln.
+  zuruecksetzen();
+  for (const p of R.PHASEN) if (p.nr <= 14) S.setzen(p.id, 'done');
+  uhr += 60_000;
+  S.eintragen('ride_height');
+  uhr += 60_000;
+  S.setzen('phase15', 'done');
+  const vier = S.pruefen('phase4');
+  const fuenf = S.pruefen('phase5');
+  assertEqual(vier.veraltet, false, 'Phase 4 (durch 15 ersetzt)');
+  assertEqual(fuenf.veraltet, true, 'Phase 5');
+  const felder = fuenf.wegen.flatMap((w) => w.felder);
+  assert(felder.length > 0 && felder.every((g) => R.PHASEN[5].liefert.includes(g)),
+    'wegen von Phase 5: ' + felder);
+});
+
+// ---------------------------------------------------------------------------
 suite('Das Journal');
 
 await test('ein Eintrag taucht auf und laesst sich zuruecknehmen', async () => {
