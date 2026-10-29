@@ -562,7 +562,8 @@ schlechter als keine.
 **Sechzehnter Vorfall, v23: Messen war Verstellen.** Bis v22 meldete jedes
 Messfeld seine Größe, wie eine Verstellung. Wer in Phase 15 die Radlasten
 eintrug, machte frühere Phasen „veraltet", und 100 % waren nicht erreichbar.
-Gefunden hat es eine Prüfung aus Mechanikersicht (2026-10-28), kein Test. Die
+Gefunden hat es eine Prüfung aus Mechanikersicht (2026-10-28,
+`docs/pruefung/2026-10-28-pruefung-mechanikersicht.md`), kein Test. Die
 Tests prüften ausdrücklich das Falsche („ein Messwert meldet sich").
 **Die Regel:** Nur eine Stellgröße (`art: 'stell'` in `messwerte.js`) meldet
 eine Verstellung. Ein Messwert meldet nichts. Dabei fiel noch etwas auf: Der
@@ -574,7 +575,7 @@ nicht auf 100 %, wer den Ablauf genau einhielt. Die Shimänderung in Phase 13
 meldet `castor`, und damit galten Phase 6 (liefert Castor) und über die Kette
 Toe → Lenkungsmitte auch Phase 3 als veraltet. Dabei ist Phase 6 durch
 Phase 13 planmäßig ersetzt (02_WORKFLOW §2). Gefunden hat es die Nachprüfung
-aus Mechanikersicht (2026-10-29), nicht ein Test: Die Tests haken alle
+aus Mechanikersicht (2026-10-29, Auftrag in `docs/pruefung/`), nicht ein Test: Die Tests haken alle
 Phasen auf einmal ab und tragen die Änderung erst danach ein. Den Ablauf
 selbst hatte nie einer durchgespielt.
 **Die Regel:** Eine Größe zählt nicht, wenn eine **spätere** Phase sie
