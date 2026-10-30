@@ -12,6 +12,18 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v26',
+      date: '2026-10-30',
+      time: '06:48',
+      title: 'Verbinden sagt, was schiefgeht',
+      changes: [
+        { type: 'fix', text: 'Verbinden: Scheitert die Suche nach dem vorhandenen Datenspeicher, legt die App keinen zweiten mehr an. Sonst haetten Geraete in zwei getrennte Speicher geschrieben.' },
+        { type: 'fix', text: 'Verbinden: Statt nur "Gist konnte nicht erstellt werden" nennt die Meldung jetzt den Grund (Status und Antwort von GitHub) und weist bei fehlender Berechtigung auf die Gist-Berechtigung des Tokens hin. Die Einzelheiten stehen im Fehlerprotokoll.' },
+        { type: 'fix', text: 'Die Statuszeile im Cloud-Dialog behauptete nach einem Fehlschlag dauerhaft "suche Datenspeicher". Sie sagt jetzt, was gilt: kein Datenspeicher verbunden, die Werte bleiben auf diesem Geraet. Nach erfolgreichem Verbinden erscheint "Verbunden als ...".' },
+        { type: 'intern', text: 'findGistByFilename/createGist geben { id } oder { fehler } zurueck, wie jerico seit v28. Vier Browser-Tests fuer das Verbinden (bisher ungeprueft), vier Gegenproben rot. Unfallregister: Regel 9e, neunzehnter Vorfall.' }
+      ]
+    },
+    {
       version: 'v25',
       date: '2026-10-29',
       time: '15:15',

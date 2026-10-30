@@ -423,6 +423,83 @@ await test('der Knopf meldet den Fehler, ohne ihn doppelt zu protokollieren', as
   assertEqual(r.neu, 1, 'Neue Eintraege im Protokoll');
 });
 
+// ---------------------------------------------------------------------------
+suite('v26: Verbinden - eine gescheiterte Suche legt keinen zweiten Gist an');
+
+/**
+ * Ein frisches Geraet ohne Token verbindet sich ueber den Dialog. Gestubbt
+ * sind GET /user, die Gist-Liste und POST /gists - der ganze Weg, der bis
+ * v25 nie geprueft war (in jerico genauso, bis v28).
+ */
+async function verbinde({ liste = 200, vorhanden = false, anlegen = 201 } = {}) {
+  neuerGist();
+  const ctx = await neuerKontext(browser);
+  const posts = [];
+  await ctx.route('https://api.github.com/**', async (route) => {
+    const req = route.request();
+    const u = new URL(req.url());
+    if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
+    if (u.pathname === '/user') return route.fulfill({ status: 200, headers: CORS, contentType: 'application/json', body: '{"login":"pahlborn"}' });
+    if (u.pathname === '/gists' && req.method() === 'GET') {
+      if (liste !== 200) return route.fulfill({ status: liste, headers: CORS, contentType: 'application/json', body: '{"message":"Resource not accessible by personal access token"}' });
+      const l = vorhanden ? [{ id: 'VORHANDEN', files: { [MESS]: { filename: MESS } } }] : [];
+      return route.fulfill({ status: 200, headers: CORS, contentType: 'application/json', body: JSON.stringify(u.searchParams.get('page') === '1' ? l : []) });
+    }
+    if (u.pathname === '/gists' && req.method() === 'POST') {
+      posts.push(req.postData());
+      if (anlegen !== 201) return route.fulfill({ status: anlegen, headers: CORS, contentType: 'application/json', body: '{"message":"Not Found"}' });
+      return route.fulfill({ status: 201, headers: CORS, contentType: 'application/json', body: '{"id":"NEU"}' });
+    }
+    return gistRoute(route);
+  });
+  const page = await ctx.newPage();
+  await page.goto(base + '/index.html');
+  await page.waitForTimeout(400);
+  const r = await page.evaluate(async () => {
+    openSettings();
+    document.getElementById('ghToken').value = 'tok';
+    await saveSettings();
+    return {
+      gid: localStorage.getItem('chassis_gist_id'),
+      meldung: document.getElementById('toast').textContent,
+      status: (document.getElementById('connectionStatus') || {}).textContent || '',
+      protokoll: ErrorLog.alle().map((e) => JSON.stringify(e)).join('\n')
+    };
+  });
+  await ctx.close();
+  return { ...r, posts };
+}
+
+await test('Liste nicht lesbar: kein neuer Gist, Grund und Status in der Meldung', async () => {
+  const r = await verbinde({ liste: 403 });
+  assertEqual(r.posts.length, 0, 'Trotz gescheiterter Suche angelegt');
+  assertEqual(r.gid, null, 'Gist-ID gesetzt');
+  assert(/403/.test(r.meldung) && /Resource not accessible/.test(r.meldung), 'Meldung ohne Grund: ' + r.meldung);
+  assert(/Gist-Berechtigung/.test(r.meldung), 'Kein Hinweis auf die Berechtigung: ' + r.meldung);
+  assert(/findGistByFilename/.test(r.protokoll) && /403/.test(r.protokoll), 'Nicht im Protokoll: ' + r.protokoll.slice(0, 200));
+  assert(!/suche Datenspeicher/i.test(r.status), 'Statuszeile behauptet eine Suche: ' + r.status);
+});
+
+await test('vorhandener Gist wird gefunden, nicht neu angelegt', async () => {
+  const r = await verbinde({ vorhanden: true });
+  assertEqual(r.posts.length, 0, 'Angelegt, obwohl vorhanden');
+  assertEqual(r.gid, 'VORHANDEN', 'Gist-ID');
+  assert(/Verbunden als pahlborn/.test(r.meldung), 'Erfolgsmeldung: ' + r.meldung);
+});
+
+await test('nichts gefunden, Anlegen verweigert: Grund in der Meldung', async () => {
+  const r = await verbinde({ anlegen: 404 });
+  assertEqual(r.posts.length, 1, 'Anlegen nicht versucht');
+  assertEqual(r.gid, null, 'Gist-ID gesetzt');
+  assert(/angelegt/.test(r.meldung) && /404/.test(r.meldung), 'Meldung: ' + r.meldung);
+});
+
+await test('nichts gefunden, Anlegen klappt: neuer Gist verbunden', async () => {
+  const r = await verbinde({});
+  assertEqual(r.posts.length, 1, 'Anlegen');
+  assertEqual(r.gid, 'NEU', 'Gist-ID');
+});
+
 } finally {
   await browser.close();
   server.close();

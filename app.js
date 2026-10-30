@@ -293,25 +293,50 @@
             var devId = typeof FieldSync !== 'undefined' ? FieldSync.getDeviceId() : '';
             el.innerHTML = 'Verbunden &mdash; Ger&auml;t: <code>' + (devId ? devId.substring(0, 12) : '?') + '</code>';
         } else if (getGistConfig().token) {
-            el.textContent = 'Token gesetzt, suche Datenspeicher...';
+            // Ein Ruhezustand, kein Vorgang: hier sucht nichts (wie jerico v28).
+            el.textContent = 'Token gesetzt, aber kein Datenspeicher verbunden - Werte bleiben auf diesem Geraet.';
         } else {
             el.textContent = 'Nicht verbunden';
         }
     }
 
     // ==== GIST EINRICHTEN ====
+    //
+    // Wie jerico seit v28: beide Aufrufe geben { id } oder { fehler } zurueck,
+    // nie stillschweigend nichts. Bis v25 wurde aus einer gescheiterten SUCHE
+    // "nichts gefunden" - und die App legte einen zweiten Gist an. Mit einem
+    // berechtigten Token haette das geklappt, und die Geraete haetten in zwei
+    // getrennte Speicher geschrieben. Am 2026-10-30 kam statt dessen nur
+    // "Gist konnte nicht erstellt werden", ohne Grund.
+
+    /** Antwort von GitHub auf einen Fehlschlag einlesen. */
+    async function fehlerAus(res) {
+        var roh = ''; try { roh = await res.text(); } catch (e) {}
+        var meldung = ''; try { meldung = (JSON.parse(roh).message) || ''; } catch (e) {}
+        return { status: res.status, statusText: res.statusText, antwort: roh, meldung: meldung, url: res.url };
+    }
+
+    /** Sagt bei 401/403/404 auf einem Gist-Aufruf, was das bedeutet. */
+    function gistZugriffHinweis(f) {
+        if (f.status !== 401 && f.status !== 403 && f.status !== 404) return '';
+        return ' Der Token kommt an GitHub durch, aber nicht an die Gists heran.'
+            + ' Pruefe die Gist-Berechtigung des Tokens (klassischer Token: Haken bei "gist").'
+            + ' Die genaue Antwort steht im Fehlerprotokoll.';
+    }
+
+    /** Sucht den Gist anhand des Dateinamens: { id }, {} (nicht da) oder { fehler }. */
     async function findGistByFilename(token) {
         for (var page = 1; page <= 5; page++) {
             var res = await fetch('https://api.github.com/gists?per_page=100&page=' + page,
                 { headers: { 'Authorization': 'Bearer ' + token } });
-            if (!res.ok) return null;
+            if (!res.ok) return { fehler: await fehlerAus(res) };
             var list = await res.json();
-            if (!list.length) return null;
+            if (!list.length) break;
             for (var i = 0; i < list.length; i++) {
-                if (list[i].files && list[i].files[GIST_FILENAME]) return list[i].id;
+                if (list[i].files && list[i].files[GIST_FILENAME]) return { id: list[i].id };
             }
         }
-        return null;
+        return {};   // durchgesucht, nichts gefunden - kein Fehler
     }
 
     async function createGist(token) {
@@ -325,8 +350,14 @@
                 public: false, files: files
             })
         });
-        if (!res.ok) return null;
-        return (await res.json()).id;
+        if (!res.ok) return { fehler: await fehlerAus(res) };
+        return { id: (await res.json()).id };
+    }
+
+    function gistFehlerMelden(text, quelle, f) {
+        showToast(text + ' (' + f.status + (f.meldung ? ': ' + f.meldung : '') + ').' + gistZugriffHinweis(f),
+            { sticky: true, isError: true,
+              detail: { quelle: quelle, status: f.status, statusText: f.statusText, antwort: f.antwort, url: f.url } });
     }
 
     async function saveSettings() {
@@ -337,20 +368,25 @@
             showToast('Verbinde...');
             var res = await fetch('https://api.github.com/user', { headers: { 'Authorization': 'Bearer ' + token } });
             if (!res.ok) { showToast('Token ungueltig!', { sticky: true, isError: true }); return; }
+            var user = await res.json();
             localStorage.setItem('gh_token', token);
             showToast('Suche Datenspeicher...');
-            var gid = await findGistByFilename(token);
+            var gefunden = await findGistByFilename(token);
+            // Eine gescheiterte Suche ist kein "nicht gefunden": hier NIE anlegen.
+            if (gefunden.fehler) { gistFehlerMelden('Gist-Liste nicht lesbar', 'findGistByFilename', gefunden.fehler); updateConnectionStatus(); return; }
+            var gid = gefunden.id;
             if (!gid) {
                 showToast('Lege neuen Datenspeicher an...');
-                gid = await createGist(token);
-                if (!gid) { showToast('Gist konnte nicht erstellt werden', { sticky: true, isError: true }); return; }
+                var erzeugt = await createGist(token);
+                if (erzeugt.fehler) { gistFehlerMelden('Datenspeicher konnte nicht angelegt werden', 'createGist', erzeugt.fehler); updateConnectionStatus(); return; }
+                gid = erzeugt.id;
             }
             localStorage.setItem(GIST_ID_KEY, gid);
             window.FIXED_GIST_ID = gid;
             updateSyncBadge(); updateConnectionStatus(); closeSettings();
             // Gleich holen, was die anderen Geraete schon eingetragen haben.
             abgleichen();
-            // Erfolg: kein Toast, der Badge wechselt auf gruen
+            showToast('Verbunden als ' + (user && user.login ? user.login : 'GitHub') + ' - Abgleich aktiv.');
         } catch (err) {
             showToast('Verbindungsfehler: ' + err.message, { sticky: true, isError: true });
         }

@@ -532,6 +532,23 @@ verschiedene Dateien betreffen. **Die Regel:** In diesen Gist schreibt nur
 Fehlerprotokoll ist seit v21 einer: Es löst keinen eigenen Lauf aus, geht
 spätestens nach 5 Minuten mit und vereinigt die Einträge aller Geräte.
 
+### 9e. Eine gescheiterte Suche ist kein „nicht gefunden"
+
+**Neunzehnter Vorfall, v26.** Beim Verbinden meldete die App am 2026-10-30
+nur „Gist konnte nicht erstellt werden", ohne Grund. Dabei gab es den Gist
+schon. Beide Aufrufe gaben bei jedem Fehlschlag `null` zurück. Eine
+gescheiterte Suche galt deshalb als „nichts gefunden", und die App versuchte,
+einen **zweiten** Gist anzulegen. Mit einem berechtigten Token hätte das
+geklappt, und die Geräte hätten in zwei getrennte Speicher geschrieben.
+jerico hatte genau das seit v28 behoben, hier war es nie angekommen
+(Regel 12: Was aus einem Schwesterprojekt kommt, bringt auch dessen spätere
+Korrekturen nicht von selbst mit).
+**Die Regel:** Angelegt wird nur nach einer vollständigen, fehlerfreien
+Suche. Jeder Fehlschlag nennt Status und GitHubs Antwort und landet im
+Fehlerprotokoll. Geprüft in `tests/abgleich-ui.test.mjs` (Suite „v26").
+**Offen:** gt40 hat denselben Code noch dreimal (`build-log.html`,
+`index.html`, `specs.html`).
+
 ## 10. Ein Setup hat einen Endzustand, ein Fahrwerk nicht
 
 Die Werkstattphasen 0-18 enden mit `Phase 18 - Werkstatt-Baseline einfrieren`
