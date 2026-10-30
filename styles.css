@@ -708,6 +708,74 @@ mark.suche-treffer.aktiv { background: var(--accent); color: white; }
     .section-body.collapsed { display: block; }  /* gedruckt wird alles */
 }
 
+/* ===========================================================================
+   Anleitung: Phasen mit nummerierten Schrittkarten
+   ---------------------------------------------------------------------------
+   Aufbau wie im Build Log von jerico und gt40: eine Karte je Arbeitsschritt,
+   darin alles, was man an diesem Punkt braucht - Werkzeug, Vorbereitung,
+   Handgriffe, Messfelder, Tipps, "fertig, wenn". Man arbeitet von oben nach
+   unten und muss die Karte nicht verlassen (Peter, 2026-10-30).
+   =========================================================================== */
+.phase-banner {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white; padding: 0.9rem 1rem; border-radius: 12px; margin: 0.75rem 0 0.5rem;
+    display: flex; align-items: center; gap: 0.75rem; cursor: pointer; user-select: none;
+}
+.phase-banner .phase-num {
+    background: rgba(255,255,255,0.2); width: 46px; height: 46px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; font-weight: 800; flex-shrink: 0;
+}
+.phase-banner .phase-info { flex: 1; }
+.phase-banner .phase-info h2 { font-size: 1rem; font-weight: 700; margin: 0; }
+.phase-banner .phase-info p { font-size: 0.78rem; opacity: 0.9; margin: 0.15rem 0 0; }
+.phase-banner .phase-toggle { font-size: 1.1rem; transition: transform 0.3s; }
+.phase-banner .phase-toggle.collapsed { transform: rotate(-90deg); }
+.phase-body.collapsed { display: none; }
+
+.step-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px;
+    margin-bottom: 0.5rem; overflow: hidden;
+}
+.step-header { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0.75rem; }
+.step-header .step-title { flex: 1; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+.step-header .guide-toggle { color: var(--primary-light); cursor: pointer; padding: 0.4rem; }
+.step-header .guide-toggle::after { content: '\25BC'; font-size: 0.6rem; display: inline-block; transition: transform 0.2s; }
+.step-header .guide-toggle.open::after { transform: rotate(180deg); }
+
+/* Der Statusknopf je Schritt ist derselbe wie der Phasenknopf (.step-status
+   oben, 44 px) - kein zweiter Stil. */
+
+.step-guide { display: none; padding: 0.75rem; background: #f8fafc; border-top: 2px solid var(--primary-light); }
+.step-guide.open { display: block; }
+.guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+@media (max-width: 640px) { .guide-grid { grid-template-columns: 1fr; } }
+.guide-block { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem; }
+.guide-full { grid-column: 1 / -1; }
+.guide-block h4 {
+    font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
+    margin: 0 0 0.35rem; padding-bottom: 0.2rem; border-bottom: 1px solid var(--border);
+}
+.guide-block h4.tools   { color: #2b6cb0; border-color: #bee3f8; }
+.guide-block h4.prereq  { color: #553c9a; border-color: #e9d8fd; }
+.guide-block h4.measure { color: #276749; border-color: #c6f6d5; }
+.guide-block h4.tips    { color: #b7791f; border-color: #fefcbf; }
+.guide-block h4.warning { color: #9b2c2c; border-color: #fc8181; }
+.guide-block h4.release { color: #38a169; border-color: #c6f6d5; }
+.guide-block h4.torque  { color: #c53030; border-color: #fed7d7; }
+.guide-block ul, .guide-block ol { padding-left: 1.2rem; margin: 0; }
+.guide-block li { font-size: 0.82rem; line-height: 1.5; margin-bottom: 0.25rem; }
+.guide-block p { font-size: 0.82rem; line-height: 1.5; margin: 0 0 0.35rem; }
+.guide-block .spec-line {
+    display: flex; justify-content: space-between; gap: 0.5rem; font-size: 0.8rem;
+    padding: 0.2rem 0; border-bottom: 1px dotted var(--border);
+}
+.guide-block .spec-line:last-child { border-bottom: none; }
+.guide-block .spec-val { font-weight: 700; text-align: right; }
+.guide-block table.data-table { width: 100%; }
+.anl-ergebnis { font-size: 0.8rem; margin-top: 0.4rem; }
+.anl-phasenstatus { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+
 /* iOS vergroessert die Seite beim Antippen jedes Eingabefelds unter 16 px
    Schrift - mitten in der Messung (Pruefung aus Mechanikersicht, v24).
    !important, weil die Feldstile als style="...font-size:0.82rem" an elf

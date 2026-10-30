@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a365d">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <title>Anleitung &ndash; Mustang 1966 Chassis Setup</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="version.js"></script>
+<script src="aktualisieren.js"></script>
+    <script src="changelog.js"></script>
+    <script src="field-sync.js"></script>
+    <script src="validation.js"></script>
+    <script src="errorlog.js"></script>
+    <script src="abgleich.js"></script>
+    <script src="recheck.js"></script>
+    <script src="status.js"></script>
+    <script src="messwerte.js"></script>
+    <script src="rollsteifigkeit.js"></script>
+    <script src="kapitel.js"></script>
+    <script src="markdown.js"></script>
+    <script src="glossar.js"></script>
+    <script src="referenz.js"></script>
+    <script src="github-zugang.js"></script>
+    <script src="app.js"></script>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-row">
+        <a href="index.html" class="header-title">
+            <span class="ht-name">Mustang Chassis<span class="ht-sub">1966 &middot; Rundstrecke</span></span>
+            <span class="ht-meta" onclick="openChangelog()" title="Release-Dokumentation"><span class="ht-version" id="appVersion"></span><span class="ht-built"></span></span>
+        </a>
+        <a class="nav-item" href="index.html" title="&Uuml;bersicht"><span class="nav-icon">&#128202;</span><span class="nav-label">&Uuml;bersicht</span></a>
+        <a class="nav-item active" href="anleitung.html" title="Anleitung"><span class="nav-icon">&#128203;</span><span class="nav-label">Anleitung</span></a>
+        <a class="nav-item" href="werkstatt.html" title="Werkstatt"><span class="nav-icon">&#128295;</span><span class="nav-label">Werkstatt</span></a>
+        <a class="nav-item" href="messblatt.html" title="Messblatt"><span class="nav-icon">&#128207;</span><span class="nav-label">Messblatt</span></a>
+        <a class="nav-item" href="bumpsteer.html" title="Bump Steer"><span class="nav-icon">&#128200;</span><span class="nav-label">Bump Steer</span></a>
+        <a class="nav-item" href="bind.html" title="Bind-Diagnose"><span class="nav-icon">&#9878;</span><span class="nav-label">Bind</span></a>
+        <a class="nav-item" href="handbuch.html" title="Handbuch"><span class="nav-icon">&#128214;</span><span class="nav-label">Handbuch</span></a>
+        <a class="nav-item" href="diagnose.html" title="Diagnose"><span class="nav-icon">&#127937;</span><span class="nav-label">Diagnose</span></a>
+        <div style="position:relative;">
+            <button class="header-gear" onclick="toggleToolMenu()" id="toolMenuBtn" title="Werkzeuge">&#9881;</button>
+            <div id="toolMenu" class="tool-menu">
+                <button type="button" onclick="openSettings();closeToolMenu()">&#9729; Cloud-Sync</button>
+                <button type="button" onclick="syncFromCloud();closeToolMenu()">&#8635; Jetzt abgleichen</button>
+                <hr>
+                <button type="button" onclick="saveData();closeToolMenu()">&#128190; Speichern</button>
+                <button type="button" onclick="exportJSON();closeToolMenu()">&#128229; Export</button>
+                <button type="button" onclick="document.getElementById('importFile').click();closeToolMenu()">&#128228; Import</button>
+                <button type="button" onclick="window.print();closeToolMenu()">&#128424; Drucken</button>
+                <hr>
+                <button type="button" onclick="showErrorLog();closeToolMenu()">&#128203; Fehlerprotokoll</button>
+                <button type="button" class="menu-version" onclick="openChangelog();closeToolMenu()" title="Release-Dokumentation">Version <span class="app-version"></span><span class="app-built"></span> &rsaquo;</button>
+            </div>
+        </div>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
+    </div>
+    <div class="search-bar">
+        <input type="search" id="sucheFeld" placeholder="Suchen... (Strg+F)" oninput="sucheEingabe()" onkeydown="sucheTaste(event)" autocomplete="off">
+        <div class="search-nav" id="sucheNav">
+            <button type="button" onclick="sucheSpringen(-1)" title="Zur&uuml;ck">&#9650;</button>
+            <span class="search-count" id="sucheZahl"></span>
+            <button type="button" onclick="sucheSpringen(1)" title="Weiter">&#9660;</button>
+            <button type="button" onclick="sucheLeeren()" title="Schliessen">&#10005;</button>
+        </div>
+    </div>    <div class="save-status"><span id="syncBadge"></span><span id="saveTime"></span></div>
+</div>
+
+<div class="container" id="mainContent">
+<div id="anleitung">
+
+<div class="info-box">
+    <strong>So arbeitest du mit dieser Seite:</strong> Die Karten von oben nach unten abarbeiten.
+    Jede Karte enthält alles für ihren Schritt: Werkzeug, Handgriffe, Messfelder, Tipps.
+    Den Kasten links neben dem Titel antippen: offen &rarr; in Arbeit &rarr; erledigt.
+    Was du hier einträgst, steht auch im Messblatt.
+    <br>Die Kürzel <span class="src src-a">A</span> <span class="src src-c">C</span> <span class="src src-d">D</span>
+    zeigen, woher eine Angabe stammt: A = Hersteller (Ford, Street or Track),
+    C = Longacre, D = Werkstattpraxis ohne schriftliche Quelle.
+</div>
+
+<!-- =====================================================================
+     PHASE 6 - Vorderachse grob ausrichten
+     Quelle des Ablaufs: handbuch/02_WORKFLOW.md §9; Messverfahren:
+     CHAPTER_FRONT_GEOMETRY_CAMBER_CASTER_KPI.md §10-12; Einsteller:
+     CHAPTER_FRONT_ADJUSTMENT_UCA_LCA.md §2-6; Spur: CHAPTER_TOE_ACKERMANN_THRUST.md
+     §5-7 und Ford Shop Manual 1966 (A-11).
+     ===================================================================== -->
+<div id="phase6">
+<div class="phase-banner" onclick="togglePhase('phase6body')">
+    <div class="phase-num">6</div>
+    <div class="phase-info">
+        <h2>Vorderachse grob ausrichten</h2>
+        <p>Lenkung mittig, Castor, Camber, grobe Spur &ndash; eine brauchbare Basis, noch nicht die Endwerte</p>
+    </div>
+    <span class="phase-toggle" id="toggle_phase6body">&#9660;</span>
+</div>
+
+<div class="phase-body" id="phase6body">
+
+<div class="info-box">
+    <strong>Vorher erledigt:</strong> Phase 0&ndash;5, also Mechanik geprüft, Setup Pad eben,
+    race-ready, Bind-Test bestanden, Fahrhöhe und Hinterachse gemessen.
+    <br><strong>Reihenfolge:</strong> erst Castor, dann Camber, zum Schluss die Spur.
+    Ford: Spur erst einstellen, wenn Castor und Camber stimmen.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-5">A</span>
+    <br><strong>Endwerte</strong> kommen erst in Phase 13, nach Wiegen und Bump Steer.
+</div>
+
+<!-- Schritt 6.1 -->
+<div class="step-card" id="anl_6_1_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_6_1" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">6.1 Auto auf die Drehteller stellen und setzen</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Dunlop CG/6 Drehteller, zwei Stück, unter die Vorderräder</li>
+                    <li>Unterlagen hinten in derselben Höhe wie die Drehteller (Setup Pad aus Phase 2)</li>
+                    <li>Reifendruckprüfer (Longacre digital)</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>Race-ready wie in Phase 3: Fahrer oder Ballast, gleicher Tankstand, gleiche Räder</li>
+                    <li>Drehteller verriegelt (Stift steckt), auf den markierten Plätzen des Setup Pads</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Vorgehensweise</h4>
+                <ol>
+                    <li>Auto langsam geradeaus auf die Drehteller rollen. Radmitte über Tellermitte.</li>
+                    <li>Kaltdruck an allen vier Rädern auf den Wert aus Phase 3 bringen.</li>
+                    <li><strong>Setzen:</strong> Auto etwa 1,5 m zurückrollen, dann vorwärts wieder in Messposition. Danach nicht mehr zurückrollen.<span class="src src-c" title="Longacre, Toe-In Gauge Instructions">C</span>
+                        Beim Vorwärtsrollen ziehen Castor und Rollwiderstand das Spiel in allen Lagern in dieselbe Richtung &ndash; so misst du jedes Mal im selben Zustand.<span class="src src-c" title="Longacre, Set Toe Properly">C</span></li>
+                    <li>Erst wenn das Auto steht: Drehteller entriegeln (Stift ziehen).</li>
+                </ol>
+            </div>
+            <div class="guide-block"><h4 class="tips">Praxis-Tipps</h4>
+                <ul>
+                    <li>Nie mit dem Wagenheber anheben und direkt messen. Beim Anheben kippen die Vorderräder in Camber, beim Absenken bleiben die Reifen auf dem Boden hängen und das Fahrwerk verspannt.<span class="src src-c" title="Longacre, Bind Free Chassis Setups">C</span> Nach jedem Anheben neu setzen.</li>
+                    <li>Rollenplatten gibt es noch nicht. Behelf: mehrmals vor und zurück rollen, zuletzt vorwärts.</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Vorderräder mittig auf den entriegelten Drehtellern</li>
+                    <li>Kaltdruck stimmt, Auto zuletzt vorwärts gerollt</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 6.2 -->
+<div class="step-card" id="anl_6_2_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_6_2" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">6.2 Lenkung in die Mitte stellen und markieren</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Malerkrepp und Stift</li>
+                    <li>Spanngurt oder Lenkradfeststeller</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Warum</h4>
+                <p>Castor wird über einen Lenkeinschlag gemessen, Camber und Spur bei exakt geradeaus.
+                Steht die Lenkung schief, misst die Spur einen Teil Ackermann mit.<span class="src src-c" title="Longacre, Set Toe Properly">C</span></p>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Vorgehensweise</h4>
+                <ol>
+                    <li>Lenkrad bis zum Anschlag nach links drehen. Dann nach rechts bis zum Anschlag drehen und dabei die Umdrehungen zählen.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Genau die Hälfte zurückdrehen. Jetzt steht das Lenkgetriebe in der Mitte.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Lenkradnabe und Lenksäule mit einem Streifen Krepp markieren, einen Strich quer über beide. Wird später gelenkt, immer wieder auf diesen Strich zurück.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-5, Fig. 5">A</span></li>
+                    <li>Lenkrad mit dem Gurt gegen Verdrehen sichern. <strong>Für die Castor-Messung (6.4) den Gurt wieder lösen.</strong></li>
+                </ol>
+            </div>
+            <div class="guide-block"><h4 class="tips">Praxis-Tipps</h4>
+                <ul>
+                    <li>Stehen die Speichen jetzt schief: nicht das Lenkrad umsetzen. Die Lenkradstellung wird später über die Spurstangen korrigiert (6.8).<span class="src src-a" title="Ford Shop Manual 1966, Toe-in and Steering Wheel Alignment">A</span></li>
+                    <li>Stehen die Räder bei Lenkungsmitte deutlich schräg, ist die Spur stark verstellt. Kein Fehler, das wird in 6.8 eingestellt.</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Mitte gefunden und markiert, Lenkrad gesichert</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 6.3 -->
+<div class="step-card" id="anl_6_3_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_6_3" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">6.3 Einsteller aufschreiben, bevor du etwas verstellst</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Messschieber</li>
+                    <li>Taschenlampe, Spiegel</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Warum</h4>
+                <p>Nur mit dem Ist-Stand lässt sich ein Zustand wiederherstellen. Und nur mit vorher und nachher lernst du,
+                wie viel Grad eine Änderung an <em>diesem</em> Auto bringt.</p>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Vorgehensweise, je Seite</h4>
+                <ol>
+                    <li><strong>Shims oben:</strong> Zwischen der Querachse des oberen Querlenkers und dem Federbeindom liegen Blechscheiben, ein Paket am vorderen und eines am hinteren Bolzen.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-7">A</span>
+                        Dicke jedes Pakets mit dem Messschieber messen und als <strong>Gesamtdicke in mm</strong> eintragen, nicht als Stückzahl. Ford liefert 1/32" (0,8 mm) und 1/8" (3,2 mm) gemischt.<span class="src src-a" title="Ford Shop Manual 1966">A</span></li>
+                    <li><strong>LCA-Platte:</strong> Nummer der eingesetzten Platte am Camber Kit ablesen. Platte 1 ist die Serienposition.<span class="src src-a" title="Street or Track, Einbauanleitung Camber Kit">A</span></li>
+                    <li><strong>Strut Rod:</strong> Einstellmaß messen und eintragen. Den Messpunkt beim ersten Mal festlegen und immer gleich messen.</li>
+                    <li><strong>Heim-Gelenke am oberen Querlenker nicht anfassen.</strong> Sie sind die Grundeinstellung (beide Arme gleich lang), keine Alignment-Schraube.<span class="src src-a" title="Street or Track, SOT-UCA65-66">A</span></li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Einsteller eintragen</h4>
+                <div data-messtabelle="st_shim_vorn st_shim_hinten st_lca_platte st_strut"></div>
+                <p style="margin-top:0.4rem;">Ändert sich ein Wert, trägst du ihn hier neu ein. Die App merkt sich das als Verstellung
+                und meldet später, welche Messungen dadurch neu fällig werden.</p>
+            </div>
+            <div class="guide-block guide-full"><h4 class="release">Fertig, wenn</h4>
+                <ul><li>Alle Felder beider Seiten ausgefüllt</li></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 6.4 -->
+<div class="step-card" id="anl_6_4_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_6_4" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">6.4 Castor und KPI messen</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Dunlop CG/5 (Castor- und KPI-Messgerät)</li>
+                    <li>Dunlop CG/6 Drehteller mit Gradskala</li>
+                    <li>Bremspedal-Feststeller oder eine Latte zwischen Sitz und Pedal<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>Lenkradgurt lösen: für diese Messung wird gelenkt</li>
+                    <li>Bremse treten und feststellen. Sonst dreht sich das Rad beim Lenken und das Messgerät mit.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Drehteller entriegelt, Räder geradeaus, beide Skalen auf 0</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Vorgehensweise, erst links, dann rechts</h4>
+                <ol>
+                    <li>CG/5 spielfrei am Rad befestigen.<span class="src src-a" title="Dunlop CG/4-5 Bedienungsanleitung">A</span></li>
+                    <li>Am Lenkrad das Rad auf <strong>20° IN</strong> drehen, abgelesen an der Drehteller-Skala. IN heißt: Vorderkante des Rades zeigt zur Wagenmitte. Für das linke Rad also nach rechts lenken.</li>
+                    <li>Castor- und KPI-Anzeige am Gerät auf Null stellen.</li>
+                    <li>Durch die Geradeausstellung weiter auf <strong>20° OUT</strong> lenken. Zusammen sind das 40°.</li>
+                    <li>Castor-Libelle mit dem Stellrad zentrieren, Wert ablesen. Dann die KPI-Libelle zentrieren, Wert ablesen.</li>
+                    <li>Zurück auf geradeaus, die ganze Messung noch einmal. Beide Durchgänge sollen dasselbe ergeben.</li>
+                    <li>Gerät umsetzen, rechtes Rad genauso. Beim rechten Rad heißt IN: nach links lenken.</li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Messwerte</h4>
+                <div data-messtabelle="al_castor al_kpi"></div>
+            </div>
+            <div class="guide-block"><h4 class="measure">Sollwerte</h4>
+                <div class="spec-line"><span>Castor, Arbeitswert</span><span class="spec-val">+3,0° &ndash; Herkunft unbelegt</span></div>
+                <div class="spec-line"><span>Unterschied links/rechts</span><span class="spec-val">höchstens 1/4°<span class="src src-a" title="Ford Shop Manual 1966: max. 1/2°, bevorzugt 1/4°">A</span></span></div>
+                <div class="spec-line"><span>Zum Vergleich: SoT-Testwagen, gleiche Querlenker</span><span class="spec-val">+5°</span></div>
+                <div class="spec-line"><span>KPI</span><span class="spec-val">nur notieren, kein Sollwert</span></div>
+            </div>
+            <div class="guide-block"><h4 class="tips">Typische Messfehler</h4>
+                <ul>
+                    <li>Nicht genau 20° eingelenkt</li>
+                    <li>Drehteller klemmt oder ist noch verriegelt</li>
+                    <li>Messgerät sitzt nicht fest oder hat Spiel</li>
+                    <li>IN und OUT verwechselt: dann kommt ein falsches Vorzeichen heraus</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Castor und KPI beider Seiten eingetragen, zwei Durchgänge stimmen überein</li>
+                    <li>Weiter mit 6.5, wenn Castor nicht passt oder links/rechts mehr als 1/4° auseinander liegt. Sonst direkt 6.6.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 6.5 -->
+<div class="step-card" id="anl_6_5_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_6_5" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">6.5 Castor einstellen (nur wenn nötig)</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Ringschlüssel für die Muttern der Querachse (vom Motorraum aus)</li>
+                    <li>Montiereisen</li>
+                    <li>Ford-Shims 1/32" und 1/8"</li>
+                    <li>Drehmomentschlüssel</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Welcher Einsteller?</h4>
+                <ul>
+                    <li><strong>Kleine Korrektur, bis etwa 1°:</strong> Shims gegenläufig</li>
+                    <li><strong>Großer Sprung:</strong> Strut Rod. Kürzer gibt mehr Castor, das Rad wandert dabei nach vorn. Danach die Freigängigkeit am Kotflügel prüfen.</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Vorgehensweise mit Shims</h4>
+                <ol>
+                    <li>Die beiden Muttern der Querachse vom Motorraum aus ein paar Umdrehungen lösen, nicht abnehmen.<span class="src src-a" title="Ford Shop Manual 1966">A</span></li>
+                    <li>Die Querachse mit dem Montiereisen etwas vom Federbeindom abdrücken. Shims seitlich herausziehen oder einschieben.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li><strong>Mehr Castor:</strong> vorn Shims dazu, hinten gleich viel weg. <strong>Weniger Castor:</strong> umgekehrt.<span class="src src-a" title="Ford Shop Manual 1966, S. 20-18">A</span></li>
+                    <li>Dünne 1/32"-Shims immer direkt ans Blech des Federbeindoms oder zwischen zwei 1/8"-Shims legen.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-7">A</span></li>
+                    <li>Beide Muttern wieder anziehen.</li>
+                    <li>Neue Paketdicken in 6.3 eintragen.</li>
+                    <li>Auto setzen wie in 6.1 (zurück, vorwärts), dann Castor neu messen (6.4).</li>
+                </ol>
+            </div>
+            <div class="guide-block"><h4 class="measure">Wie viel bringt ein Shim?</h4>
+                <div class="spec-line"><span>1/32" (0,8 mm) vorn dazu und hinten weg</span><span class="spec-val">ca. +1° Castor<span class="src src-a" title="Ford: 1/2° je 1/32 an einem Bolzen">A</span></span></div>
+                <div class="spec-line"><span>Nur an einem Bolzen geändert</span><span class="spec-val">halbe Wirkung, Camber ändert sich mit</span></div>
+                <div class="spec-line"><span>Grenze: Unterschied vorderes/hinteres Paket</span><span class="spec-val">max. 1/16" (1,6 mm)<span class="src src-a" title="Ford Shop Manual 1966">A</span></span></div>
+                <div class="spec-line"><span>Grenze: Paket je Bolzen</span><span class="spec-val">max. 9/16" (14,3 mm)<span class="src src-a" title="Ford Shop Manual 1966">A</span></span></div>
+                <p style="margin-top:0.3rem;">Fords Zahlen gelten für das Serienauto. An diesem Auto vorher/nachher messen und nachprüfen.</p>
+            </div>
+            <div class="guide-block"><h4 class="torque">Anzugsmoment</h4>
+                <div class="spec-line"><span>Muttern Querachse oben</span><span class="spec-val">offen</span></div>
+                <p>Ford nennt den Wert in Part 3-6. Im vorliegenden Scan ist diese Tabelle nicht lesbar. Bis zur Klärung nicht schätzen.</p>
+            </div>
+            <div class="guide-block guide-full"><h4 class="warning">Sicherheit</h4>
+                <ul>
+                    <li>Die Vorderfeder (620 lb/in) drückt auf den oberen Querlenker.<span class="src src-a" title="Ford Shop Manual 1966">A</span> Die Muttern der Querachse nie ganz abschrauben, solange das Auto auf den Rädern steht.</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="release">Fertig, wenn</h4>
+                <ul><li>Castor neu gemessen, links/rechts höchstens 1/4° auseinander</li></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 6.6 -->
+<div class="step-card" id="anl_6_6_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_6_6" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">6.6 Camber messen</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul><li>Dunlop CG/4 (Camber-Messgerät)</li></ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>Lenkung auf die Markierung aus 6.2, Gurt wieder fest</li>
+                    <li>Auto gesetzt (6.1), wenn es seit der letzten Messung angehoben wurde</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Vorgehensweise, erst links, dann rechts</h4>
+                <ol>
+                    <li>CG/4 am Rad ansetzen.<span class="src src-a" title="Dunlop CG/4-5 Bedienungsanleitung">A</span> Den Ansetzpunkt beim ersten Mal festlegen und danach immer dort ansetzen.</li>
+                    <li>Libelle mit dem Camber-Stellrad zentrieren und Wert ablesen.</li>
+                    <li>Die Skala zählt fortlaufend: Wer das Stellrad über eine volle Teilung hinaus dreht, muss die durchlaufenen Teilungen mitzählen.<span class="src src-a" title="Dunlop CG/4-5 Bedienungsanleitung">A</span></li>
+                    <li>Gerät abnehmen, neu ansetzen, noch einmal messen.</li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Messwerte</h4>
+                <div data-messtabelle="al_camber"></div>
+            </div>
+            <div class="guide-block"><h4 class="measure">Sollwerte</h4>
+                <div class="spec-line"><span>Camber, Arbeitswert</span><span class="spec-val">&minus;2,0° &ndash; Herkunft unbelegt</span></div>
+                <div class="spec-line"><span>Unterschied links/rechts</span><span class="spec-val">höchstens 1/4°<span class="src src-a" title="Ford Shop Manual 1966: max. 1/2°, bevorzugt 1/4°">A</span></span></div>
+                <div class="spec-line"><span>Zum Vergleich: SoT-Testwagen, gleiche Querlenker</span><span class="spec-val">&minus;2,75°</span></div>
+            </div>
+            <div class="guide-block"><h4 class="tips">Praxis-Tipps</h4>
+                <ul>
+                    <li>Felgenschlag verfälscht den Wert. Die Felge mit Kreide markieren und immer in derselben Radstellung messen, zum Beispiel Ventil oben.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Gleicher Reifendruck links und rechts. Ein weicherer Reifen kippt das Rad mit.</li>
+                    <li>Negativer Camber: Rad oben nach innen geneigt.</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Camber beider Seiten eingetragen, zwei Messungen stimmen überein</li>
+                    <li>Weiter mit 6.7, wenn Camber nicht passt oder links/rechts mehr als 1/4° auseinander liegt. Sonst direkt 6.8.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 6.7 -->
+<div class="step-card" id="anl_6_7_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_6_7" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">6.7 Camber einstellen (nur wenn nötig)</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Wagenheber, zwei Unterstellböcke</li>
+                    <li>Schlüssel für die innere Schraube des unteren Querlenkers</li>
+                    <li>Platten des Camber Kits</li>
+                    <li>für kleine Korrekturen: Shims und Werkzeug wie in 6.5</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Welcher Einsteller?</h4>
+                <ul>
+                    <li><strong>Grob:</strong> Camber Kit unten, über die nummerierten Platten. Castor bleibt dabei unberührt.<span class="src src-a" title="Street or Track; Handbuch Einstellmechanik §3">A</span></li>
+                    <li><strong>Fein und zum Angleichen links/rechts:</strong> Shims oben, an beiden Bolzen gleich viel</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Vorgehensweise mit dem Camber Kit</h4>
+                <ol>
+                    <li>Vorn anheben, Böcke unter, Rad entlastet.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Innere Schraube des unteren Querlenkers lösen, Platten in der neuen Anordnung einsetzen, Schraube anziehen.</li>
+                    <li>Absetzen, setzen wie in 6.1, Camber neu messen (6.6).</li>
+                    <li>Neue Plattennummer in 6.3 eintragen.</li>
+                </ol>
+                <p style="margin-top:0.3rem;"><strong>Beim ersten Mal:</strong> Welche Plattennummer in welche Richtung wirkt, sagt die Anleitung des Kits nicht. Eine Stufe ändern, vorher und nachher messen, Ergebnis notieren. Daraus entsteht die Tabelle „Platte &rarr; Camber" für dieses Auto.</p>
+            </div>
+            <div class="guide-block"><h4 class="measure">Wie viel bringt was?</h4>
+                <div class="spec-line"><span>Shims an beiden Bolzen je 1/16" (1,6 mm) weg</span><span class="spec-val">ca. 1/3° mehr negativ<span class="src src-a" title="Ford Shop Manual 1966, S. 20-18">A</span></span></div>
+                <div class="spec-line"><span>Shims an beiden Bolzen gleich dazu</span><span class="spec-val">positiver</span></div>
+                <div class="spec-line"><span>Camber Kit, ganzer Bereich</span><span class="spec-val">&plusmn;3/8" (&plusmn;9,5 mm) am unteren Gelenk<span class="src src-a" title="Street or Track, Produktbeschreibung">A</span></span></div>
+                <div class="spec-line"><span>Unteres Gelenk nach außen</span><span class="spec-val">negativer</span></div>
+            </div>
+            <div class="guide-block"><h4 class="torque">Anzugsmomente</h4>
+                <div class="spec-line"><span>Innere Schraube unterer Querlenker</span><span class="spec-val">offen</span></div>
+                <div class="spec-line"><span>Muttern Querachse oben</span><span class="spec-val">offen</span></div>
+                <p>Nicht in den vorliegenden Quellen. Bis zur Klärung nicht schätzen.</p>
+            </div>
+            <div class="guide-block guide-full"><h4 class="tips">Gut zu wissen</h4>
+                <ul>
+                    <li>Eine Änderung am Camber Kit verschiebt das untere Gelenk quer. Danach muss Bump Steer gemessen werden. Das passiert ohnehin in Phase 10.<span class="src src-a" title="Handbuch Einstellmechanik §6.2">A</span></li>
+                    <li>Nach jeder Camber-Änderung verändert sich die Spur mit. Darum kommt die Spur ganz zum Schluss.</li>
+                    <li>Strut Rod und einseitig geänderte Shims verstellen Castor und Camber zugleich. Nach dem Camber also Castor noch einmal kurz prüfen (6.4).</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="release">Fertig, wenn</h4>
+                <ul><li>Castor und Camber beider Seiten im Rahmen, links/rechts je höchstens 1/4° auseinander</li></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 6.8 -->
+<div class="step-card" id="anl_6_8_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_6_8" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">6.8 Spur grob einstellen</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Longacre Toe Plates (Spurplatten), zwei Stück</li>
+                    <li>Maßband</li>
+                    <li>Kreide</li>
+                    <li>Schlüssel für die Klemmschellen der Spurstangenhülsen</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>Castor und Camber fertig (6.4 bis 6.7)</li>
+                    <li>Lenkung genau auf der Markierung aus 6.2</li>
+                    <li>Reifen ohne Ausbeulung unten: Druck stimmt<span class="src src-c" title="Longacre, Set Toe Properly">C</span></li>
+                    <li>Auto gesetzt (6.1)</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Messen</h4>
+                <ol>
+                    <li>Spurplatten außen an beide Vorderreifen lehnen, umgebogene Kante nach außen. Die ganze Platte muss an der Reifenflanke anliegen, unten flach auf dem Boden.<span class="src src-c" title="Longacre, Toe Plates">C</span></li>
+                    <li>Vorne: Abstand zwischen den Platten durch die Schlitze messen. Das ist F.</li>
+                    <li>Hinten genauso. Das ist R.</li>
+                    <li>Die App rechnet Gesamtspur = R &minus; F. Plus heißt Vorspur (Toe-in).</li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Messwerte</h4>
+                <div data-messfelder="toe_f toe_r"></div>
+                <div class="anl-ergebnis" data-anl-toe></div>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Einstellen</h4>
+                <ol>
+                    <li>An jeder Spurstangenhülse beide Klemmschrauben lösen.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-7">A</span></li>
+                    <li>Stehen die Lenkradspeichen gerade: beide Hülsen um gleich viel drehen. Stehen sie schief: die Hülsen ungleich drehen, bis Spur und Lenkrad passen.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-7">A</span></li>
+                    <li>Nach jeder Änderung: zurück- und wieder vorrollen, dann neu messen.<span class="src src-c" title="Longacre, Toe-In Gauge Instructions">C</span></li>
+                    <li>Stimmt beides: Klemmschrauben an beiden Hülsen festziehen.</li>
+                </ol>
+            </div>
+            <div class="guide-block"><h4 class="measure">Sollwert</h4>
+                <div class="spec-line"><span>Gesamtspur, Arbeitswert</span><span class="spec-val">+1,6 mm Vorspur &ndash; Herkunft unbelegt</span></div>
+                <div class="spec-line"><span>Genauigkeit in Phase 6</span><span class="spec-val">grob, Endwert in Phase 13</span></div>
+            </div>
+            <div class="guide-block"><h4 class="tips">Praxis-Tipps</h4>
+                <ul>
+                    <li>Reifenflanke hat Höhenschlag: Rad anheben, drehen, Kreide auf einem Bock knapp an die Flanke halten. Wo sie anstreift, ist ein Hochpunkt. Rad so drehen, dass die Platten an einer glatten Stelle anliegen.<span class="src src-c" title="Longacre, Set Toe Properly">C</span> Danach wieder setzen.</li>
+                    <li>Nie nur eine Seite drehen, bis die Summe stimmt. Sonst steht das Lenkrad schief.</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="torque">Anzugsmoment</h4>
+                <div class="spec-line"><span>Klemmschrauben Spurstangenhülsen</span><span class="spec-val">offen</span></div>
+                <p>Ford nennt den Wert in Part 3-6, im Scan nicht lesbar.</p>
+            </div>
+            <div class="guide-block"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Gesamtspur ungefähr beim Arbeitswert</li>
+                    <li>Lenkrad steht gerade</li>
+                    <li>Klemmschrauben fest</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 6.9 -->
+<div class="step-card" id="anl_6_9_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_6_9" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">6.9 Phase abschließen</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block guide-full"><h4 class="release">Prüfliste</h4>
+                <ul>
+                    <li>Alle Muttern und Klemmschrauben fest, die verstellt wurden</li>
+                    <li>Einsteller in 6.3 auf dem neuen Stand</li>
+                    <li>Castor, KPI, Camber und Spur eingetragen</li>
+                    <li>Castor und Camber links/rechts je höchstens 1/4° auseinander</li>
+                    <li>Lenkradgurt und Bremspedal-Feststeller entfernt</li>
+                </ul>
+                <div class="anl-phasenstatus" data-anl-phase="phase6" style="margin-top:0.6rem;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="modal-overlay" id="settingsModal">
+    <div class="modal" role="dialog" aria-label="Cloud-Sync einrichten">
+        <h3>Cloud-Sync</h3>
+        <div class="status-line" id="connectionStatus">Nicht verbunden</div>
+        <label for="ghToken">GitHub Personal Access Token</label>
+        <input type="password" id="ghToken" placeholder="ghp_...">
+        <p class="hint" data-token-vorgabe></p>
+        <div class="btn-row">
+            <button type="button" class="btn-danger" onclick="disconnectGist()">Trennen</button>
+            <button type="button" class="btn-secondary" onclick="closeSettings()">Abbrechen</button>
+            <button type="button" class="btn-primary" onclick="saveSettings()">Verbinden</button>
+        </div>
+    </div>
+</div>
+
+<script src="messblatt.js"></script>
+<script src="anleitung.js"></script>
+
+<script src="nachschlagen.js"></script>
+
+</body>
+</html>
