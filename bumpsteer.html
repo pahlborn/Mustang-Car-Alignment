@@ -27,6 +27,7 @@
     <script src="markdown.js"></script>
     <script src="glossar.js"></script>
     <script src="referenz.js"></script>
+    <script src="github-zugang.js"></script>
     <script src="app.js"></script>
 </head>
 <body>
@@ -90,7 +91,7 @@
         <div class="status-line" id="connectionStatus">Nicht verbunden</div>
         <label for="ghToken">GitHub Personal Access Token</label>
         <input type="password" id="ghToken" placeholder="ghp_...">
-        <p class="hint">Braucht den Bereich <code>gist</code>. Der Token bleibt auf diesem Ger&auml;t.</p>
+        <p class="hint" data-token-vorgabe></p>
         <div class="btn-row">
             <button type="button" class="btn-danger" onclick="disconnectGist()">Trennen</button>
             <button type="button" class="btn-secondary" onclick="closeSettings()">Abbrechen</button>

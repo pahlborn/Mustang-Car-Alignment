@@ -88,6 +88,9 @@ jobs:
       - name: Geraeteabgleich mit zwei Geraeten
         run: node tests/abgleich-ui.test.mjs
 
+      - name: GitHub-Zugang (Token pruefen, verbinden)
+        run: node tests/github-zugang.test.mjs
+
   # Wer eine ausgelieferte Datei aendert, zaehlt die Version hoch. Sonst gehen
   # zwei verschiedene Staende unter derselben Nummer raus - genau so ist es in
   # gt40-engine bei v54 und in jerico bei v13 passiert, dort zwoelf Minuten

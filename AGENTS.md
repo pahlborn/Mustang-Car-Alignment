@@ -546,8 +546,15 @@ Korrekturen nicht von selbst mit).
 **Die Regel:** Angelegt wird nur nach einer vollständigen, fehlerfreien
 Suche. Jeder Fehlschlag nennt Status und GitHubs Antwort und landet im
 Fehlerprotokoll. Geprüft in `tests/abgleich-ui.test.mjs` (Suite „v26").
-**Offen:** gt40 hat denselben Code noch dreimal (`build-log.html`,
-`index.html`, `specs.html`).
+**v27, ein Baustein für alle drei Apps:** Prüfen, Suchen, Anlegen und
+Speichern stehen jetzt nur noch in `github-zugang.js`, wortgleich in gt40,
+jerico und alignment. Peters Vorgabe (2026-10-30): Was ein Token können
+muss, steht fest, bevor eine App auf einen Fehler stößt. Darum nennt der
+Dialog die Haken vorher. Beim Verbinden liest die App zuerst Konto,
+Token-Art und Haken. Gespeichert wird erst, wenn alles steht, denn in
+Safari teilen sich die drei Apps den Token. `tests/github-zugang.test.mjs`
+kennt die Prüfsumme des Bausteins. Wer ihn in einem Repo ändert, muss alle
+drei nachziehen.
 
 ## 10. Ein Setup hat einen Endzustand, ein Fahrwerk nicht
 
