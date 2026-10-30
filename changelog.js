@@ -12,6 +12,17 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v28',
+      date: '2026-10-30',
+      time: '19:38',
+      title: 'Anleitung: Phase 6 als Schrittkarten (Entwurf)',
+      changes: [
+        { type: 'neu', text: 'Neue Seite Anleitung. Phase 6 (Vorderachse grob ausrichten) als neun Arbeitsschritte nach dem Vorbild des Build Logs von jerico und gt40: je Karte Werkzeug, Vorbereitung, Handgriffe, Messfelder, Sollwerte, Praxis-Tipps und "fertig, wenn". Jede Angabe traegt ihre Quelle (A, C oder D = Werkstattpraxis).' },
+        { type: 'neu', text: 'Messfelder stehen direkt im Arbeitsschritt und sind dieselben wie im Messblatt. Links/rechts-Unterschiede ueber 1/4 Grad werden rot. Jeder Schritt hat einen Status (offen, in Arbeit, erledigt); die Phase laesst sich am Ende direkt als erledigt melden.' },
+        { type: 'intern', text: 'anleitung.js baut die Felder mit Messblatt.feld aus messblatt.js, keine zweite Fassung. Anzugsmomente stehen als offen da: Fords Tabelle (Part 3-6) ist im Scan nicht lesbar.' }
+      ]
+    },
+    {
       version: 'v27',
       date: '2026-10-30',
       time: '18:00',

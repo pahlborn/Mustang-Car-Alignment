@@ -337,6 +337,10 @@
     window.messblattZeichnen = zeichnen;
     window.messblattErgebnisse = zeichneErgebnisse;
 
+    // Die Anleitung zeigt dieselben Felder in ihren Arbeitsschritten. Sie baut
+    // sie hiermit, nicht mit einer eigenen Kopie (Regel 4).
+    window.Messblatt = { feld: baueFeld, beschriftung: beschriftung };
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
