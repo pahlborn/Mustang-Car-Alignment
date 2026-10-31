@@ -66,7 +66,7 @@ h3 { font-size:.95rem; color:var(--primary); margin:.6rem 0 .3rem; }
 .gb { background:#fff; border:1px solid var(--border); border-radius:8px; padding:.55rem .65rem; }
 .full { grid-column:1/-1; }
 .gb h4 { font-size:.72rem; text-transform:uppercase; letter-spacing:.03em; margin:0 0 .35rem; padding-bottom:.2rem; border-bottom:1px solid var(--border); }
-h4.ziel { color:#2a4365; } h4.tools { color:#2b6cb0; } h4.prereq { color:#553c9a; } h4.measure { color:#276749; } h4.tips { color:#b7791f; } h4.warning { color:#9b2c2c; } h4.release { color:#38a169; } h4.torque { color:#c53030; } h4.abw { color:#c05621; }
+h4.ziel { color:#2a4365; } h4.tools { color:#2b6cb0; } h4.prereq { color:#553c9a; } h4.measure { color:#276749; } h4.tips { color:#b7791f; } h4.warning { color:#9b2c2c; } h4.release { color:#38a169; } h4.torque { color:#c53030; } h4.time { color:#718096; } h4.abw { color:#c05621; }
 .gb ol, .gb ul { margin:0; padding-left:1.2rem; } .gb li, .gb p { font-size:.84rem; line-height:1.5; margin:0 0 .25rem; }
 .src { font-size:.62rem; font-weight:700; padding:0 .3rem; border-radius:3px; margin-left:.25rem; }
 .src.a { background:#c6f6d5; color:#22543d; } .src.c { background:#e9d8fd; color:#44337a; } .src.d { background:#feebc8; color:#7b341e; }
@@ -77,7 +77,7 @@ th:first-child, td:first-child { text-align:left; }
 th { color:var(--light); font-weight:600; font-size:.74rem; }
 .inp { display:inline-block; min-width:56px; border:1px solid #cbd5e0; background:#edf2f7; border-radius:6px; padding:.25rem .4rem; text-align:right; }
 .inp.leer { color:#a0aec0; }
-.red { color:var(--danger); font-weight:700; }
+.red { color:var(--danger); font-weight:700; } .gelb { color:#b7791f; font-weight:700; }
 details { background:#fff; border:1px solid var(--border); border-radius:8px; margin:.4rem 0; }
 details > summary { cursor:pointer; padding:.5rem .65rem; font-weight:600; font-size:.85rem; color:var(--primary-light); }
 details > div { padding:0 .75rem .6rem; font-size:.84rem; line-height:1.5; }
@@ -123,7 +123,8 @@ details.baustein { background:#ebf8ff; border-color:#bee3f8; }
   <details><summary>2. Regeln für jede Schrittkarte</summary><div>
     <ol>
       <li><b>Eine Tätigkeit je Karte</b>, der Titel sagt, was man tut („Castor messen“, nicht „Castor“).</li>
-      <li><b>Immer dieselbe Reihenfolge:</b> Ziel · Werkzeug · Vorbereitung · Handgriffe (nummeriert) · Messen und eintragen · Fertig, wenn · Wenn nicht · Praxis-Tipps · Sicherheit · Anzugsmomente · Warum? (zugeklappt). Was nicht gebraucht wird, fehlt einfach.</li>
+      <li><b>Immer dieselbe Reihenfolge:</b> Ziel · Werkzeug · Vorbereitung · Handgriffe (nummeriert) · Messen und eintragen · Fertig, wenn · Wenn nicht · Praxis-Tipps · Sicherheit · Anzugsmomente · Zeitbedarf · Warum? (zugeklappt). Was nicht gebraucht wird, fehlt einfach.</li>
+      <li><b>Zeitbedarf auf jeder Karte</b>, wie bei jerico und gt40. Zuerst eine Schätzung, gekennzeichnet als Werkstattpraxis (D). Nach dem ersten Durchgang wird sie durch die echte Zeit ersetzt.</li>
       <li><b>Kein Verweis auf andere Reiter.</b> Was man braucht, steht in der Karte. Wiederkehrendes (Waage bedienen, Auto setzen, CG/5 anbauen) ist ein aufklappbarer Baustein, an einer Stelle gepflegt, in jeder Karte sichtbar, wo er gebraucht wird.</li>
       <li><b>Felder stehen beim Handgriff</b>, Sollwert und Grenze direkt daneben. Was die App rechnen kann, rechnet sie (Differenz, Gesamtspur, Spanne).</li>
       <li><b>Jede Zahl mit Quelle</b> (A Hersteller, C Longacre, D Werkstattpraxis) oder sichtbar als <span class="offen">offen</span>. Nichts wird geschätzt.</li>
@@ -139,13 +140,31 @@ details.baustein { background:#ebf8ff; border-color:#bee3f8; }
       <li><b>Werkzeuge haben keine eigenen Seiten.</b> Ihre Bedienung steht als Baustein in den Karten, die sie brauchen.</li>
       <li><b>Das Handbuch bleibt als Wissen</b>, wird aber nicht mehr als Anleitung benutzt. Das Legacy-Kapitel und der Verwaltungstext fallen weg.</li>
       <li><b>Fotos je Schritt</b> (wie jerico) kommen erst, wenn alle Phasen stehen.</li>
-      <li><b>Technik bleibt, wie sie ist:</b> Geräteabgleich, Status, „veraltet“. Bis alle Phasen fertig sind, kommt keine neue Technik und keine neue Einstellung dazu.</li>
+      <li><b>Links/rechts bei Castor und Camber:</b> 1/4° anstreben, 1/2° ist die Grenze (Ford). Die App zeigt den Unterschied gelb zwischen 1/4° und 1/2° und rot über 1/2°.</li>
     </ul>
+  </div></details>
+
+  <details><summary>3a. Neue Technik: genau drei Dinge, gebaut vor Phase 0</summary><div>
+    <p>Das Zielbild braucht drei Dinge, die die App heute nicht kann. Sie werden <b>vor</b> den Phasen gebaut, mit eigenen Tests. Danach kommt bis zum Ende keine weitere Technik und keine neue Einstellung dazu. Geräteabgleich, Phasenstatus und „veraltet“ bleiben, wie sie sind.</p>
+    <table class="alt-neu">
+      <tr><th>Was</th><th>Entscheidung (Peter kann widersprechen)</th></tr>
+      <tr><td><b>Status je Schritt</b> (Kästchen, Zähler „x von 81“, Weiter-Knopf)</td>
+        <td>Der Schrittstatus ist ein gewöhnliches Feld (<code>anl_6_4</code> = offen / in Arbeit / erledigt). Er läuft über den vorhandenen Messwerte-Abgleich, so wie die Schrittkästchen in jerico und gt40. Es gibt keinen neuen Kanal und kein neues Format.
+        <br>Der <b>Phasenstatus bleibt die einzige Grundlage</b> für Fortschritt der Phasen, „veraltet“ und „rennstreckenbereit“. Er wird wie heute gesetzt, mit dem Knopf am Ende jeder Phase. Der Schrittstatus dient nur der Orientierung.</td></tr>
+      <tr><td><b>„Neu messen“ an einem Schritt</b></td>
+        <td>Wird aus dem Phasenstatus abgeleitet, nicht neu gerechnet. Jeder Mess-Schritt nennt im Markup, was er liefert (z. B. 6.6 → Camber). Ist seine Phase „veraltet“ und betrifft ein Grund diese Größe, trägt der Schritt die Marke „neu messen“. Die Regeln aus v25 („spätere Phase ersetzt frühe“) gelten unverändert, weil sie weiter je Phase rechnen.</td></tr>
+      <tr><td><b>„Vorher“-Werte</b> (Werte, Karte 6.5, Tabelle „Änderungen“)</td>
+        <td><b>Einsteller</b> (Shims, Platten, Längen, Druck): Ein Journaleintrag speichert künftig auch Feld, alten und neuen Wert. Er läuft über den vorhandenen Status-Kanal, der heute schon das Journal mischt. Je Änderung sind das ein paar Zeichen mehr im Gist.
+        <br><b>Messwerte</b> bekommen keinen Verlauf. „Vorher“ ist dort die Messung aus einer früheren Phase mit eigenem Feld, zum Beispiel Castor aus Phase 6 neben Castor aus Phase 12.</td></tr>
+      <tr><td><b>Tausch Phase 12 und 13</b></td>
+        <td>Die internen Kennungen bleiben: <code>phase12</code> ist Ackermann, <code>phase13</code> ist das endgültige Ausrichten. Getauscht werden nur Nummer, Reihenfolge und Titel, in <code>recheck.js</code> und im Ablauf (<code>02_WORKFLOW.md</code>). Dein gespeicherter Status hängt an den Kennungen und bleibt deshalb bei der richtigen Phase. Die v25-Abdeckung vergleicht die Nummern: Das endgültige Ausrichten (jetzt 12) bleibt „später“ als Phase 6 und ersetzt sie weiter.
+        <br>Ein Test prüft das an einem Stand, der vor dem Tausch gespeichert wurde.</td></tr>
+    </table>
   </div></details>
 
   <details><summary>4. So wird gebaut und abgenommen</summary><div>
     <ol>
-      <li>Eine Phase nach der anderen, 0 bis 18, danach Strecke 19–22.</li>
+      <li>Zuerst die drei Dinge aus 3a, mit Tests. Danach eine Phase nach der anderen, 0 bis 18, dann die Strecke 19–22.</li>
       <li>Jede Phase wird gegen dieses Zielbild geprüft: alle Schritte da, Regeln 1–7 erfüllt, echte Klicks im Test.</li>
       <li>Peter sieht sie auf dem iPad. Erst nach seinem „passt“ kommt die nächste Phase.</li>
       <li>Ändert sich etwas am Ziel, wird zuerst dieses Zielbild geändert, dann gebaut.</li>
@@ -186,10 +205,9 @@ details.baustein { background:#ebf8ff; border-color:#bee3f8; }
     <div class="grid19" id="phasenGitter"></div>
   </div>
 
-  <div class="box violet"><b>Neu zu messen:</b> In 6.5 wurde der Shim vorn links geändert (31.10., 09:12).
-    Dadurch gelten Camber und Spur nicht mehr. <a href="#" onclick="springe('6.6');return false;">Zu 6.6 Camber messen</a></div>
-  <div class="box green"><b>Bind-Test bestanden</b> am 29.10. Spanne 0,3 % der Gesamtmasse.</div>
-  <div class="box red"><b>Rennstreckenbereit: nein.</b> Phasen 6–18 nicht erledigt.</div>
+  <div class="box violet"><b>Neu zu messen:</b> In 5.3 wurde der Panhard verstellt (30.10., 17:05).
+    Der Bind-Test vom 29.10. gilt deshalb nicht mehr. <a href="#" onclick="springe('3.3');return false;">Zu 3.3 Bind-Test</a></div>
+  <div class="box red"><b>Rennstreckenbereit: nein.</b> Bind-Test neu fällig, Phasen 6–18 offen.</div>
 </div>
 
 <!-- ===================== WERKSTATT ===================== -->
@@ -207,21 +225,23 @@ details.baustein { background:#ebf8ff; border-color:#bee3f8; }
 
 <!-- ===================== WERTE ===================== -->
 <div class="view" id="v-werte">
-  <div class="box">Alle Werte an einem Ort, zum Nachsehen und Drucken. Eingetragen wird in den Schritten. Hier steht, was gilt und wie es vorher war.</div>
+  <div class="box">Alle Werte an einem Ort, zum Nachsehen und Drucken. Eingetragen wird in den Schritten.
+    Bei Messwerten steht die frühere Messung aus einer früheren Phase daneben. Bei Einstellern steht der Wert vor der letzten Änderung daneben.</div>
   <div class="card">
     <div class="list-h"><h2>Vorderachse</h2><button class="btn" type="button">&#128424; Drucken</button></div>
     <table>
-      <tr><th>Wert</th><th>LF</th><th>RF</th><th>L&minus;R</th><th>vorher</th><th>Schritt</th></tr>
-      <tr><td>Castor</td><td>3,1°</td><td>2,6°</td><td class="red">0,50</td><td>2,4 / 2,5</td><td>6.4</td></tr>
-      <tr><td>KPI</td><td>9,5°</td><td>9,4°</td><td>0,10</td><td>–</td><td>6.4</td></tr>
-      <tr><td>Camber <span class="tag stale">veraltet</span></td><td>&minus;1,8°</td><td>&minus;2,0°</td><td>0,20</td><td>–</td><td>6.6</td></tr>
-      <tr><td>Gesamtspur <span class="tag stale">veraltet</span></td><td colspan="3">+1,2 mm Vorspur</td><td>–</td><td>6.8</td></tr>
+      <tr><th>Wert</th><th>Phase 6 (grob)<br>LF / RF</th><th>L&minus;R</th><th>Phase 12 (endgültig)<br>LF / RF</th><th>L&minus;R</th></tr>
+      <tr><td>Castor</td><td>3,1° / 2,7°</td><td class="gelb">0,40</td><td>–</td><td>–</td></tr>
+      <tr><td>KPI</td><td>9,5° / 9,4°</td><td>0,10</td><td>–</td><td>–</td></tr>
+      <tr><td>Camber</td><td>– (6.6 offen)</td><td>–</td><td>–</td><td>–</td></tr>
+      <tr><td>Gesamtspur</td><td colspan="2">– (6.8 offen)</td><td colspan="2">–</td></tr>
     </table>
+    <p style="font-size:.78rem;color:#718096;margin:.4rem 0 0;">Gelb: Unterschied über 1/4°. Rot: über 1/2° (Ford).</p>
   </div>
   <div class="card">
     <h2>Einsteller</h2>
     <table>
-      <tr><th>Einsteller</th><th>LF</th><th>RF</th><th>vorher</th><th>Schritt</th></tr>
+      <tr><th>Einsteller</th><th>LF</th><th>RF</th><th>vor der letzten Änderung</th><th>Schritt</th></tr>
       <tr><td>Shim vorderer Bolzen</td><td>5,6 mm</td><td>4,8 mm</td><td>4,8 / 4,8</td><td>6.5</td></tr>
       <tr><td>Shim hinterer Bolzen</td><td>3,2 mm</td><td>4,0 mm</td><td>4,0 / 4,0</td><td>6.5</td></tr>
       <tr><td>LCA-Platte</td><td>Nr. 3</td><td>Nr. 3</td><td>–</td><td>6.3</td></tr>
@@ -233,7 +253,7 @@ details.baustein { background:#ebf8ff; border-color:#bee3f8; }
     <table>
       <tr><th>Wann</th><th>Was</th><th>macht neu fällig</th></tr>
       <tr><td>31.10. 09:12</td><td>Shim vorn LF 4,8 &rarr; 5,6 mm; hinten LF 4,0 &rarr; 3,2 mm</td><td>Camber, Spur</td></tr>
-      <tr><td>29.10. 16:40</td><td>Kaltdruck alle 1,6 bar</td><td>Fahrhöhe mitmessen</td></tr>
+      <tr><td>30.10. 17:05</td><td>Panhard-Loch Achse 3 &rarr; 4</td><td>Bind-Test (3.3)</td></tr>
     </table>
   </div>
   <div class="card"><h2>Weitere Bereiche</h2>
@@ -283,7 +303,7 @@ var PHASEN = [
  { nr:3, t:'Race-ready und Bind-Test', u:'Gleicher Zustand bei jeder Messung, Fahrwerk nicht verspannt', s:[
    ['3.1','Race-ready herstellen: Ballast, Tank, Kaltdruck','d'],
    ['3.2','Stabi-Endlinks spannungsfrei stellen','d'],
-   ['3.3','Bind-Test: dreimal wiegen, dazwischen anheben','d'],
+   ['3.3','Bind-Test: dreimal wiegen, dazwischen anheben','s'],
    ['3.4','Ergebnis bewerten: weiter oder Ursache suchen','d']]},
  { nr:4, t:'Fahrhöhe', u:'Messen, noch nichts verändern', s:[
    ['4.1','Messpunkte festlegen und markieren','d'],
@@ -302,9 +322,9 @@ var PHASEN = [
    ['6.3','Einsteller aufschreiben, bevor du etwas verstellst','d'],
    ['6.4','Castor und KPI messen','w','bsp'],
    ['6.5','Castor einstellen (nur wenn nötig)','d','bsp'],
-   ['6.6','Camber messen','s'],
+   ['6.6','Camber messen',''],
    ['6.7','Camber einstellen (nur wenn nötig)',''],
-   ['6.8','Spur grob einstellen','s'],
+   ['6.8','Spur grob einstellen',''],
    ['6.9','Phase abschließen','']]},
  { nr:7, t:'Erstes Wiegen', u:'Radlasten, die sich wiederholen lassen', s:[
    ['7.1','Waagen aufbauen, nullen, prüfen',''],
@@ -402,6 +422,7 @@ var KARTEN = {
      '<tr><td>Unteres Gelenk</td><td>' + inp('kein Spiel') + '</td><td>' + inp('kein Spiel') + '</td></tr></table></div>' +
    '<div class="gb"><h4 class="release">Fertig, wenn</h4><ul><li>Kein fühlbares Spiel an allen vier Gelenken</li><li>Spielgrenze: <span class="offen">offen</span> (Angabe Moog/Howe fehlt)</li></ul></div>' +
    '<div class="gb"><h4 class="abw">Wenn nicht</h4><ul><li><b>Stopp.</b> Erst Gelenk tauschen, dann weiter. Setup-Arbeit auf Spiel ist vergebens.</li></ul></div>' +
+   '<div class="gb"><h4 class="time">Zeitbedarf</h4><p>ca. 20 min für beide Seiten. Schätzung, nach dem ersten Durchgang ersetzen.' + D + '</p></div>' +
    '<div class="gb full"><details><summary>Warum? Hintergrund</summary><div>Das Kugelgelenk legt die Lenkachse fest. Wackelt es, ändern sich Castor, Camber und Spur je nachdem, wie das Auto zuletzt bewegt wurde.</div></details></div>' +
    '</div>',
 
@@ -419,17 +440,18 @@ var KARTEN = {
      '<li>Noch einmal messen. Beide Durchgänge müssen gleich sein.</li></ol></div>' +
    '<div class="gb full"><h4 class="measure">Messen und eintragen</h4><table>' +
      '<tr><th>Wert</th><th>LF</th><th>RF</th><th>L&minus;R</th><th>Sollwert</th></tr>' +
-     '<tr><td>Castor</td><td>' + inp('3,1') + '</td><td>' + inp('2,6') + '</td><td class="red">0,50</td><td>+3,0° (Arbeitswert)</td></tr>' +
+     '<tr><td>Castor</td><td>' + inp('3,1') + '</td><td>' + inp('2,7') + '</td><td class="gelb">0,40</td><td>+3,0° (Arbeitswert)</td></tr>' +
      '<tr><td>KPI</td><td>' + inp('9,5') + '</td><td>' + inp('9,4') + '</td><td>0,10</td><td>nur notieren</td></tr></table>' +
-     '<p style="margin-top:.3rem;">Links/rechts höchstens 1/4° Unterschied.' + A + ' Rot = darüber.</p></div>' +
-   '<div class="gb"><h4 class="release">Fertig, wenn</h4><ul><li>Beide Seiten eingetragen, zwei Durchgänge gleich</li></ul></div>' +
-   '<div class="gb"><h4 class="abw">Wenn nicht</h4><ul><li>Unterschied über 1/4° oder weit weg vom Arbeitswert: <a href="#" onclick="springe(\'6.5\');return false;">weiter mit 6.5 Castor einstellen</a></li><li>Durchgänge ungleich: Gerät fest? Drehteller frei? Genau 20°?</li></ul></div>' +
+     '<p style="margin-top:.3rem;">Links/rechts: 1/4° anstreben, 1/2° ist die Grenze.' + A + ' Gelb = über 1/4°, rot = über 1/2°.</p></div>' +
+   '<div class="gb"><h4 class="release">Fertig, wenn</h4><ul><li>Beide Seiten eingetragen, zwei Durchgänge gleich</li><li>Unterschied links/rechts nicht über 1/2°, möglichst nicht über 1/4°' + A + '</li></ul></div>' +
+   '<div class="gb"><h4 class="abw">Wenn nicht</h4><ul><li>Unterschied über 1/2° (oder über 1/4°, wenn du nachbessern willst) oder weit weg vom Arbeitswert: <a href="#" onclick="springe(\'6.5\');return false;">weiter mit 6.5 Castor einstellen</a></li><li>Durchgänge ungleich: Gerät fest? Drehteller frei? Genau 20°?</li></ul></div>' +
    '<div class="gb full"><h4 class="tips">Praxis-Tipps</h4><ul><li>IN und OUT verwechselt ergibt ein falsches Vorzeichen.</li><li>Beim rechten Rad heißt IN: nach links lenken.</li></ul></div>' +
+   '<div class="gb"><h4 class="time">Zeitbedarf</h4><p>ca. 30 min für beide Seiten mit Wiederholung. Schätzung, nach dem ersten Durchgang ersetzen.' + D + '</p></div>' +
    '<div class="gb full"><details><summary>Warum? Hintergrund</summary><div>Positiver Castor gibt Geradeauslauf und Rückstellung, macht die Lenkung aber schwerer – bei Handlenkung wichtig.' + C + '</div></details></div>' +
    '</div>',
 
  '6.5': '<div class="gg">' +
-   '<div class="gb full"><h4 class="ziel">Ziel</h4><p>Castor links und rechts gleich und nahe am Arbeitswert.</p></div>' +
+   '<div class="gb full"><h4 class="ziel">Ziel</h4><p>Castor nahe am Arbeitswert, links und rechts möglichst nicht mehr als 1/4° auseinander, höchstens 1/2°.</p></div>' +
    '<div class="gb"><h4 class="tools">Werkzeug</h4><ul><li>Ringschlüssel für die Querachsmuttern (vom Motorraum aus)' + A + '</li><li>Montiereisen</li><li>Ford-Shims 1/32" und 1/8"</li><li>Drehmomentschlüssel</li></ul></div>' +
    '<div class="gb"><h4 class="prereq">Welcher Einsteller?</h4><ul><li>bis etwa 1°: Shims gegenläufig' + A + '</li><li>mehr: Strut Rod, kürzer = mehr Castor</li></ul></div>' +
    '<div class="gb full"><h4 class="prereq">Handgriffe mit Shims</h4><ol>' +
@@ -449,6 +471,7 @@ var KARTEN = {
      '<div class="spec"><span>Paket je Bolzen</span><b>max. 9/16"' + A + '</b></div></div>' +
    '<div class="gb"><h4 class="torque">Anzugsmoment</h4><div class="spec"><span>Muttern Querachse</span><b class="offen">offen</b></div><p>Ford Part 3-6 im Scan nicht lesbar.</p></div>' +
    '<div class="gb full"><h4 class="warning">Sicherheit</h4><ul><li>Die Feder drückt auf den oberen Querlenker.' + A + ' Muttern nie ganz abnehmen, solange das Auto auf den Rädern steht.</li></ul></div>' +
+   '<div class="gb"><h4 class="time">Zeitbedarf</h4><p>ca. 30–45 min je Seite und Durchgang, inklusive Neumessen. Schätzung, nach dem ersten Durchgang ersetzen.' + D + '</p></div>' +
    '</div>',
 
  '7.3': '<div class="gg">' +
@@ -474,6 +497,7 @@ var KARTEN = {
    '<div class="gb"><h4 class="release">Fertig, wenn</h4><ul><li>Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)</li></ul></div>' +
    '<div class="gb"><h4 class="abw">Wenn nicht</h4><ul><li>0,5–1 %: Reifendruck, Stabi, Waagen prüfen, wiederholen</li><li>über 1 %: Verspannung – zurück zu 3.4</li></ul></div>' +
    '<div class="gb full"><h4 class="tips">Praxis-Tipps</h4><ul><li>Ändert sich die Gesamtmasse zwischen den Durchgängen, klemmt eine Waage – nicht das Auto.' + C + '</li><li>Ein Reifen, der langsam Luft verliert, lässt die Werte wandern.' + C + '</li></ul></div>' +
+   '<div class="gb"><h4 class="time">Zeitbedarf</h4><p>ca. 45 min für drei Durchgänge, ohne Aufbau der Waagen. Schätzung, nach dem ersten Durchgang ersetzen.' + D + '</p></div>' +
    '</div>'
 };
 

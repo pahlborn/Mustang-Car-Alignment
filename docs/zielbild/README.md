@@ -14,4 +14,4 @@ Peter, 30.10.2026: „Das frühere Konzept klang auch klasse, aber es ging mit d
 2. **Erst das Zielbild ändern, dann bauen.** Peter muss die Änderung freigeben.
 3. **Abnahme je Phase:** Alle Schritte aus dem Zielbild sind da, die Kartenregeln sind erfüllt, und der Test arbeitet mit echten Klicks. Danach sieht Peter die Phase auf dem iPad. Erst nach seinem „passt“ beginnt die nächste Phase.
 
-Stand: 2026-10-31. Freigabe durch Peter: offen.
+Stand: 2026-10-31, mit den drei Hinweisen aus `docs/pruefung/2026-10-31-hinweise-zielbild.md` (neue Technik offen benannt, Erklärung §3a; Ford 1/4° anstreben, 1/2° Grenze; Zeitbedarf je Karte). Freigabe durch Peter: offen.
