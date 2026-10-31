@@ -38,3 +38,17 @@ Peters Vorbild sind die Schrittkarten aus jerico und gt40, mit Vorbereitung, Wer
 
 - Der offene PR #1 (`entwurf/anleitung-phase6`) heißt „Entwurf v28“. v28 und v29 sind inzwischen vergeben (Umlaute; Versionsprüfung ohne Netz). Wird er weiterverwendet, braucht er eine freie Nummer und einen frischen Stand von `main`.
 - Geprüft und richtig: die Shim-Richtung für mehr Castor (A-11, Zeilen 8313–8325), „1/32" an jedem Bolzen ≈ 1°“ und „Lenkwinkel erst nach Castor, Camber und Spur“ (A-11, Zeilen 7501–7505).
+
+> [!NOTE]
+> **Eingearbeitet am 2026-10-31 in `docs/zielbild/`**
+> 1. **Neue Technik:** Erklärung §3 ist korrigiert. Der neue Abschnitt §3a heißt „Neue Technik: genau drei Dinge, gebaut vor Phase 0“ und enthält je eine Entscheidung:
+>    - Der Schrittstatus ist ein Feld im vorhandenen Messwerte-Abgleich. Der Phasenstatus bleibt die einzige Grundlage für „veraltet“ und „rennstreckenbereit“.
+>    - „Neu messen“ je Schritt wird aus der Prüfung je Phase abgeleitet. Dazu nennt jeder Schritt im Markup, was er liefert.
+>    - Verlauf nur für Einsteller: Das Journal speichert Feld, alten und neuen Wert. Messwerte bekommen keinen Verlauf. Als „vorher“ dient dort die Messung einer früheren Phase mit eigenem Feld.
+>    - Beim Tausch 12/13 bleiben die Kennungen, es wechseln nur Nummer, Reihenfolge und Titel. Der gespeicherte Status bleibt dadurch bei der richtigen Phase. Ein Test prüft das an einem Stand von vor dem Tausch.
+>
+>    In §4 steht: Technik zuerst.
+> 2. **Ford:** In Karte 6.4/6.5 und auf „Werte“ gilt jetzt: 1/4° anstreben, 1/2° ist die Grenze. Gelb bedeutet über 1/4°, rot über 1/2°.
+> 3. **Zeitbedarf:** Regel 2 und eine eigene Regel sind ergänzt. Die vier Beispielkarten haben eine Schätzung, gekennzeichnet mit D.
+>
+> **Außerdem:** Das Beispiel ist jetzt in sich stimmig. „Neu messen“ erscheint nur, wenn eine erledigte Phase veraltet ist, hier nach der Panhard-Änderung in 5.3 beim Bind-Test 3.3.
