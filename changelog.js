@@ -12,6 +12,17 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v31',
+      date: '2026-10-31',
+      time: '18:31',
+      title: 'Anleitung, Teil 2: Phase 1 Mechanik prüfen',
+      changes: [
+        { type: 'neu', text: 'Phase 1 in der Anleitung: acht Schritte von Radlager und Kugelgelenken über Lenkung, Vorder- und Hinterachse bis Bremse und Reifen. Neu nach dem Umbau: Gummi- und Kunststofflager in Fahrhöhe anziehen (1.7) und erste Ausfahrt mit Nachziehen der U-Bolts über Kreuz (1.8). Prüfverfahren für Radlager und Kugelgelenke nach Ford (Shop Manual 1966), Vorderradlager mit 17–25 ft-lb setzen.' },
+        { type: 'neu', text: 'Befunde als Auswahl ok / nicht ok, im Messblatt unter "Mechanik geprüft". Baustein für die Longacre-Spurplatten.' },
+        { type: 'intern', text: 'Tabellen mit Befunden zeigen keine L−R-Spalte mehr. Test dazu, Gegenprobe rot.' }
+      ]
+    },
+    {
       version: 'v30',
       date: '2026-10-31',
       time: '18:01',

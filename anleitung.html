@@ -99,6 +99,16 @@
         <li>Zum Wiegen den Stabi lösen, sonst wiegst du seine Spannung mit.<span class="src src-c" title="Longacre, Scaling a Race Car Properly: Common Problems, Sway Bar">C</span></li>
     </ol>
 </template>
+<template data-baustein="spurplatten" data-titel="So misst du mit den Longacre-Spurplatten">
+    <ol>
+        <li>Räder geradeaus, ebener Boden.<span class="src src-c" title="Longacre, Toe Plates">C</span> Für einen gültigen Spurwert müssen Castor und Camber vorher stimmen.<span class="src src-c" title="Longacre, Toe Plates: Set caster &amp; camber first">C</span></li>
+        <li>Reifendruck so, dass der Reifen unten nicht ausbeult.<span class="src src-c" title="Longacre, Set Toe Properly: Toe Plate Method">C</span></li>
+        <li>Je eine Platte außen an einen Vorderreifen lehnen, die umgebogene Kante nach außen. Die ganze Platte liegt an der Reifenflanke an und unten flach auf dem Boden.<span class="src src-c" title="Longacre, Toe Plates; Set Toe Properly">C</span></li>
+        <li>Vorne den Abstand zwischen den Platten durch die Schlitze messen (F), dann hinten (R).<span class="src src-c" title="Longacre, Toe Plates">C</span></li>
+        <li>Gesamtspur = R &minus; F. Ist vorn breiter als hinten, ist das Nachspur (Toe-out).<span class="src src-c" title="Longacre, Toe Plates: Larger front width means toe-out">C</span></li>
+        <li>Felgenschlag und Beulen in der Flanke verfälschen den Wert. Hochpunkte vorher mit Kreide suchen und das Rad so drehen, dass die Platte an einer glatten Stelle anliegt.<span class="src src-c" title="Longacre, Set Toe Properly">C</span></li>
+    </ol>
+</template>
 
 <div class="phase" id="phase0" data-phase="phase0">
 <div class="phase-banner" onclick="togglePhase('phase0body')">
@@ -577,6 +587,585 @@
 </div>
 
 <div class="phase-abschluss" data-anl-phase="phase0"></div>
+</div>
+</div>
+
+<div class="phase" id="phase1" data-phase="phase1">
+<div class="phase-banner" onclick="togglePhase('phase1body')">
+    <div class="phase-num">1</div>
+    <div class="phase-info">
+        <h2>Mechanik prüfen</h2>
+        <p>Kein Spiel, nichts lose – sonst stimmt keine Messung</p>
+    </div>
+    <span class="phase-stand" data-phasen-stand="phase1"></span>
+    <span class="phase-toggle collapsed" id="toggle_phase1body">&#9660;</span>
+</div>
+<div class="phase-body collapsed" id="phase1body">
+<div class="info-box"><strong>Vorher erledigt:</strong> Phase 0, alle Teile erfasst.
+    <br><strong>Stopp-Regel:</strong> Findest du Spiel, lose Teile oder einen Reifenschaden, hörst du hier auf und reparierst zuerst (Projektregel). Messen auf Spiel ist vergebens.
+    <br>Jede geprüfte Mutter bekommt einen Lackstrich. In 1.8 siehst du daran, ob sich etwas bewegt hat.</div>
+
+<!-- Schritt 1.1 -->
+<div class="step-card" id="anl_1_1_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_1_1" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">1.1 Radlager auf Spiel prüfen</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block guide-full"><h4 class="ziel">Ziel</h4><p>Alle vier Radlager ohne fühlbares Spiel, die Vorderräder drehen frei und leise. Erst danach lässt sich Spiel im Kugelgelenk (1.2) sicher erkennen.</p></div>
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Wagenheber, Unterstellböcke</li>
+                    <li>Helfer oder Bremspedal-Feststeller</li>
+                    <li>Drehmomentschlüssel mit ft-lb-Skala</li>
+                    <li>Zange, neue Splinte</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>Auto anheben, bis das Rad frei vom Boden ist, und auf Böcke stellen<span class="src src-a" title="Ford Shop Manual 1966, S. 3-45, Front Wheel Bearing Adjustment">A</span></li>
+                    <li>Handbremse gelöst, Gang heraus</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Handgriffe</h4>
+                <ol>
+                    <li><strong>Vorn:</strong> Rad oben und unten greifen (12 und 6 Uhr) und kräftig hinein und heraus kippen. Fühlst du Spiel?<span class="src src-a" title="Ford Shop Manual 1966, S. 3-9, Front End General Inspection: in-and-out free play">A</span></li>
+                    <li>Helfer tritt die Bremse, du kippst noch einmal. Ist das Spiel weg, war es das Radlager. Bleibt es, ist es das Kugelgelenk: weiter in 1.2.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Rad von Hand drehen. Läuft es rau oder macht Geräusche, Lager reinigen oder tauschen.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-45">A</span></li>
+                    <li><strong>Vorderlager einstellen</strong>, nur bei Spiel oder schwergängigem Rad:
+                        <ol>
+                            <li>Fettkappe abnehmen, Splint und Kronensicherung (Nut Lock) entfernen.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-45">A</span></li>
+                            <li>Bei Scheibenbremse: Einstellmutter drei Umdrehungen lösen und das Rad ein paar Mal hinein und heraus drücken, damit die Beläge von der Scheibe gehen.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-45">A</span></li>
+                            <li>Rad drehen und dabei die Einstellmutter mit 17–25 ft-lb anziehen. Das setzt die Lager.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-45, Fig. 3">A</span></li>
+                            <li>Kronensicherung so aufsetzen, dass eine Lücke über dem Splintloch steht. Dann Mutter und Sicherung zusammen zurückdrehen bis zur nächsten Lücke.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-45">A</span></li>
+                            <li>Neuen Splint einsetzen, Enden um die Sicherung biegen. Fettkappe drauf.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-45">A</span></li>
+                            <li>Rad drehen: frei und leise? Dann noch einmal kippen wie in Handgriff 1.</li>
+                        </ol>
+                    </li>
+                    <li><strong>Hinten:</strong> Rad oben und unten kippen, dann außen am Reifen fassen und kräftig ziehen und drücken (axial). Fühlst du Spiel?<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Befund eintragen</h4>
+                <div data-messtabelle="mech_radlager" data-raeder="4"></div>
+                <div class="spec-line"><span>Lagerspiel vorn, Grenzwert in mm</span><span class="spec-val"><span class="offen">offen</span></span></div>
+                <div class="spec-line"><span>Lagerspiel hinten (Ford 9"), Grenzwert</span><span class="spec-val"><span class="offen">offen</span></span></div>
+            </div>
+            <div class="guide-block"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Kein fühlbares Spiel an allen vier Rädern</li>
+                    <li>Vorderräder drehen frei und leise</li>
+                    <li>Neue Splinte gesteckt, wo eingestellt wurde</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="abw">Wenn nicht</h4>
+                <ul>
+                    <li>Vorn bleibt nach dem Einstellen Spiel oder Geräusch: Lager und Laufringe tauschen.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-45">A</span></li>
+                    <li>Hinten Spiel: <strong>Stopp.</strong> Achslager prüfen und reparieren, dann weiter.</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="tips">Praxis-Tipps</h4>
+                <ul>
+                    <li>Nach dem Einstellen mit Scheibenbremse vor dem ersten Rollen mehrmals das Bremspedal treten, bis es wieder hart ist.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-45, Schritt 10">A</span></li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="warning">Sicherheit</h4>
+                <ul>
+                    <li>Nie unter einem Auto arbeiten, das nur auf dem Wagenheber steht. Immer Böcke.</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="torque">Anzugsmomente</h4>
+                <div class="spec-line"><span>Einstellmutter Vorderradlager, zum Setzen (Ford-Nabe)</span><span class="spec-val">17–25 ft-lb, dann zurück bis zur nächsten Lücke<span class="src src-a" title="Ford Shop Manual 1966, S. 3-45">A</span></span></div>
+                <div class="spec-line"><span>Andere Nabe oder Bremsanlage</span><span class="spec-val">offen</span></div>
+                <p>Ford gilt für die Serien-Nabe. Welche Nabe verbaut ist, steht seit 0.3 fest (Achsschenkel, Bremsenart).</p>
+            </div>
+            <div class="guide-block"><h4 class="time">Zeitbedarf</h4><p>ca. 30 min für alle vier Räder, Einstellen der Vorderradlager ca. 20 min je Seite dazu<span class="src src-d" title="Schätzung (Werkstattpraxis), nach dem ersten Durchgang durch die echte Zeit ersetzen">D</span></p></div>
+            <div class="guide-block guide-full"><details class="warum"><summary>Warum? Hintergrund</summary><div>
+                Ein loses Radlager lässt das Rad kippen. Das sieht beim Prüfen aus wie ein verschlissenes Kugelgelenk. Ford warnt ausdrücklich davor, lose Radlager mit einem verschlissenen Kugelgelenk zu verwechseln.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-10, Lower Ball Joint Inspection">A</span> Deshalb kommen die Radlager zuerst.
+            </div></details></div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 1.2 -->
+<div class="step-card" id="anl_1_2_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_1_2" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">1.2 Kugelgelenke auf Spiel prüfen</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block guide-full"><h4 class="ziel">Ziel</h4><p>Kein Spiel im oberen (Moog) und unteren (Howe) Kugelgelenk. Spiel verfälscht jede spätere Messung.</p></div>
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Wagenheber, zwei Unterstellböcke</li>
+                    <li>Montiereisen</li>
+                    <li>Helfer oder Bremspedal-Feststeller</li>
+                    <li>Messuhr mit Magnetfuß, falls vorhanden (für Handgriff 5)</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>Vorderrad frei, Auto sicher auf Böcken. Böcke unter den Unterboden, nicht unter den unteren Querlenker: Das Rad soll ganz ausfedern. So ist das obere Gelenk entlastet.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-10, Upper Ball Joint Inspection">A</span></li>
+                    <li>Lenkung geradeaus</li>
+                    <li>Radlager ohne Spiel (1.1)</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Handgriffe, je Seite</h4>
+                <ol>
+                    <li>Rad oben und unten greifen (12 und 6 Uhr) und kräftig kippen. Fühlst du Spiel, kommt es vom Radlager oder vom Kugelgelenk.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Helfer tritt die Bremse, du kippst noch einmal. Bleibt das Spiel, ist es das Kugelgelenk. Ist es weg, war es das Radlager.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Montiereisen unter den Reifen, Rad anheben und dabei das Gelenk beobachten. Bewegt sich der Zapfen im Gehäuse?<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li><strong>Unteres Gelenk:</strong> Helfer fasst den Reifen unten und bewegt ihn hinein und heraus. Du schaust auf das untere Ende des Achsschenkels und den unteren Querlenker. Jede Bewegung zwischen beiden heißt: Gelenk verschlissen. Bewegung am oberen Gelenk dabei nicht beachten, es ist entlastet.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-10, Lower Ball Joint Inspection">A</span></li>
+                    <li><strong>Oberes Gelenk mit Messuhr:</strong> Messuhr am oberen Querlenker befestigen, Taster an die Innenseite der Felge neben dem oberen Gelenk. Reifen oben und unten fassen, langsam hinein und heraus bewegen, Ausschlag ablesen.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-10, Fig. 14 Measuring Upper Ball Joint Radial Play">A</span></li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Befund eintragen</h4>
+                <div data-messtabelle="mech_kg_oben mech_kg_unten"></div>
+            </div>
+            <div class="guide-block"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Kein fühlbares Spiel an allen vier Gelenken</li>
+                    <li>Spielgrenze: <span class="offen">offen</span> (Angabe Moog/Howe fehlt, Ford-Tabelle nicht lesbar)</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="abw">Wenn nicht</h4>
+                <ul>
+                    <li><strong>Stopp.</strong> Erst Gelenk tauschen, dann weiter. Setup-Arbeit auf Spiel ist vergebens.</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="warning">Sicherheit</h4>
+                <ul>
+                    <li>Die Feder sitzt vorgespannt über dem oberen Querlenker.<span class="src src-a" title="Ford Shop Manual 1966, Part 3-2, Description: A coil spring seats between the upper arm and the top of the spring housing">A</span> Aufbocken entlastet sie nicht. Beim Prüfen nichts am oberen Querlenker lösen.</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="time">Zeitbedarf</h4><p>ca. 30 min für beide Seiten<span class="src src-d" title="Schätzung (Werkstattpraxis), nach dem ersten Durchgang durch die echte Zeit ersetzen">D</span></p></div>
+            <div class="guide-block guide-full"><details class="warum"><summary>Warum? Hintergrund</summary><div>Das Kugelgelenk legt die Lenkachse fest. Wackelt es, ändern sich Castor, Camber und Spur je nachdem, wie das Auto zuletzt bewegt wurde.</div></details></div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 1.3 -->
+<div class="step-card" id="anl_1_3_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_1_3" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">1.3 Lenkung: Spurstangenköpfe, Lenk- und Zwischenhebel, Lenkgetriebe</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block guide-full"><h4 class="ziel">Ziel</h4><p>Kein Spiel im Lenkgestänge, Lenkgetriebe fest am Rahmen, nichts verbogen.</p></div>
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Helfer am Lenkrad</li>
+                    <li>Taschenlampe</li>
+                    <li>Schlüsselsatz</li>
+                    <li>Lackstift</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>Räder auf dem Boden, Lenkung geradeaus</li>
+                    <li>Zugang von unten: Grube oder Auffahrrampen</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Handgriffe</h4>
+                <ol>
+                    <li>Helfer dreht das Lenkrad kurz hin und her, gerade so weit, dass die Räder sich eben bewegen.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Du schaust nacheinander an jedes Gelenk. Bewegen sich Kugelzapfen und Gehäuse zusammen, ist es gut. Bewegt sich eins vor dem anderen oder klackt es, ist Spiel drin.<span class="src src-d" title="Werkstattpraxis">D</span> Reihenfolge: Lenkgetriebe-Ausgang mit Lenkstockhebel (Pitman Arm), Lenkstockhebel an der Mittelstange (Center Link), Zwischenhebel (Idler Arm) am Rahmen und an der Mittelstange, innere Spurstangenköpfe, äußere Spurstangenköpfe (Bump-Steer-Kit) am Lenkhebel.</li>
+                    <li><strong>Zwischenhebel:</strong> am Ende bei der Mittelstange kräftig auf und ab drücken. Bewegt er sich im Lager am Rahmen, ist das Lager verschlissen.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li><strong>Lenkgetriebe:</strong> Befestigungsschrauben am Rahmen auf festen Sitz prüfen. Alle Verbindungen des Gestänges auf festen Sitz prüfen.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-9, Front End General Inspection">A</span> Dreht sich die Eingangswelle, bevor sich der Lenkstockhebel bewegt, hat das Getriebe Spiel.</li>
+                    <li>Kronenmuttern an allen Kugelzapfen: Splint drin? Klemmschellen der Spurstangenhülsen fest? Am Bump-Steer-Kit Kontermuttern und Schraube durch die Distanzstücke fest?</li>
+                    <li>Spurstangen, Mittelstange und Lenkhebel ansehen: verbogen? Verschlissenes oder verbogenes Teil tauschen.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-9">A</span></li>
+                    <li>Jede geprüfte Mutter mit einem Lackstrich über Mutter und Bauteil markieren.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Befund eintragen</h4>
+                <div data-messfelder="mech_lenkung"></div>
+                <div class="spec-line"><span>Spielgrenzen der Gelenke, Einstellung Flaming-River-Getriebe</span><span class="spec-val"><span class="offen">offen</span></span></div>
+            </div>
+            <div class="guide-block"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Kein Gelenk mit Spiel, kein Teil verbogen</li>
+                    <li>Alle Splinte drin, alle Muttern markiert</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="abw">Wenn nicht</h4>
+                <ul>
+                    <li><strong>Stopp.</strong> Teil tauschen, dann weiter.</li>
+                    <li>Spiel im Lenkgetriebe: Einstellung nach Herstelleranleitung (Flaming River), Wert <span class="offen">offen</span>.</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="torque">Anzugsmomente</h4>
+                <div class="spec-line"><span>Lenkgetriebe am Rahmen</span><span class="spec-val">offen</span></div>
+                <div class="spec-line"><span>Kronenmuttern Spurstangenköpfe</span><span class="spec-val">offen</span></div>
+                <div class="spec-line"><span>Klemmschellen Spurstangenhülsen</span><span class="spec-val">offen</span></div>
+                <p>Ford nennt die Werte in Part 3-6, im Scan nicht lesbar. Nicht schätzen.</p>
+            </div>
+            <div class="guide-block"><h4 class="time">Zeitbedarf</h4><p>ca. 30 min<span class="src src-d" title="Schätzung (Werkstattpraxis), nach dem ersten Durchgang durch die echte Zeit ersetzen">D</span></p></div>
+            <div class="guide-block guide-full"><details class="warum"><summary>Warum? Hintergrund</summary><div>
+                Spiel im Gestänge lässt die Spur wandern, je nachdem, wohin zuletzt gelenkt wurde. Für die Bump-Steer-Messung in Phase 10 muss die Lenkung ganz ohne Spiel sein. Was hier lose ist, verdirbt dort die Kurve.
+            </div></details></div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 1.4 -->
+<div class="step-card" id="anl_1_4_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_1_4" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">1.4 Querlenker, Strut Rods, Stabi: Schrauben und Lager</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block guide-full"><h4 class="ziel">Ziel</h4><p>An der Vorderachse ist jede Schraube fest und kein Lager ausgeschlagen. Geprüft wird, nicht verstellt.</p></div>
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Ring- und Steckschlüssel</li>
+                    <li>Montiereisen</li>
+                    <li>Taschenlampe</li>
+                    <li>Lackstift</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>Auto auf Böcken unter dem Unterboden, Vorderräder ab</li>
+                    <li>Heim-Gelenke, Strut-Rod-Einstellung und Endlinks <strong>nicht verstellen</strong>. Ihre Stellung ist in 0.2 erfasst bzw. kommt in 3.2 und 6.3.</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Handgriffe, je Seite</h4>
+                <ol>
+                    <li><strong>Oberer Querlenker:</strong> Muttern der Querachse am Federdom (vom Motorraum aus) auf festen Sitz prüfen. Kontermuttern der Heim-Gelenke fest? Lackstrich aus 0.2 unverändert?</li>
+                    <li>Mit dem Montiereisen den oberen Querlenker vorsichtig hebeln: Bewegt sich ein Heim-Gelenk im Kopf?<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Befestigung des oberen Kugelgelenks am Querlenker fest. Kronenmuttern beider Kugelzapfen mit Splint.<span class="src src-a" title="Ford Shop Manual 1966, Part 3-2, Einbau oberer Querlenker: new cotter pin">A</span></li>
+                    <li><strong>Federteller:</strong> die zwei Schrauben am oberen Querlenker fest.<span class="src src-a" title="Ford Shop Manual 1966, Part 3-2, Einbau oberer Querlenker: spring pivot to upper arm, 2 bolts">A</span></li>
+                    <li><strong>Unterer Querlenker:</strong> innere Schraube am Camber Kit fest. Querlenker am Achsschenkel hochhebeln: Bewegung im inneren Lager?<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li><strong>Strut Rod:</strong> Befestigung an der Rahmenaufnahme, die zwei Schrauben am unteren Querlenker und die Kontermutter der Längeneinstellung fest.</li>
+                    <li><strong>Stabi:</strong> Lagerschellen am Rahmen fest, Poly-Buchsen nicht gerissen. Endlink-Muttern fest, aber Länge nicht ändern.</li>
+                    <li><strong>Dämpfer:</strong> oben und unten fest, nicht nass von Öl.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-9, Front End General Inspection, Schritt 6">A</span></li>
+                    <li><strong>Anschlagpuffer:</strong> vorhanden, fest, nicht zerbröselt.</li>
+                    <li>Jede geprüfte Mutter mit Lackstrich markieren.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Befund eintragen</h4>
+                <div data-messfelder="mech_va_schrauben"></div>
+            </div>
+            <div class="guide-block"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Alle Verbindungen fest und markiert</li>
+                    <li>Kein Lager ausgeschlagen, kein Puffer beschädigt</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="abw">Wenn nicht</h4>
+                <ul>
+                    <li>Mutter an einem Gummi- oder Kunststofflager lose: noch nicht festziehen. Das passiert in Fahrhöhe in 1.7.</li>
+                    <li>Andere Mutter lose: festziehen (Moment <span class="offen">offen</span>), markieren.</li>
+                    <li>Lager oder Gelenk mit Spiel: <strong>Stopp</strong>, tauschen.</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="warning">Sicherheit</h4>
+                <ul>
+                    <li>Die Feder sitzt vorgespannt über dem oberen Querlenker.<span class="src src-a" title="Ford Shop Manual 1966, Part 3-2, Description">A</span> Aufbocken entlastet sie nicht. Querachse und Federteller nie lösen, solange die Feder eingebaut ist.</li>
+                    <li>Muss am Strut Rod oder unteren Querlenker etwas gelöst werden: Ford legt beim Mustang vorher, auf den Rädern stehend, einen Holzklotz zwischen oberen Querlenker und Federturm.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-13 f., Mustang: Lower Arm Strut and/or Bushing Replacement, Fig. 3">A</span></li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="torque">Anzugsmomente</h4>
+                <div class="spec-line"><span>Muttern Querachse oben</span><span class="spec-val">offen</span></div>
+                <div class="spec-line"><span>Innere Schraube unterer Querlenker</span><span class="spec-val">offen</span></div>
+                <div class="spec-line"><span>Strut Rod, beide Enden</span><span class="spec-val">offen</span></div>
+                <div class="spec-line"><span>Kugelzapfen-Kronenmuttern</span><span class="spec-val">offen</span></div>
+                <div class="spec-line"><span>Stabi-Schellen und Endlinks</span><span class="spec-val">offen</span></div>
+                <p>Ford Part 3-6 im Scan nicht lesbar, Herstellerangaben (Street or Track, Global West) liegen nicht vor.</p>
+            </div>
+            <div class="guide-block"><h4 class="time">Zeitbedarf</h4><p>ca. 45 min für beide Seiten<span class="src src-d" title="Schätzung (Werkstattpraxis), nach dem ersten Durchgang durch die echte Zeit ersetzen">D</span></p></div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 1.5 -->
+<div class="step-card" id="anl_1_5_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_1_5" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">1.5 Hinterachse: Federn, Shackles, U-Bolts, Panhard</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block guide-full"><h4 class="ziel">Ziel</h4><p>An der Hinterachse ist alles fest, nichts gebrochen, die Buchsen sind abgeschmiert und ohne Spiel.</p></div>
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Ring- und Steckschlüssel</li>
+                    <li>Montiereisen</li>
+                    <li>Fettpresse</li>
+                    <li>Taschenlampe, Lackstift</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>Auto auf Grube oder Auffahrrampen, Räder auf dem Boden</li>
+                    <li>Panhard und Keil nicht verstellen</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Handgriffe, je Seite</h4>
+                <ol>
+                    <li><strong>Blattfedern:</strong> jede Lage auf Risse ansehen. Der Zentrierbolzen sitzt in der Bohrung der Federauflage an der Achse. Federklammern der Lagen vorhanden.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li><strong>Federauge vorn und Shackle:</strong> Del-A-Lum-Buchsen über die Fettnippel abschmieren.<span class="src src-a" title="Global West, Produktseite 106SH: Grease fittings are installed">A</span> Dann mit dem Montiereisen zwischen Federauge und Halter hebeln: seitliche Bewegung?<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li><strong>U-Bolts:</strong> alle vier Muttern je Seite fest? Gewinde steht überall etwa gleich weit über? Federplatte liegt plan an.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li><strong>Panhard:</strong> Schrauben an beiden Enden fest. Stange quer hebeln: Spiel im Lager oder Gelenk?<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li><strong>Dämpfer hinten:</strong> oben und unten fest, nicht nass von Öl.</li>
+                    <li><strong>Kardanwelle hinten:</strong> Bügel oder Schrauben am Achsflansch fest. Lose Bügel verursachen Vibration.<span class="src src-a" title="Ford Shop Manual 1966, Drive Shaft Trouble Diagnosis: Universal joint U-bolts loose">A</span></li>
+                    <li>Achse: Öl an Achsrohr oder Deckel?</li>
+                    <li>Jede geprüfte Mutter mit Lackstrich markieren.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Befund eintragen</h4>
+                <div data-messfelder="mech_ha"></div>
+            </div>
+            <div class="guide-block"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Keine gebrochene Lage, Zentrierbolzen sitzt</li>
+                    <li>Buchsen abgeschmiert, ohne Spiel</li>
+                    <li>U-Bolts, Panhard, Dämpfer, Kardanflansch fest und markiert</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="abw">Wenn nicht</h4>
+                <ul>
+                    <li>Gebrochene Lage oder Zentrierbolzen: <strong>Stopp.</strong> Ford nennt beides als Ursache für Vibration.<span class="src src-a" title="Ford Shop Manual 1966, Drive Shaft Trouble Diagnosis: broken rear spring center bolt, broken rear spring">A</span></li>
+                    <li>U-Bolt lose: über Kreuz anziehen wie in 1.8.</li>
+                    <li>Mutter an Federauge, Shackle oder Panhard lose: erst in 1.7 in Fahrhöhe festziehen.</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="tips">Praxis-Tipps</h4>
+                <ul>
+                    <li>Fettsorte für die Del-A-Lum-Buchsen: <span class="offen">offen</span> (Angabe Global West liegt nicht vor).</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="torque">Anzugsmomente</h4>
+                <div class="spec-line"><span>U-Bolt-Muttern</span><span class="spec-val">offen</span></div>
+                <div class="spec-line"><span>Federauge vorn, Shackle</span><span class="spec-val">offen</span></div>
+                <div class="spec-line"><span>Panhard, beide Enden</span><span class="spec-val">offen</span></div>
+                <div class="spec-line"><span>Kardanwelle am Achsflansch</span><span class="spec-val">offen</span></div>
+                <p>Ford nennt nur „to specification“, die Tabelle in Part 3-6 ist im Scan nicht lesbar.</p>
+            </div>
+            <div class="guide-block"><h4 class="time">Zeitbedarf</h4><p>ca. 45 min für beide Seiten, mit Abschmieren<span class="src src-d" title="Schätzung (Werkstattpraxis), nach dem ersten Durchgang durch die echte Zeit ersetzen">D</span></p></div>
+            <div class="guide-block guide-full"><details class="warum"><summary>Warum? Hintergrund</summary><div>
+                Lose U-Bolts lassen die Achse auf der Feder wandern. Dann ändern sich Pinion-Winkel und Fahrachse, ohne dass jemand etwas verstellt hat. Ein Lager mit Spiel am Panhard lässt die Achse seitlich wandern und macht jede Radlastmessung unsicher.
+            </div></details></div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 1.6 -->
+<div class="step-card" id="anl_1_6_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_1_6" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">1.6 Bremse frei, Räder und Reifen unbeschädigt</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block guide-full"><h4 class="ziel">Ziel</h4><p>Kein Rad bremst von selbst. Felgen und Reifen sind ohne Schaden, die Radmuttern sind fest.</p></div>
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Wagenheber, Unterstellböcke</li>
+                    <li>Kreide, ein Bock als Halter</li>
+                    <li>Radkreuz oder Drehmomentschlüssel</li>
+                    <li>Reifendruckprüfer</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>Alle vier Räder frei, Auto auf Böcken</li>
+                    <li>Handbremse gelöst, Gang heraus</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Handgriffe, je Rad</h4>
+                <ol>
+                    <li>Rad von Hand drehen. Leichtes Schleifen der Beläge ist normal, ein Rad, das von selbst stehen bleibt, nicht.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Bremspedal fest treten, loslassen, Rad wieder drehen. Dreht es wieder frei?<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Felge ansehen: Beulen am Horn, durch die Luft entweichen kann?<span class="src src-a" title="Ford Shop Manual 1966, S. 3-9, Wheel Inspection">A</span></li>
+                    <li>Kreide auf einen Bock legen, knapp an die Reifenflanke halten, Rad drehen. Wo die Kreide anstreift, ist ein Hochpunkt.<span class="src src-c" title="Longacre, Set Toe Properly">C</span> Starker Schlag an einer Stelle deutet auf eine verbogene Felge.</li>
+                    <li>Reifen: Schnitte, Beulen, Fremdkörper, ungleichmäßig abgefahren?</li>
+                    <li>Radmuttern auf festen Sitz prüfen. Lose Radmuttern verursachen Flattern.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-9, Wheel Inspection: loose wheel lug nuts may cause shimmy and vibration">A</span></li>
+                    <li>Hält jeder Reifen die Luft? Druck messen, nach einer Stunde noch einmal.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Befund eintragen</h4>
+                <div data-messfelder="mech_raeder_bremse"></div>
+            </div>
+            <div class="guide-block"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Alle vier Räder drehen frei</li>
+                    <li>Keine Beule, kein Reifenschaden, Druck hält</li>
+                    <li>Radmuttern fest</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="abw">Wenn nicht</h4>
+                <ul>
+                    <li>Rad bremst von selbst: Sattel oder Radbremszylinder prüfen. <strong>Stopp</strong> bis behoben. Ein schleifendes Rad verfälscht Radlasten und Setzen.</li>
+                    <li>Reifen verliert Luft: erst abdichten. Ein langsam undichter Reifen lässt die Waage wandern.<span class="src src-c" title="Longacre, Scaling a Race Car Properly, Common Problems: Tire Pressure Changes">C</span></li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="torque">Anzugsmomente</h4>
+                <div class="spec-line"><span>Radmuttern, American Racing 15×7</span><span class="spec-val">offen</span></div>
+                <p>Herstellerangabe liegt nicht vor.</p>
+            </div>
+            <div class="guide-block"><h4 class="time">Zeitbedarf</h4><p>ca. 30 min, dazu eine Stunde Wartezeit für die Luftdruckprobe<span class="src src-d" title="Schätzung (Werkstattpraxis), nach dem ersten Durchgang durch die echte Zeit ersetzen">D</span></p></div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 1.7 -->
+<div class="step-card" id="anl_1_7_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_1_7" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">1.7 Gummi- und Kunststofflager in Fahrhöhe anziehen</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block guide-full"><h4 class="ziel">Ziel</h4><p>Lager, die über eine Schraube geklemmt werden, sind in der Lage festgezogen, in der das Auto steht und fährt. Sonst stehen sie im Stand unter Spannung und verschieben Fahrhöhe und Radlasten.</p></div>
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Ring- und Steckschlüssel, Drehmomentschlüssel</li>
+                    <li>Wagenheber, vier Unterstellböcke</li>
+                    <li>Maßband</li>
+                    <li>Lackstift</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>1.1 bis 1.6 erledigt</li>
+                    <li>Aus 0.1 und 0.4 heraussuchen, welche Lager Gummi oder Kunststoff sind. Mögliche Stellen: Federauge vorn und Shackle (Del-A-Lum), Panhard-Enden, Dämpferaugen hinten, Strut Rod an der Rahmenaufnahme, Stabi-Schellen und Endlinks, inneres Lager unterer Querlenker. Rollen-, Kugel- und Heim-Gelenke gehören nicht dazu.</li>
+                    <li>Auto fahrfertig, ohne Fahrer, Räder auf dem Boden</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Handgriffe</h4>
+                <ol>
+                    <li><strong>Kommst du mit Grube oder Rampen an die Schrauben,</strong> während das Auto auf den Rädern steht: direkt so arbeiten, weiter mit Handgriff 4.</li>
+                    <li><strong>Sonst Fahrhöhe nachbilden:</strong> Auto auf den Rädern. An jedem Rad den Abstand Radmitte bis Kante Radlauf messen und notieren.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Auto anheben, Böcke unter den Rahmen. Dann vorn mit dem Wagenheber unter dem unteren Querlenker, hinten unter der Achse anheben, bis das Maß aus Handgriff 2 wieder stimmt. Hinten Böcke unter die Achse.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-21 f., Rear Spring: safety stands under the rear axle, lower the car until the spring is in the approximate curb load position">A</span></li>
+                    <li>Immer nur <strong>eine</strong> Verbindung zur Zeit: Mutter lösen, bis das Lager sich entspannen kann, dann in dieser Lage wieder festziehen.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Blattfeder: Ford zieht die Mutter am vorderen Federauge erst in Fahrlage fest.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-21 f., Rear Spring: torque the front hanger stud locknut">A</span> Das Shackle zieht Ford vorher an. Die Del-A-Lum-Buchsen drehen auf einer Hülse, ob Global West Fahrlage verlangt, ist <span class="offen">offen</span>. Mit anziehen schadet nicht.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Jede angezogene Mutter mit Lackstrich markieren.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Böcke weg, Auto ablassen.</li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Befund eintragen</h4>
+                <div data-messfelder="mech_lager_fahrhoehe"></div>
+            </div>
+            <div class="guide-block"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Jedes Gummi- und Kunststofflager in Fahrlage angezogen und markiert</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="abw">Wenn nicht</h4>
+                <ul>
+                    <li>Lagerart unklar: ansehen. Gummi oder Kunststoff zwischen Hülse und Auge heißt: in Fahrhöhe anziehen.</li>
+                    <li>Schraube in Fahrhöhe nicht erreichbar: Fahrhöhe nachbilden wie in Handgriff 2 und 3.</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="tips">Praxis-Tipps</h4>
+                <ul>
+                    <li>Die Endlinks des Stabis werden in 3.2 noch einmal spannungsfrei gestellt. Hier nur die Muttern in Fahrlage festziehen, die Länge nicht ändern.</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="warning">Sicherheit</h4>
+                <ul>
+                    <li>Nie beide Enden einer Blattfeder gleichzeitig lösen. Achse auf Böcken sichern, bevor du hinten etwas löst.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Vorn nie Querachse oder Federteller des oberen Querlenkers lösen. Die Feder ist vorgespannt.<span class="src src-a" title="Ford Shop Manual 1966, Part 3-2, Description">A</span></li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="torque">Anzugsmomente</h4>
+                <div class="spec-line"><span>Federauge vorn, Shackle</span><span class="spec-val">offen</span></div>
+                <div class="spec-line"><span>Panhard-Enden</span><span class="spec-val">offen</span></div>
+                <div class="spec-line"><span>Dämpfer</span><span class="spec-val">offen</span></div>
+                <div class="spec-line"><span>Strut Rod Rahmenseite, Stabi</span><span class="spec-val">offen</span></div>
+                <p>Ford nennt nur „to specification“, Part 3-6 im Scan nicht lesbar. Herstellerangaben fehlen.</p>
+            </div>
+            <div class="guide-block"><h4 class="time">Zeitbedarf</h4><p>ca. 1–2 h, je nachdem, ob du eine Grube hast<span class="src src-d" title="Schätzung (Werkstattpraxis), nach dem ersten Durchgang durch die echte Zeit ersetzen">D</span></p></div>
+            <div class="guide-block guide-full"><details class="warum"><summary>Warum? Hintergrund</summary><div>
+                Ein Gummilager, das bei hängendem Rad festgezogen wird, ist in Fahrlage verdreht. Es drückt dann wie eine zusätzliche Feder. Fahrhöhe und Radlasten stimmen nicht, und die Buchse verschleißt schneller. Ford zieht deshalb beim Federeinbau das vordere Federauge erst an, wenn die Feder in Fahrlage steht.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-21 f.">A</span>
+            </div></details></div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 1.8 -->
+<div class="step-card" id="anl_1_8_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_1_8" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">1.8 Erste Ausfahrt, danach U-Bolts und Schrauben nachziehen</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block guide-full"><h4 class="ziel">Ziel</h4><p>Neue Federn, Blattfedern und Lager setzen sich beim Fahren. Danach wird alles nachgezogen, bevor gemessen wird.</p></div>
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Spurplatten und Maßband (für die grobe Spur vor der Fahrt)</li>
+                    <li>Ring- und Steckschlüssel, Drehmomentschlüssel</li>
+                    <li>Taschenlampe</li>
+                </ul>
+                <div data-baustein="spurplatten"></div>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>1.1 bis 1.7 erledigt, alle Muttern markiert</li>
+                    <li>Bremspedal hart, Bremse dicht</li>
+                    <li>Reifendruck auf Straßenwert</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Handgriffe</h4>
+                <ol>
+                    <li><strong>Spur grob prüfen:</strong> mit den Spurplatten wie im Baustein. Ziel ist nur: Vorderräder stehen ungefähr parallel, Lenkrad etwa gerade. Eingestellt wird erst in Phase 6, nichts eintragen.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li><strong>Fahren:</strong> einige Kilometer. Langsam beginnen, Bremsen prüfen. Dann Bodenwellen, Kurven nach links und rechts, kräftige Bremsungen. Auf Geräusche, Ziehen und Vibration achten.<span class="src src-d" title="Werkstattpraxis">D</span> Gefahrene Strecke eintragen.</li>
+                    <li><strong>U-Bolts über Kreuz nachziehen:</strong> je Federplatte die Muttern diagonal anziehen, also vorn links, hinten rechts, vorn rechts, hinten links. In mehreren Durchgängen, bis alle gleich fest sind. Der Gewindeüberstand bleibt an allen vier gleich.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li><strong>Lackstriche aus 1.3 bis 1.7 kontrollieren:</strong> Ist ein Strich verrutscht, Mutter nachziehen und neu markieren.</li>
+                    <li>Radmuttern nachziehen.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Undicht? Achse, Dämpfer, Bremsleitungen, Kardanflansch ansehen.</li>
+                    <li>Nach den nächsten Fahrten U-Bolts erneut prüfen, bis sich nichts mehr bewegt.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Messen und eintragen</h4>
+                <div data-messfelder="mech_einfahr_km mech_nachgezogen"></div>
+                <div class="spec-line"><span>Nötige Strecke zum Setzen</span><span class="spec-val"><span class="offen">offen</span> (keine Herstellerangabe)</span></div>
+            </div>
+            <div class="guide-block"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Ausfahrt ohne Geräusch, Ziehen oder Vibration</li>
+                    <li>U-Bolts über Kreuz nachgezogen</li>
+                    <li>Bei der letzten Kontrolle kein Lackstrich verrutscht</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="abw">Wenn nicht</h4>
+                <ul>
+                    <li>Geräusch, Ziehen oder Vibration: <strong>Stopp.</strong> Ursache suchen, bevor es mit Phase 2 weitergeht.</li>
+                    <li>Lackstrich verrutscht: nachziehen, noch eine Fahrt, noch einmal kontrollieren.</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="warning">Sicherheit</h4>
+                <ul>
+                    <li>Nach einem Komplettumbau die erste Fahrt langsam beginnen und nur dort fahren, wo du gefahrlos anhalten kannst.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="torque">Anzugsmomente</h4>
+                <div class="spec-line"><span>U-Bolt-Muttern</span><span class="spec-val">offen</span></div>
+                <div class="spec-line"><span>Radmuttern</span><span class="spec-val">offen</span></div>
+                <p>Ford: U-Bolt-Muttern „torque to specification“, Wert in Part 3-6 nicht lesbar.<span class="src src-a" title="Ford Shop Manual 1966, S. 3-21 f., Rear Spring Installation">A</span></p>
+            </div>
+            <div class="guide-block"><h4 class="time">Zeitbedarf</h4><p>Ausfahrt plus ca. 45 min Nachziehen<span class="src src-d" title="Schätzung (Werkstattpraxis), nach dem ersten Durchgang durch die echte Zeit ersetzen">D</span></p></div>
+            <div class="guide-block guide-full"><details class="warum"><summary>Warum? Hintergrund</summary><div>
+                Neue Federn und Buchsen geben in den ersten Kilometern noch nach. Wer vorher Fahrhöhe oder Radlasten misst, misst einen Zustand, den es nach der ersten Fahrt nicht mehr gibt. Über Kreuz angezogene U-Bolts ziehen die Federplatte gleichmäßig an, damit die Achse gerade auf der Feder sitzt.
+            </div></details></div>
+        </div>
+    </div>
+</div>
+
+<div class="phase-abschluss" data-anl-phase="phase1"></div>
 </div>
 </div>
 

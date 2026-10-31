@@ -255,6 +255,26 @@
          label: 'Panhard, benutztes Loch', platzhalter: 'Rahmen … / Achse … (von oben gezählt)',
          groesse: 'panhard_hoehe' });
 
+  // ---- Mechanik pruefen (Phase 1, seit v31) ----------------------------------
+  // Befunde: ok / nicht ok. "nicht ok" heisst Stopp-Regel (02_WORKFLOW 4).
+  function befund(id, label, rad) {
+    return feld({ id: 'mech_' + id, gruppe: 'mechanik', art: 'mess', typ: 'befund',
+                  label: label, rad: rad });
+  }
+  RAEDER.forEach(function (r) { befund('radlager_' + r.toLowerCase(), 'Radlager', r); });
+  VORN.forEach(function (r) {
+    befund('kg_oben_' + r.toLowerCase(), 'Oberes Kugelgelenk', r);
+    befund('kg_unten_' + r.toLowerCase(), 'Unteres Kugelgelenk', r);
+  });
+  befund('lenkung', 'Lenkung ohne Spiel, alles fest');
+  befund('va_schrauben', 'Querlenker, Strut Rods, Stabi fest, Lager ohne Spiel');
+  befund('ha', 'Hinterachse fest, Buchsen ohne Spiel');
+  befund('raeder_bremse', 'Bremse frei, Räder und Reifen ohne Schaden');
+  befund('lager_fahrhoehe', 'Gummi- und Kunststofflager in Fahrhöhe angezogen');
+  feld({ id: 'mech_einfahr_km', gruppe: 'mechanik', art: 'mess',
+         label: 'Erste Ausfahrt, gefahrene Strecke', einheit: 'km', regel: 'numeric:0:2000' });
+  befund('nachgezogen', 'Nach der Ausfahrt nachgezogen, Lackstriche unverändert');
+
   var _nachId = {};
   for (var i = 0; i < FELDER.length; i++) _nachId[FELDER[i].id] = FELDER[i];
 

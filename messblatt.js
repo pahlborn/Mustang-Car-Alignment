@@ -40,6 +40,8 @@
         kopf:      { titel: 'Kopfdaten',          icon: '\ud83d\udcc5' },
         bestand:   { titel: 'Bestand nach dem Umbau', icon: '\ud83d\udccb',
                      hinweis: 'Erfasst in Phase 0 der Anleitung.' },
+        mechanik:  { titel: 'Mechanik geprüft',   icon: '\ud83d\udd29',
+                     hinweis: 'Befunde aus Phase 1 der Anleitung. „nicht ok“ heißt: erst reparieren.' },
         konstanten:{ titel: 'Fahrzeugkonstanten', icon: '\ud83d\udcd0',
                      hinweis: 'Einmal messen, dann stehenlassen. Aus diesen Werten '
                             + 'ergibt sich die Balanceverteilung. Drei davon f&uuml;hrt '

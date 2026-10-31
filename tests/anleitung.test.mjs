@@ -372,6 +372,23 @@ await test('L-R in mm wird nicht eingefaerbt', async () => {
   await ctx.close();
 });
 
+await test('v31: Befunde sind eine Auswahl ok / nicht ok, ohne L-R-Spalte', async () => {
+  const ctx = await neuerKontext(browser);
+  const { page } = await oeffne(ctx);
+  await karteOeffnen(page, 1, '1_2');
+  const r = await page.$eval('#anl_1_2_card table', (t) => ({
+    kopf: Array.from(t.querySelectorAll('th')).map((x) => x.textContent),
+    optionen: Array.from(t.querySelector('select[data-field="mech_kg_oben_lf"]').options).map((o) => o.textContent)
+  }));
+  assertEqual(r.kopf, ['Wert', 'LF', 'RF'], 'Kopf ohne L-R');
+  assertEqual(r.optionen, ['\u2013', 'ok', 'nicht ok'], 'Auswahl');
+  await page.selectOption('[data-field="mech_kg_oben_lf"]', 'nicht ok');
+  await page.waitForTimeout(1000);
+  assertEqual(await page.evaluate(() => FieldSync.lesen().mech_kg_oben_lf), 'nicht ok', 'gespeichert');
+  assertEqual(await page.evaluate(() => Status.journal().length), 0, 'Befund meldet keine Verstellung');
+  await ctx.close();
+});
+
 await test('vier Raeder: Tabelle mit LF, RF, LR, RR ohne L-R', async () => {
   const ctx = await neuerKontext(browser);
   const { page } = await oeffne(ctx);

@@ -52,13 +52,20 @@
     function baueTabelle(el) {
         var vier = el.getAttribute('data-raeder') === '4';
         var raeder = vier ? RAEDER4 : RAEDER2;
+        var basen = liste(el, 'data-messtabelle');
+        // L-R nur, wenn es etwas zu rechnen gibt: bei Befunden (ok / nicht
+        // ok) und Text waere die Spalte immer leer.
+        var mitDiff = !vier && basen.some(function (b) {
+            var f = Messwerte.feld(b + '_lf');
+            return f && f.regel && f.regel.indexOf('numeric') === 0;
+        });
         var kopf = '<tr><th style="text-align:left;">Wert</th>'
             + raeder.map(function (r) { return '<th>' + r + '</th>'; }).join('')
-            + (vier ? '' : '<th>L&minus;R</th>') + '</tr>';
-        var zeilen = liste(el, 'data-messtabelle').map(function (b) {
+            + (mitDiff ? '<th>L&minus;R</th>' : '') + '</tr>';
+        var zeilen = basen.map(function (b) {
             var felder = raeder.map(function (r) { return Messwerte.feld(b + '_' + r.toLowerCase()); });
             if (felder.some(function (f) { return !f; })) return '';
-            var diff = vier ? '' : '<td class="anl-diff" data-links="' + esc(felder[0].id)
+            var diff = !mitDiff ? '' : '<td class="anl-diff" data-links="' + esc(felder[0].id)
                 + '" data-rechts="' + esc(felder[1].id) + '" data-grad="'
                 + (felder[0].einheit === '\u00b0' ? '1' : '') + '" style="text-align:right;font-weight:600;">&ndash;</td>';
             return '<tr><td style="text-align:left;">' + Messblatt.beschriftung(felder[0]) + '</td>'
