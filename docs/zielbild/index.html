@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zielbild – Mustang Chassis App</title>
+<!--
+  ZIELBILD, keine App. Zeigt, wie die fertige App aussehen soll, damit jede
+  Umsetzung dagegen abgenommen werden kann. Keine Funktion, Beispielwerte.
+  Erklaerung, Regeln und Entscheidungen: README.md in diesem Ordner.
+-->
+<style>
+:root {
+  --primary:#1a365d; --primary-light:#2b6cb0; --bg:#f0f4f8; --card:#fff; --border:#e2e8f0;
+  --text:#2d3748; --light:#718096; --ok:#38a169; --warn:#dd6b20; --danger:#e53e3e; --stale:#805ad5;
+}
+* { box-sizing:border-box; }
+body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); font-size:15px; }
+.zb-band { background:#744210; color:#fff; padding:.5rem .8rem; font-size:.82rem; display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; }
+.zb-band strong { font-size:.9rem; }
+.zb-band button { margin-left:auto; background:#fff; color:#744210; border:0; border-radius:6px; padding:.4rem .7rem; font-weight:700; cursor:pointer; }
+.header { background:linear-gradient(135deg,var(--primary),var(--primary-light)); color:#fff; position:sticky; top:0; z-index:5; }
+.header-row { display:flex; align-items:stretch; }
+.ht { padding:.45rem .7rem; font-weight:700; font-size:.85rem; line-height:1.2; min-width:120px; }
+.ht small { display:block; font-weight:400; opacity:.85; font-size:.7rem; }
+.nav { flex:1 1 0; text-align:center; padding:.45rem .2rem; cursor:pointer; color:#fff; border-left:1px solid rgba(255,255,255,.15); font-size:.78rem; }
+.nav span { display:block; font-size:1.15rem; }
+.nav.active { background:rgba(255,255,255,.18); }
+.container { max-width:900px; margin:0 auto; padding:.75rem; }
+.view { display:none; } .view.active { display:block; }
+.box { background:#fffaf0; border-left:3px solid var(--warn); border-radius:0 6px 6px 0; padding:.55rem .75rem; font-size:.85rem; margin:.6rem 0; }
+.box.red { background:#fff5f5; border-color:var(--danger); }
+.box.violet { background:#faf5ff; border-color:var(--stale); }
+.box.green { background:#f0fff4; border-color:var(--ok); }
+.card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:.75rem; margin:.6rem 0; }
+h2 { font-size:1.05rem; color:var(--primary); margin:.2rem 0 .5rem; }
+h3 { font-size:.95rem; color:var(--primary); margin:.6rem 0 .3rem; }
+.big-btn { display:block; width:100%; background:var(--ok); color:#fff; border:0; border-radius:10px; padding:.9rem; font-size:1rem; font-weight:700; text-align:left; cursor:pointer; }
+.big-btn small { display:block; font-weight:400; opacity:.9; }
+.bar { background:var(--border); border-radius:10px; height:10px; overflow:hidden; } .bar > i { display:block; height:100%; background:var(--ok); }
+.grid19 { display:grid; grid-template-columns:repeat(auto-fill,minmax(64px,1fr)); gap:.35rem; margin-top:.5rem; }
+.grid19 div { border-radius:8px; padding:.35rem; text-align:center; font-size:.7rem; border:2px solid var(--border); background:#fff; }
+.grid19 b { display:block; font-size:1rem; }
+.g-done { background:#c6f6d5 !important; border-color:var(--ok) !important; }
+.g-wip { background:#feebc8 !important; border-color:var(--warn) !important; }
+.g-stale { background:#e9d8fd !important; border-color:var(--stale) !important; }
+/* Phasen und Schrittkarten - Aufbau wie jerico/gt40 */
+.phase-banner { background:linear-gradient(135deg,var(--primary),var(--primary-light)); color:#fff; padding:.75rem .9rem; border-radius:12px; margin:.8rem 0 .4rem; display:flex; align-items:center; gap:.7rem; cursor:pointer; }
+.phase-banner.track { background:linear-gradient(135deg,#22543d,#38a169); }
+.phase-num { background:rgba(255,255,255,.2); min-width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.2rem; font-weight:800; }
+.phase-info { flex:1; } .phase-info b { display:block; } .phase-info small { opacity:.9; font-size:.76rem; }
+.phase-stat { font-size:.72rem; background:rgba(255,255,255,.2); border-radius:10px; padding:.15rem .5rem; white-space:nowrap; }
+.phase-body { display:none; } .phase-body.open { display:block; }
+.step { background:#fff; border:1px solid var(--border); border-radius:10px; margin-bottom:.4rem; overflow:hidden; }
+.step-h { display:flex; align-items:center; gap:.6rem; padding:.45rem .7rem; cursor:pointer; }
+.st { width:40px; height:40px; min-width:40px; border:2px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
+.st.done { background:var(--ok); border-color:var(--ok); color:#fff; } .st.wip { border-color:var(--warn); color:var(--warn); } .st.stale { border-color:var(--stale); color:var(--stale); }
+.step-t { flex:1; font-weight:600; font-size:.9rem; }
+.tag { font-size:.66rem; font-weight:700; padding:.1rem .4rem; border-radius:4px; margin-left:.3rem; vertical-align:middle; }
+.tag.neu { background:#bee3f8; color:#2a4365; } .tag.bsp { background:#fefcbf; color:#744210; } .tag.stale { background:#e9d8fd; color:#44337a; }
+.arrow { color:var(--primary-light); font-size:.7rem; }
+.step-g { display:none; padding:.7rem; background:#f8fafc; border-top:2px solid var(--primary-light); }
+.step.open .step-g { display:block; }
+.gg { display:grid; grid-template-columns:1fr 1fr; gap:.5rem; }
+@media (max-width:640px) { .gg { grid-template-columns:1fr; } .ht { min-width:0; } .ht small { display:none; } .nav { font-size:.66rem; } }
+.gb { background:#fff; border:1px solid var(--border); border-radius:8px; padding:.55rem .65rem; }
+.full { grid-column:1/-1; }
+.gb h4 { font-size:.72rem; text-transform:uppercase; letter-spacing:.03em; margin:0 0 .35rem; padding-bottom:.2rem; border-bottom:1px solid var(--border); }
+h4.ziel { color:#2a4365; } h4.tools { color:#2b6cb0; } h4.prereq { color:#553c9a; } h4.measure { color:#276749; } h4.tips { color:#b7791f; } h4.warning { color:#9b2c2c; } h4.release { color:#38a169; } h4.torque { color:#c53030; } h4.abw { color:#c05621; }
+.gb ol, .gb ul { margin:0; padding-left:1.2rem; } .gb li, .gb p { font-size:.84rem; line-height:1.5; margin:0 0 .25rem; }
+.src { font-size:.62rem; font-weight:700; padding:0 .3rem; border-radius:3px; margin-left:.25rem; }
+.src.a { background:#c6f6d5; color:#22543d; } .src.c { background:#e9d8fd; color:#44337a; } .src.d { background:#feebc8; color:#7b341e; }
+.offen { color:var(--danger); font-weight:700; }
+table { width:100%; border-collapse:collapse; font-size:.82rem; }
+th, td { border-bottom:1px solid var(--border); padding:.3rem .35rem; text-align:right; }
+th:first-child, td:first-child { text-align:left; }
+th { color:var(--light); font-weight:600; font-size:.74rem; }
+.inp { display:inline-block; min-width:56px; border:1px solid #cbd5e0; background:#edf2f7; border-radius:6px; padding:.25rem .4rem; text-align:right; }
+.inp.leer { color:#a0aec0; }
+.red { color:var(--danger); font-weight:700; }
+details { background:#fff; border:1px solid var(--border); border-radius:8px; margin:.4rem 0; }
+details > summary { cursor:pointer; padding:.5rem .65rem; font-weight:600; font-size:.85rem; color:var(--primary-light); }
+details > div { padding:0 .75rem .6rem; font-size:.84rem; line-height:1.5; }
+details.baustein { background:#ebf8ff; border-color:#bee3f8; }
+.spec { display:flex; justify-content:space-between; gap:.5rem; font-size:.82rem; padding:.2rem 0; border-bottom:1px dotted var(--border); }
+.spec:last-child { border:0; } .spec b { text-align:right; }
+.list-h { display:flex; justify-content:space-between; align-items:center; }
+.btn { background:var(--primary-light); color:#fff; border:0; border-radius:6px; padding:.4rem .7rem; font-size:.8rem; }
+/* Erklaerung */
+#erklaerung { display:none; }
+#erklaerung.open { display:block; }
+.alt-neu td, .alt-neu th { text-align:left; vertical-align:top; }
+</style>
+</head>
+<body>
+
+<div class="zb-band">
+  <strong>ZIELBILD</strong> So soll die App am Ende aussehen. Vorschau ohne Funktion, alle Zahlen sind Beispielwerte.
+  <button type="button" onclick="erklaerung()">Erklärung</button>
+</div>
+
+<!-- ===================== ERKLAERUNG ===================== -->
+<div id="erklaerung" class="container">
+  <div class="card">
+    <h2>Was ist das hier?</h2>
+    <p style="font-size:.88rem;">Das Bild vom fertigen Zustand. Jede Umsetzung wird daran gemessen, Phase für Phase.
+    Was hier nicht steht, wird nicht gebaut. Was hier steht, gilt erst als fertig, wenn es so aussieht und sich so bedienen lässt.</p>
+  </div>
+
+  <details open><summary>1. Aus acht Reitern werden fünf</summary><div>
+    <table class="alt-neu">
+      <tr><th>Heute</th><th>Am Ende</th></tr>
+      <tr><td>Übersicht</td><td><b>Start</b>: Wo stehe ich, was ist als Nächstes dran, was ist veraltet</td></tr>
+      <tr><td>Werkstatt (Phasenliste mit Handbuchtext)</td><td><b>Werkstatt</b>: Phasen 0–18 als Schrittkarten, alles zum Arbeiten in der Karte</td></tr>
+      <tr><td>Messblatt</td><td>Felder wandern in die Schritte. Die Gesamtübersicht steht unter <b>Werte</b></td></tr>
+      <tr><td>Bind</td><td>wird Phase 3 (Bind-Test) in der Werkstatt</td></tr>
+      <tr><td>Bump Steer</td><td>wird Phase 10 in der Werkstatt, mit Kurve in der Karte</td></tr>
+      <tr><td>Diagnose</td><td><b>Strecke</b>: Phasen 19–22 als Schrittkarten</td></tr>
+      <tr><td>Handbuch</td><td><b>Wissen</b>: Hintergrund, Glossar, Quellen. Zum Arbeiten nicht nötig</td></tr>
+    </table>
+  </div></details>
+
+  <details><summary>2. Regeln für jede Schrittkarte</summary><div>
+    <ol>
+      <li><b>Eine Tätigkeit je Karte</b>, der Titel sagt, was man tut („Castor messen“, nicht „Castor“).</li>
+      <li><b>Immer dieselbe Reihenfolge:</b> Ziel · Werkzeug · Vorbereitung · Handgriffe (nummeriert) · Messen und eintragen · Fertig, wenn · Wenn nicht · Praxis-Tipps · Sicherheit · Anzugsmomente · Warum? (zugeklappt). Was nicht gebraucht wird, fehlt einfach.</li>
+      <li><b>Kein Verweis auf andere Reiter.</b> Was man braucht, steht in der Karte. Wiederkehrendes (Waage bedienen, Auto setzen, CG/5 anbauen) ist ein aufklappbarer Baustein, an einer Stelle gepflegt, in jeder Karte sichtbar, wo er gebraucht wird.</li>
+      <li><b>Felder stehen beim Handgriff</b>, Sollwert und Grenze direkt daneben. Was die App rechnen kann, rechnet sie (Differenz, Gesamtspur, Spanne).</li>
+      <li><b>Jede Zahl mit Quelle</b> (A Hersteller, C Longacre, D Werkstattpraxis) oder sichtbar als <span class="offen">offen</span>. Nichts wird geschätzt.</li>
+      <li><b>Deutsch, kurze Sätze.</b> Fachwort einmal in Klammern. Kein Verwaltungstext, kein Rückblick.</li>
+      <li><b>Auf dem Handy lesbar</b>, Knöpfe mindestens 44 px, mit Handschuhen bedienbar.</li>
+    </ol>
+  </div></details>
+
+  <details><summary>3. Entscheidungen (Peter kann widersprechen)</summary><div>
+    <ul>
+      <li><b>Ackermann nach dem endgültigen Ausrichten.</b> Ford: Lenkwinkel erst messen, wenn Castor, Camber und Spur stimmen. Phase 12 und 13 tauschen die Plätze.</li>
+      <li><b>Neue Schritte nach dem Umbau:</b> Lager in Fahrhöhe anziehen (1.7), erste Ausfahrt und Nachziehen (1.8), Feder ausbauen mit Federspanner (10.1), Lenkung spielfrei festsetzen (10.2).</li>
+      <li><b>Werkzeuge haben keine eigenen Seiten.</b> Ihre Bedienung steht als Baustein in den Karten, die sie brauchen.</li>
+      <li><b>Das Handbuch bleibt als Wissen</b>, wird aber nicht mehr als Anleitung benutzt. Das Legacy-Kapitel und der Verwaltungstext fallen weg.</li>
+      <li><b>Fotos je Schritt</b> (wie jerico) kommen erst, wenn alle Phasen stehen.</li>
+      <li><b>Technik bleibt, wie sie ist:</b> Geräteabgleich, Status, „veraltet“. Bis alle Phasen fertig sind, kommt keine neue Technik und keine neue Einstellung dazu.</li>
+    </ul>
+  </div></details>
+
+  <details><summary>4. So wird gebaut und abgenommen</summary><div>
+    <ol>
+      <li>Eine Phase nach der anderen, 0 bis 18, danach Strecke 19–22.</li>
+      <li>Jede Phase wird gegen dieses Zielbild geprüft: alle Schritte da, Regeln 1–7 erfüllt, echte Klicks im Test.</li>
+      <li>Peter sieht sie auf dem iPad. Erst nach seinem „passt“ kommt die nächste Phase.</li>
+      <li>Ändert sich etwas am Ziel, wird zuerst dieses Zielbild geändert, dann gebaut.</li>
+      <li>Messblatt, Bind, Bump Steer und Diagnose verschwinden erst, wenn ihr Inhalt vollständig in den Karten steht.</li>
+    </ol>
+  </div></details>
+
+  <details><summary>5. Was nur Peter klären kann</summary><div>
+    <ul>
+      <li><b>Fehlende Messmittel:</b> Winkelmesser auf 1/4° (Phase 5 und 16), Rollenplatte (Wiegen ohne Verspannung), Klemme für den Center Link (Bump Steer). Ohne sie bleiben diese Schritte mit Behelf beschrieben.</li>
+      <li><b>Anzugsmomente:</b> Ford-Tabelle (Part 3-6) als lesbarer Scan oder Herstellerangaben von Street or Track, Global West, Howe, Moog. Bis dahin steht dort „offen“.</li>
+      <li><b>Startwerte</b> für Castor, Camber, Spur: bleiben Arbeitswerte ohne belegte Herkunft, bis die erste Strecke etwas anderes sagt.</li>
+    </ul>
+  </div></details>
+</div>
+
+<!-- ===================== APP ===================== -->
+<div class="header">
+  <div class="header-row">
+    <div class="ht">Mustang Chassis<small>1966 · Rundstrecke</small></div>
+    <div class="nav active" data-view="start"><span>&#127968;</span>Start</div>
+    <div class="nav" data-view="werkstatt"><span>&#128295;</span>Werkstatt</div>
+    <div class="nav" data-view="strecke"><span>&#127937;</span>Strecke</div>
+    <div class="nav" data-view="werte"><span>&#128202;</span>Werte</div>
+    <div class="nav" data-view="wissen"><span>&#128214;</span>Wissen</div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ===================== START ===================== -->
+<div class="view active" id="v-start">
+  <button type="button" class="big-btn" onclick="springe('6.4')">&#9654; Weiter: 6.4 Castor und KPI messen<small>Phase 6 · Vorderachse grob ausrichten · Schritt 4 von 9</small></button>
+
+  <div class="card">
+    <div class="list-h"><h2>Werkstatt</h2><b id="zaehler"></b></div>
+    <div class="bar"><i id="balken"></i></div>
+    <div class="grid19" id="phasenGitter"></div>
+  </div>
+
+  <div class="box violet"><b>Neu zu messen:</b> In 6.5 wurde der Shim vorn links geändert (31.10., 09:12).
+    Dadurch gelten Camber und Spur nicht mehr. <a href="#" onclick="springe('6.6');return false;">Zu 6.6 Camber messen</a></div>
+  <div class="box green"><b>Bind-Test bestanden</b> am 29.10. Spanne 0,3 % der Gesamtmasse.</div>
+  <div class="box red"><b>Rennstreckenbereit: nein.</b> Phasen 6–18 nicht erledigt.</div>
+</div>
+
+<!-- ===================== WERKSTATT ===================== -->
+<div class="view" id="v-werkstatt">
+  <div class="box">Karten von oben nach unten abarbeiten. Kasten links antippen: offen &rarr; in Arbeit &rarr; erledigt.
+    Die gelb markierten <span class="tag bsp">Beispiel</span>-Karten sind im Zielbild ausgefüllt, so sehen am Ende alle aus.</div>
+  <div id="werkstattListe"></div>
+</div>
+
+<!-- ===================== STRECKE ===================== -->
+<div class="view" id="v-strecke">
+  <div class="box">Der Regelkreis an der Strecke. Er hat kein Ende und deshalb keinen Fortschrittsbalken.</div>
+  <div id="streckeListe"></div>
+</div>
+
+<!-- ===================== WERTE ===================== -->
+<div class="view" id="v-werte">
+  <div class="box">Alle Werte an einem Ort, zum Nachsehen und Drucken. Eingetragen wird in den Schritten. Hier steht, was gilt und wie es vorher war.</div>
+  <div class="card">
+    <div class="list-h"><h2>Vorderachse</h2><button class="btn" type="button">&#128424; Drucken</button></div>
+    <table>
+      <tr><th>Wert</th><th>LF</th><th>RF</th><th>L&minus;R</th><th>vorher</th><th>Schritt</th></tr>
+      <tr><td>Castor</td><td>3,1°</td><td>2,6°</td><td class="red">0,50</td><td>2,4 / 2,5</td><td>6.4</td></tr>
+      <tr><td>KPI</td><td>9,5°</td><td>9,4°</td><td>0,10</td><td>–</td><td>6.4</td></tr>
+      <tr><td>Camber <span class="tag stale">veraltet</span></td><td>&minus;1,8°</td><td>&minus;2,0°</td><td>0,20</td><td>–</td><td>6.6</td></tr>
+      <tr><td>Gesamtspur <span class="tag stale">veraltet</span></td><td colspan="3">+1,2 mm Vorspur</td><td>–</td><td>6.8</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h2>Einsteller</h2>
+    <table>
+      <tr><th>Einsteller</th><th>LF</th><th>RF</th><th>vorher</th><th>Schritt</th></tr>
+      <tr><td>Shim vorderer Bolzen</td><td>5,6 mm</td><td>4,8 mm</td><td>4,8 / 4,8</td><td>6.5</td></tr>
+      <tr><td>Shim hinterer Bolzen</td><td>3,2 mm</td><td>4,0 mm</td><td>4,0 / 4,0</td><td>6.5</td></tr>
+      <tr><td>LCA-Platte</td><td>Nr. 3</td><td>Nr. 3</td><td>–</td><td>6.3</td></tr>
+      <tr><td>Strut Rod</td><td>312 mm</td><td>311 mm</td><td>–</td><td>6.3</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h2>Änderungen</h2>
+    <table>
+      <tr><th>Wann</th><th>Was</th><th>macht neu fällig</th></tr>
+      <tr><td>31.10. 09:12</td><td>Shim vorn LF 4,8 &rarr; 5,6 mm; hinten LF 4,0 &rarr; 3,2 mm</td><td>Camber, Spur</td></tr>
+      <tr><td>29.10. 16:40</td><td>Kaltdruck alle 1,6 bar</td><td>Fahrhöhe mitmessen</td></tr>
+    </table>
+  </div>
+  <div class="card"><h2>Weitere Bereiche</h2>
+    <p style="font-size:.85rem;">Fahrhöhe · Radlasten (mit drei Durchgängen) · Hinterachse · Bump-Steer-Kurven · Antriebsstrang · Reifen · Fahrzeugkonstanten · Bestand (Teile, Teilenummern)</p></div>
+</div>
+
+<!-- ===================== WISSEN ===================== -->
+<div class="view" id="v-wissen">
+  <div class="box">Zum Nachlesen, nicht zum Arbeiten. Jede Schrittkarte hat ihr eigenes „Warum?“. Hier steht der Hintergrund im Zusammenhang.</div>
+  <details><summary>Grundlagen</summary><div>Camber · Castor · KPI · Spur und Ackermann · Fahrhöhe · Radlasten und Cross · Bind · Bump Steer · Federn und Rollsteifigkeit · Reifen · Hinterachse, Panhard, Antriebsstrang</div></details>
+  <details><summary>Dieses Auto</summary><div>Fahrzeugdaten, verbaute Teile, Verstellmöglichkeiten (vier Ebenen an der Vorderachse), was am Auto nicht verstellbar ist</div></details>
+  <details><summary>Fahrverhalten an der Strecke deuten</summary><div>Symptome, Entscheidungsbaum, Strecken (Pannoniaring, Slovakiaring, Brno)</div></details>
+  <details><summary>Glossar</summary><div>Alle Fachwörter mit kurzer Erklärung</div></details>
+  <details><summary>Quellen</summary><div>Ford Shop Manual 1966, Street or Track, Dunlop, Longacre, Spicer, Tremec, Maier Racing – mit Prüfsumme</div></details>
+</div>
+
+</div>
+
+<script>
+// ---------------------------------------------------------------------------
+// Alle Schritte der fertigen App. Status: d = erledigt, w = in Arbeit,
+// s = veraltet, leer = offen. neu = neuer Schritt nach der Pruefung.
+// ---------------------------------------------------------------------------
+var PHASEN = [
+ { nr:0, t:'Bestandsaufnahme nach dem Umbau', u:'Welche Teile sind verbaut, wie stehen die Einsteller', s:[
+   ['0.1','Vorderachse: Teile und Teilenummern ablesen','d'],
+   ['0.2','Obere Querlenker: Heim-Gelenke vermessen, beide Arme gleich lang?','d'],
+   ['0.3','Lenkung: Lenkgetriebe, Gestänge, Achsschenkel erfassen','d'],
+   ['0.4','Hinterachse: Blattfedern, Shackles, U-Bolts, Panhard erfassen','d'],
+   ['0.5','Antriebsstrang: Kardanwelle und Kreuzgelenke','d'],
+   ['0.6','Räder und Reifen: Satznummer, Einpresstiefe','d'],
+   ['0.7','Messmittel prüfen und bereitlegen','d']]},
+ { nr:1, t:'Mechanik prüfen', u:'Kein Spiel, nichts lose – sonst stimmt keine Messung', s:[
+   ['1.1','Radlager auf Spiel prüfen','d'],
+   ['1.2','Kugelgelenke auf Spiel prüfen','d','bsp'],
+   ['1.3','Lenkung: Spurstangenköpfe, Lenk- und Zwischenhebel, Lenkgetriebe','d'],
+   ['1.4','Querlenker, Strut Rods, Stabi: Schrauben und Lager','d'],
+   ['1.5','Hinterachse: Federn, Shackles, U-Bolts, Panhard','d'],
+   ['1.6','Bremse frei, Räder und Reifen unbeschädigt','d'],
+   ['1.7','Gummi- und Kunststofflager in Fahrhöhe anziehen','d','neu'],
+   ['1.8','Erste Ausfahrt, danach U-Bolts und Schrauben nachziehen','d','neu']]},
+ { nr:2, t:'Setup Pad herstellen', u:'Vier Radaufstandspunkte in einer Ebene', s:[
+   ['2.1','Boden ausmessen','d'],
+   ['2.2','Ausgleichsplatten festlegen, Radpositionen markieren','d'],
+   ['2.3','Drehteller, Waagen und Unterlagen auf gleiche Höhe','d'],
+   ['2.4','Wiederholbarkeit prüfen','d']]},
+ { nr:3, t:'Race-ready und Bind-Test', u:'Gleicher Zustand bei jeder Messung, Fahrwerk nicht verspannt', s:[
+   ['3.1','Race-ready herstellen: Ballast, Tank, Kaltdruck','d'],
+   ['3.2','Stabi-Endlinks spannungsfrei stellen','d'],
+   ['3.3','Bind-Test: dreimal wiegen, dazwischen anheben','d'],
+   ['3.4','Ergebnis bewerten: weiter oder Ursache suchen','d']]},
+ { nr:4, t:'Fahrhöhe', u:'Messen, noch nichts verändern', s:[
+   ['4.1','Messpunkte festlegen und markieren','d'],
+   ['4.2','Fahrhöhe an allen vier Ecken messen','d'],
+   ['4.3','Wiederholungsmessung: anheben, absetzen, setzen','d'],
+   ['4.4','Abstand zu den Anschlagpuffern messen','d']]},
+ { nr:5, t:'Hinterachse', u:'Achse gerade und mittig, bevor vorn ausgerichtet wird', s:[
+   ['5.1','Radstand links und rechts messen','d'],
+   ['5.2','Achse rechtwinklig? Schubwinkel bestimmen','d'],
+   ['5.3','Panhard: Achse mittig stellen, Winkel messen','d'],
+   ['5.4','Winkel von Getriebe, Kardanwelle und Achse aufnehmen','d'],
+   ['5.5','Bind-Test wiederholen, falls der Panhard verstellt wurde','d']]},
+ { nr:6, t:'Vorderachse grob ausrichten', u:'Brauchbare Basis, noch nicht die Endwerte', s:[
+   ['6.1','Auto auf die Drehteller stellen und setzen','d'],
+   ['6.2','Lenkung in die Mitte stellen und markieren','d'],
+   ['6.3','Einsteller aufschreiben, bevor du etwas verstellst','d'],
+   ['6.4','Castor und KPI messen','w','bsp'],
+   ['6.5','Castor einstellen (nur wenn nötig)','d','bsp'],
+   ['6.6','Camber messen','s'],
+   ['6.7','Camber einstellen (nur wenn nötig)',''],
+   ['6.8','Spur grob einstellen','s'],
+   ['6.9','Phase abschließen','']]},
+ { nr:7, t:'Erstes Wiegen', u:'Radlasten, die sich wiederholen lassen', s:[
+   ['7.1','Waagen aufbauen, nullen, prüfen',''],
+   ['7.2','Auto auf die Waagen, Stabi lösen',''],
+   ['7.3','Dreimal wiegen und vergleichen','','bsp'],
+   ['7.4','Ergebnis lesen: Achslast, Seiten, Cross','']]},
+ { nr:8, t:'Balance (nur wenn nötig)', u:'Was am Auto verstellbar ist: Stabi-Vorspannung', s:[
+   ['8.1','Entscheiden: muss etwas geändert werden?',''],
+   ['8.2','Stabi-Vorspannung einstellen',''],
+   ['8.3','Neu wiegen','']]},
+ { nr:9, t:'Nachprüfen', u:'Was nach der Balance neu zu messen ist, zeigt die App', s:[
+   ['9.1','Liste „neu messen“ abarbeiten','']]},
+ { nr:10, t:'Bump Steer', u:'Spuränderung beim Ein- und Ausfedern', s:[
+   ['10.1','Feder ausbauen (Federspanner)','','neu'],
+   ['10.2','Lenkung spielfrei festsetzen (Center Link klemmen)','','neu'],
+   ['10.3','Messgerät BGR310 anbauen, Nullpunkt setzen',''],
+   ['10.4','Kurve messen: in Schritten ein- und ausfedern',''],
+   ['10.5','Spurstangenhöhe korrigieren (Distanzstücke)',''],
+   ['10.6','Feder einbauen, Auto absetzen und setzen','']]},
+ { nr:11, t:'Camber-Kurve (freiwillig)', u:'Camber über den Federweg', s:[
+   ['11.1','Entscheiden, ob nötig',''],
+   ['11.2','Camber über den Federweg messen','']]},
+ { nr:12, t:'Endgültig ausrichten', u:'Jetzt die Endwerte', s:[
+   ['12.1','Auto setzen',''],
+   ['12.2','Castor endgültig',''],
+   ['12.3','Camber endgültig',''],
+   ['12.4','KPI notieren',''],
+   ['12.5','Lenkungsmitte prüfen',''],
+   ['12.6','Spur endgültig (Spurplatten)',''],
+   ['12.7','Einzelspur mit Schnüren prüfen',''],
+   ['12.8','Lenkrad gerade, Klemmschellen fest','']]},
+ { nr:13, t:'Lenkwinkel (Ackermann) prüfen', u:'Nur Diagnose: weicht er ab, ist ein Teil verbogen (Ford)', s:[
+   ['13.1','20° links: Winkel des äußeren Rades ablesen',''],
+   ['13.2','20° rechts: Winkel des äußeren Rades ablesen',''],
+   ['13.3','Vergleichen und bewerten','']]},
+ { nr:14, t:'Setzen und Kontrollmessung', u:'Hält das Ergebnis, wenn das Auto gerollt wurde?', s:[
+   ['14.1','Zurück- und wieder vorrollen',''],
+   ['14.2','Castor, Camber und Spur einmal kontrollieren','']]},
+ { nr:15, t:'Endgültig wiegen', u:'Nach dem Ausrichten noch einmal', s:[
+   ['15.1','Dreimal wiegen',''],
+   ['15.2','Mit dem ersten Wiegen vergleichen',''],
+   ['15.3','Fahrhöhe mitmessen','']]},
+ { nr:16, t:'Antriebsstrang-Winkel', u:'Kreuzgelenke im erlaubten Winkel', s:[
+   ['16.1','Winkel von Getriebe, Kardanwelle und Achse messen',''],
+   ['16.2','Betriebswinkel ablesen (rechnet die App)',''],
+   ['16.3','Bewerten nach den Spicer-Regeln','']]},
+ { nr:17, t:'Freigängigkeit', u:'Nichts schleift bei vollem Einschlag', s:[
+   ['17.1','Voll links einschlagen und prüfen',''],
+   ['17.2','Voll rechts einschlagen und prüfen','']]},
+ { nr:18, t:'Werkstatt-Stand festhalten', u:'Der Ausgangspunkt für die Strecke', s:[
+   ['18.1','Prüfliste durchgehen',''],
+   ['18.2','Stand benennen (Baseline)',''],
+   ['18.3','Datenblatt drucken und sichern','']]}
+];
+
+var STRECKE = [
+ { nr:19, t:'Erster Stint', u:'Ohne Änderungen fahren, danach sofort messen', s:[
+   ['19.1','Vor dem Start: Kaltdruck, Reifensatz, Tank notieren',''],
+   ['19.2','Direkt nach dem Stint: Warmdruck',''],
+   ['19.3','Reifentemperatur innen, Mitte, außen',''],
+   ['19.4','Reifenbild ansehen',''],
+   ['19.5','Fahrgefühl und Rundenzeiten notieren','']]},
+ { nr:20, t:'Fahrverhalten einordnen', u:'Symptom benennen, nicht Ursache raten', s:[
+   ['20.1','Symptom wählen (wo in der Kurve, wie)',''],
+   ['20.2','Vermutung aufschreiben','']]},
+ { nr:21, t:'Eine Änderung', u:'Immer nur eine', s:[
+   ['21.1','Plan: was, was erwarte ich, welche Nebenwirkung',''],
+   ['21.2','Umsetzen und im Schritt eintragen','']]},
+ { nr:22, t:'Vergleichen', u:'Besser, schlechter, gleich oder nicht aussagekräftig', s:[
+   ['22.1','Mit gleichen Bedingungen fahren',''],
+   ['22.2','Ergebnis festhalten','']]}
+];
+
+// ---------------------------------------------------------------------------
+// Beispielkarten: so sieht am Ende jede Karte aus.
+// ---------------------------------------------------------------------------
+var A = '<span class="src a">A</span>', C = '<span class="src c">C</span>', D = '<span class="src d">D</span>';
+function inp(v) { return '<span class="inp' + (v ? '' : ' leer') + '">' + (v || '–') + '</span>'; }
+
+var BAUSTEIN_SETZEN = '<details class="baustein"><summary>&#128260; So setzt du das Auto</summary><div>' +
+  '<ol><li>Auto etwa 1,5 m zurückrollen.' + C + '</li><li>Vorwärts wieder in Messposition rollen. Danach nicht mehr zurück.' + C + '</li>' +
+  '<li>Warum: Beim Vorwärtsrollen legt sich das Spiel in allen Lagern in dieselbe Richtung. So misst du jedes Mal im selben Zustand.</li></ol></div></details>';
+
+var KARTEN = {
+ '1.2': '<div class="gg">' +
+   '<div class="gb full"><h4 class="ziel">Ziel</h4><p>Kein Spiel im oberen (Moog) und unteren (Howe) Kugelgelenk. Spiel verfälscht jede spätere Messung.</p></div>' +
+   '<div class="gb"><h4 class="tools">Werkzeug</h4><ul><li>Wagenheber, zwei Unterstellböcke</li><li>Montiereisen</li><li>Helfer oder Bremspedal-Feststeller</li></ul></div>' +
+   '<div class="gb"><h4 class="prereq">Vorbereitung</h4><ul><li>Vorderrad frei, Auto sicher auf Böcken</li><li>Lenkung geradeaus</li></ul></div>' +
+   '<div class="gb full"><h4 class="prereq">Handgriffe, je Seite</h4><ol>' +
+     '<li>Rad oben und unten greifen (12 und 6 Uhr) und kräftig kippen. Fühlst du Spiel, kommt es vom Radlager oder vom Kugelgelenk.' + D + '</li>' +
+     '<li>Helfer tritt die Bremse, du kippst noch einmal. Bleibt das Spiel, ist es das Kugelgelenk. Ist es weg, war es das Radlager.' + D + '</li>' +
+     '<li>Montiereisen unter den Reifen, Rad anheben und dabei das Gelenk beobachten. Bewegt sich der Zapfen im Gehäuse?' + D + '</li></ol></div>' +
+   '<div class="gb full"><h4 class="measure">Befund eintragen</h4><table><tr><th></th><th>LF</th><th>RF</th></tr>' +
+     '<tr><td>Oberes Gelenk</td><td>' + inp('kein Spiel') + '</td><td>' + inp('kein Spiel') + '</td></tr>' +
+     '<tr><td>Unteres Gelenk</td><td>' + inp('kein Spiel') + '</td><td>' + inp('kein Spiel') + '</td></tr></table></div>' +
+   '<div class="gb"><h4 class="release">Fertig, wenn</h4><ul><li>Kein fühlbares Spiel an allen vier Gelenken</li><li>Spielgrenze: <span class="offen">offen</span> (Angabe Moog/Howe fehlt)</li></ul></div>' +
+   '<div class="gb"><h4 class="abw">Wenn nicht</h4><ul><li><b>Stopp.</b> Erst Gelenk tauschen, dann weiter. Setup-Arbeit auf Spiel ist vergebens.</li></ul></div>' +
+   '<div class="gb full"><details><summary>Warum? Hintergrund</summary><div>Das Kugelgelenk legt die Lenkachse fest. Wackelt es, ändern sich Castor, Camber und Spur je nachdem, wie das Auto zuletzt bewegt wurde.</div></details></div>' +
+   '</div>',
+
+ '6.4': '<div class="gg">' +
+   '<div class="gb full"><h4 class="ziel">Ziel</h4><p>Castor und KPI beider Vorderräder kennen. Castor ist die Neigung der Lenkachse von der Seite gesehen.</p></div>' +
+   '<div class="gb"><h4 class="tools">Werkzeug</h4><ul><li>Dunlop CG/5</li><li>Dunlop CG/6 Drehteller</li><li>Bremspedal-Feststeller' + D + '</li></ul>' +
+     '<details class="baustein"><summary>&#128295; So baust du den CG/5 an</summary><div>Bedienung des Geräts Schritt für Schritt, aus der Dunlop-Anleitung. Steht an einer Stelle und erscheint in jeder Karte, die den CG/5 braucht.</div></details></div>' +
+   '<div class="gb"><h4 class="prereq">Vorbereitung</h4><ul><li>Lenkradgurt lösen</li><li>Bremse treten und feststellen' + D + '</li><li>Drehteller entriegelt, beide auf 0</li></ul>' + BAUSTEIN_SETZEN + '</div>' +
+   '<div class="gb full"><h4 class="prereq">Handgriffe, erst links, dann rechts</h4><ol>' +
+     '<li>CG/5 spielfrei am Rad befestigen.' + A + '</li>' +
+     '<li>Rad auf <b>20° IN</b> lenken (Vorderkante zur Wagenmitte), an der Drehteller-Skala ablesen.</li>' +
+     '<li>Castor- und KPI-Anzeige auf Null stellen.</li>' +
+     '<li>Durch geradeaus weiter auf <b>20° OUT</b> lenken.</li>' +
+     '<li>Libellen zentrieren, Castor und KPI ablesen.</li>' +
+     '<li>Noch einmal messen. Beide Durchgänge müssen gleich sein.</li></ol></div>' +
+   '<div class="gb full"><h4 class="measure">Messen und eintragen</h4><table>' +
+     '<tr><th>Wert</th><th>LF</th><th>RF</th><th>L&minus;R</th><th>Sollwert</th></tr>' +
+     '<tr><td>Castor</td><td>' + inp('3,1') + '</td><td>' + inp('2,6') + '</td><td class="red">0,50</td><td>+3,0° (Arbeitswert)</td></tr>' +
+     '<tr><td>KPI</td><td>' + inp('9,5') + '</td><td>' + inp('9,4') + '</td><td>0,10</td><td>nur notieren</td></tr></table>' +
+     '<p style="margin-top:.3rem;">Links/rechts höchstens 1/4° Unterschied.' + A + ' Rot = darüber.</p></div>' +
+   '<div class="gb"><h4 class="release">Fertig, wenn</h4><ul><li>Beide Seiten eingetragen, zwei Durchgänge gleich</li></ul></div>' +
+   '<div class="gb"><h4 class="abw">Wenn nicht</h4><ul><li>Unterschied über 1/4° oder weit weg vom Arbeitswert: <a href="#" onclick="springe(\'6.5\');return false;">weiter mit 6.5 Castor einstellen</a></li><li>Durchgänge ungleich: Gerät fest? Drehteller frei? Genau 20°?</li></ul></div>' +
+   '<div class="gb full"><h4 class="tips">Praxis-Tipps</h4><ul><li>IN und OUT verwechselt ergibt ein falsches Vorzeichen.</li><li>Beim rechten Rad heißt IN: nach links lenken.</li></ul></div>' +
+   '<div class="gb full"><details><summary>Warum? Hintergrund</summary><div>Positiver Castor gibt Geradeauslauf und Rückstellung, macht die Lenkung aber schwerer – bei Handlenkung wichtig.' + C + '</div></details></div>' +
+   '</div>',
+
+ '6.5': '<div class="gg">' +
+   '<div class="gb full"><h4 class="ziel">Ziel</h4><p>Castor links und rechts gleich und nahe am Arbeitswert.</p></div>' +
+   '<div class="gb"><h4 class="tools">Werkzeug</h4><ul><li>Ringschlüssel für die Querachsmuttern (vom Motorraum aus)' + A + '</li><li>Montiereisen</li><li>Ford-Shims 1/32" und 1/8"</li><li>Drehmomentschlüssel</li></ul></div>' +
+   '<div class="gb"><h4 class="prereq">Welcher Einsteller?</h4><ul><li>bis etwa 1°: Shims gegenläufig' + A + '</li><li>mehr: Strut Rod, kürzer = mehr Castor</li></ul></div>' +
+   '<div class="gb full"><h4 class="prereq">Handgriffe mit Shims</h4><ol>' +
+     '<li>Beide Muttern der Querachse ein paar Umdrehungen lösen, nicht abnehmen.' + A + '</li>' +
+     '<li>Querachse mit dem Montiereisen abdrücken, Shims herausziehen oder einschieben.' + D + '</li>' +
+     '<li><b>Mehr Castor:</b> vorn dazu, hinten gleich viel weg.' + A + '</li>' +
+     '<li>Dünne Shims direkt ans Blech oder zwischen zwei dicke.' + A + '</li>' +
+     '<li>Muttern anziehen, neue Dicken unten eintragen, Auto setzen, Castor neu messen.</li></ol></div>' +
+   '<div class="gb full"><h4 class="measure">Einsteller eintragen</h4><table>' +
+     '<tr><th>Shim-Paket</th><th>LF</th><th>RF</th><th>vorher</th></tr>' +
+     '<tr><td>vorderer Bolzen</td><td>' + inp('5,6 mm') + '</td><td>' + inp('4,8 mm') + '</td><td>4,8 / 4,8</td></tr>' +
+     '<tr><td>hinterer Bolzen</td><td>' + inp('3,2 mm') + '</td><td>' + inp('4,0 mm') + '</td><td>4,0 / 4,0</td></tr></table>' +
+     '<div class="box violet" style="margin:.4rem 0 0;">Verstellt: Camber und Spur jetzt neu messen (6.6, 6.8).</div></div>' +
+   '<div class="gb"><h4 class="measure">Wie viel bringt ein Shim?</h4>' +
+     '<div class="spec"><span>1/32" vorn dazu, hinten weg</span><b>ca. +1°' + A + '</b></div>' +
+     '<div class="spec"><span>Unterschied vorn/hinten</span><b>max. 1/16"' + A + '</b></div>' +
+     '<div class="spec"><span>Paket je Bolzen</span><b>max. 9/16"' + A + '</b></div></div>' +
+   '<div class="gb"><h4 class="torque">Anzugsmoment</h4><div class="spec"><span>Muttern Querachse</span><b class="offen">offen</b></div><p>Ford Part 3-6 im Scan nicht lesbar.</p></div>' +
+   '<div class="gb full"><h4 class="warning">Sicherheit</h4><ul><li>Die Feder drückt auf den oberen Querlenker.' + A + ' Muttern nie ganz abnehmen, solange das Auto auf den Rädern steht.</li></ul></div>' +
+   '</div>',
+
+ '7.3': '<div class="gg">' +
+   '<div class="gb full"><h4 class="ziel">Ziel</h4><p>Radlasten, die bei jedem Wiegen gleich herauskommen. Erst dann sagen sie etwas.</p></div>' +
+   '<div class="gb"><h4 class="tools">Werkzeug</h4><ul><li>Longacre Waagen, kabelgebunden</li><li>Wagenheber</li></ul>' +
+     '<details class="baustein"><summary>&#9878; So bedienst du die Longacre-Waage</summary><div><ol>' +
+     '<li>Waagen flach hinlegen, jedes Kabel an die richtige Ecke. Kabel doppelt prüfen.' + C + '</li>' +
+     '<li>Einschalten, zwei bis drei Minuten warmlaufen lassen.' + C + '</li>' +
+     '<li>Nullen: jede Ecke zeigt 0.' + C + '</li>' +
+     '<li>Eine Person nacheinander auf jede Waage: alle zeigen fast gleich viel. Danach wieder 0?' + C + '</li></ol></div></details></div>' +
+   '<div class="gb"><h4 class="prereq">Vorbereitung</h4><ul><li>Race-ready wie in 3.1</li><li>Stabi gelöst – sonst wiegt man ihn mit' + C + '</li><li>Reifen halten die Luft' + C + '</li></ul></div>' +
+   '<div class="gb full"><h4 class="prereq">Handgriffe</h4><ol>' +
+     '<li>Auto auf die Waagen setzen.</li>' +
+     '<li>Setzen: hinten kräftig wippen, dann vorn, jedes Mal in der Mitte loslassen.' + C + '</li>' +
+     '<li>Vier Werte als Durchgang A eintragen.</li>' +
+     '<li>Anheben, bis alle Räder frei sind, absetzen, genauso setzen: Durchgang B. Noch einmal: C.</li></ol></div>' +
+   '<div class="gb full"><h4 class="measure">Messen und eintragen</h4><table>' +
+     '<tr><th>kg</th><th>LF</th><th>RF</th><th>LR</th><th>RR</th></tr>' +
+     '<tr><td>A</td><td>' + inp('') + '</td><td>' + inp('') + '</td><td>' + inp('') + '</td><td>' + inp('') + '</td></tr>' +
+     '<tr><td>B</td><td>' + inp('') + '</td><td>' + inp('') + '</td><td>' + inp('') + '</td><td>' + inp('') + '</td></tr>' +
+     '<tr><td>C</td><td>' + inp('') + '</td><td>' + inp('') + '</td><td>' + inp('') + '</td><td>' + inp('') + '</td></tr></table>' +
+     '<p style="margin-top:.3rem;">Die App rechnet: Spanne je Ecke, Diagonalmaß, Cross.</p></div>' +
+   '<div class="gb"><h4 class="release">Fertig, wenn</h4><ul><li>Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)</li></ul></div>' +
+   '<div class="gb"><h4 class="abw">Wenn nicht</h4><ul><li>0,5–1 %: Reifendruck, Stabi, Waagen prüfen, wiederholen</li><li>über 1 %: Verspannung – zurück zu 3.4</li></ul></div>' +
+   '<div class="gb full"><h4 class="tips">Praxis-Tipps</h4><ul><li>Ändert sich die Gesamtmasse zwischen den Durchgängen, klemmt eine Waage – nicht das Auto.' + C + '</li><li>Ein Reifen, der langsam Luft verliert, lässt die Werte wandern.' + C + '</li></ul></div>' +
+   '</div>'
+};
+
+var ZEICHEN = { d:'&#10003;', w:'&#9680;', s:'!', '':'' };
+var KLASSE = { d:'done', w:'wip', s:'stale', '':'' };
+
+function liste(phasen, track) {
+  return phasen.map(function (p) {
+    var fertig = p.s.filter(function (x) { return x[2] === 'd'; }).length;
+    var html = '<div class="phase-banner' + (track ? ' track' : '') + '" onclick="this.nextElementSibling.classList.toggle(\'open\')">' +
+      '<div class="phase-num">' + p.nr + '</div><div class="phase-info"><b>' + p.t + '</b><small>' + p.u + '</small></div>' +
+      (track ? '' : '<span class="phase-stat">' + fertig + ' / ' + p.s.length + '</span>') + '</div>';
+    html += '<div class="phase-body" id="ph' + p.nr + '">' + p.s.map(function (s) {
+      var tags = (s[3] === 'neu' ? '<span class="tag neu">neu</span>' : '') +
+                 (s[3] === 'bsp' ? '<span class="tag bsp">Beispiel</span>' : '') +
+                 (s[2] === 's' ? '<span class="tag stale">neu messen</span>' : '');
+      var inhalt = KARTEN[s[0]] || '<div class="gb"><p style="color:#718096;">Gleicher Aufbau wie die Beispielkarten: Ziel, Werkzeug, Vorbereitung, Handgriffe, Messen, Fertig wenn, Wenn nicht, Tipps.</p></div>';
+      return '<div class="step" id="s' + s[0] + '"><div class="step-h" onclick="this.parentElement.classList.toggle(\'open\')">' +
+        '<div class="st ' + KLASSE[s[2]] + '">' + ZEICHEN[s[2]] + '</div>' +
+        '<div class="step-t">' + s[0] + ' ' + s[1] + tags + '</div><span class="arrow">&#9660;</span></div>' +
+        '<div class="step-g">' + inhalt + '</div></div>';
+    }).join('') + '</div>';
+    return html;
+  }).join('');
+}
+
+document.getElementById('werkstattListe').innerHTML = liste(PHASEN, false);
+document.getElementById('streckeListe').innerHTML = liste(STRECKE, true);
+
+document.getElementById('phasenGitter').innerHTML = PHASEN.map(function (p) {
+  var n = p.s.length, d = p.s.filter(function (x) { return x[2] === 'd'; }).length;
+  var stale = p.s.some(function (x) { return x[2] === 's'; });
+  var k = stale ? 'g-stale' : (d === n ? 'g-done' : (d > 0 || p.s.some(function (x) { return x[2] === 'w'; }) ? 'g-wip' : ''));
+  return '<div class="' + k + '" onclick="springe(\'' + p.s[0][0] + '\', true)"><b>' + p.nr + '</b>' + d + '/' + n + '</div>';
+}).join('');
+
+(function () {
+  var alle = [].concat.apply([], PHASEN.map(function (p) { return p.s; }));
+  var fertig = alle.filter(function (x) { return x[2] === 'd'; }).length;
+  document.getElementById('zaehler').textContent = fertig + ' von ' + alle.length + ' Schritten';
+  document.getElementById('balken').style.width = Math.round(fertig / alle.length * 100) + '%';
+})();
+
+function zeige(v) {
+  document.querySelectorAll('.view').forEach(function (x) { x.classList.toggle('active', x.id === 'v-' + v); });
+  document.querySelectorAll('.nav').forEach(function (x) { x.classList.toggle('active', x.dataset.view === v); });
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('.nav').forEach(function (n) { n.onclick = function () { zeige(n.dataset.view); }; });
+
+function springe(id, nurPhase) {
+  zeige('werkstatt');
+  var s = document.getElementById('s' + id);
+  if (!s) return;
+  s.parentElement.classList.add('open');
+  if (!nurPhase) s.classList.add('open');
+  s.scrollIntoView({ block: 'start' });
+  window.scrollBy(0, -70);
+}
+
+function erklaerung() {
+  var e = document.getElementById('erklaerung');
+  e.classList.toggle('open');
+  if (e.classList.contains('open')) window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
