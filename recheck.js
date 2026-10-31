@@ -173,7 +173,7 @@
   // ===========================================================================
   var PHASEN = [
     { nr: 0,  id: 'phase0',  titel: 'Hardware-Inventar',        liefert: ['hardware_stand'] },
-    { nr: 1,  id: 'phase1',  titel: 'Mechanische Pruefung',     liefert: ['mech_spielfreiheit'] },
+    { nr: 1,  id: 'phase1',  titel: 'Mechanische Prüfung',     liefert: ['mech_spielfreiheit'] },
     { nr: 2,  id: 'phase2',  titel: 'Setup Pad',                liefert: ['pad_ebene'] },
     { nr: 3,  id: 'phase3',  titel: 'Race-Ready-Zustand',       liefert: ['race_ready_zustand', 'steering_center'] },
     { nr: 4,  id: 'phase4',  titel: 'Initial Ride Height',      liefert: ['ride_height', 'rake', 'bump_stop_abstand'] },

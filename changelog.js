@@ -12,6 +12,16 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v28',
+      date: '2026-10-31',
+      time: '06:17',
+      title: 'Umlaute statt Umschreibungen',
+      changes: [
+        { type: 'fix', text: 'Umlaute statt Umschreibungen: Phase 1 heisst in der Werkstatt "Mechanische Prüfung", die Statuszeile im Cloud-Dialog sagt "Gerät", und die Meldungen beim Verbinden schreiben "Prüfe Token", "Für den Cloud-Sync" usw.' },
+        { type: 'intern', text: 'github-zugang.js nur in sichtbaren Texten geaendert, wortgleich mit gt40 v122 und jerico v46 (neue Pruefsumme). Zwei Tests gegen ae/oe/ue-Umschreibungen (Baustein-Meldungen; Phasentitel und Anzeigenamen), Gegenproben rot.' }
+      ]
+    },
+    {
       version: 'v27',
       date: '2026-10-30',
       time: '18:00',

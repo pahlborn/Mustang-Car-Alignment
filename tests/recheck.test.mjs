@@ -433,6 +433,13 @@ await test('keine Groesse hat zwei Namen (Regel 4)', async () => {
   assertEqual(unbenutzt, [], 'NAMEN fuer Groessen, die es nicht gibt');
 });
 
+await test('Phasentitel und Namen mit Umlauten, nicht mit ae/oe/ue', async () => {
+  // Bis v27 stand in der Werkstatt "1. Mechanische Pruefung".
+  const texte = R.PHASEN.map((p) => p.titel).concat(R.alleGroessen().map((g) => R.name(g)));
+  const falsch = texte.filter((x) => /(Pruef|pruef|Aender|aender|Geraet|geraet|\bfuer\b|ueber|Ueber|oeffn|gaengig|Freigaeng|Hoehe|hoehe)/.test(x));
+  assertEqual(falsch, [], 'Umschreibungen statt Umlaute');
+});
+
 await test('zwei Groessen tragen nie denselben Namen', async () => {
   const gesehen = {};
   const gleich = [];

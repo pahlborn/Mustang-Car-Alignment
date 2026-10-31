@@ -294,7 +294,7 @@
             el.innerHTML = 'Verbunden &mdash; Ger&auml;t: <code>' + (devId ? devId.substring(0, 12) : '?') + '</code>';
         } else if (getGistConfig().token) {
             // Ein Ruhezustand, kein Vorgang: hier sucht nichts (wie jerico v28).
-            el.textContent = 'Token gesetzt, aber kein Datenspeicher verbunden - Werte bleiben auf diesem Geraet.';
+            el.textContent = 'Token gesetzt, aber kein Datenspeicher verbunden - Werte bleiben auf diesem Gerät.';
         } else {
             el.textContent = 'Nicht verbunden';
         }
