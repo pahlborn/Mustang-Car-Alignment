@@ -371,7 +371,7 @@ Die UCA-Länge wird deshalb **einmal** festgelegt — so kurz wie sinnvoll, für
 
 ### 6.2 Vorgeschlagene Reihenfolge
 
-Eingebettet in [`02_WORKFLOW.md`](02_WORKFLOW.md) Phase 6 bzw. Phase 13:
+Eingebettet in [`02_WORKFLOW.md`](02_WORKFLOW.md) Phase 6 bzw. Phase 12:
 
 ```text
 0.  Hardware identifizieren (UCA-Typ!)
@@ -432,8 +432,8 @@ Das Verhältnis zwischen beiden ist **nicht linear und nicht fahrzeugübergreife
 
 | Feld | Typ | Format | Beispiel |
 |---|---|---|---|
-| `uca_heim_front` | Stellgröße | Umdrehungen ab Anschlag | 3,0 |
-| `uca_heim_rear` | Stellgröße | Umdrehungen ab Anschlag | 0,0 |
+| `uca_heim_front` | Stellgröße | sichtbare Gewindelänge, mm | 31,5 |
+| `uca_heim_rear` | Stellgröße | sichtbare Gewindelänge, mm | 28,0 |
 | `uca_shim_front` | Stellgröße | Gesamtdicke mm | 3,2 |
 | `uca_shim_rear` | Stellgröße | Gesamtdicke mm | 1,6 |
 | `lca_plate` | Stellgröße | **Plattennummer** (#1 = Serie) | #3 |

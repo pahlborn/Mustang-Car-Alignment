@@ -38,6 +38,8 @@
 
     var GRUPPEN = {
         kopf:      { titel: 'Kopfdaten',          icon: '\ud83d\udcc5' },
+        bestand:   { titel: 'Bestand nach dem Umbau', icon: '\ud83d\udccb',
+                     hinweis: 'Erfasst in Phase 0 der Anleitung.' },
         konstanten:{ titel: 'Fahrzeugkonstanten', icon: '\ud83d\udcd0',
                      hinweis: 'Einmal messen, dann stehenlassen. Aus diesen Werten '
                             + 'ergibt sich die Balanceverteilung. Drei davon f&uuml;hrt '
@@ -75,14 +77,26 @@
         if (f.regel) attr += ' data-validate="' + esc(f.regel) + '"';
         if (f.platzhalter) attr += ' placeholder="' + esc(f.platzhalter) + '"';
 
+        // Befund (ok / nicht ok) und Auswahl als Liste, seit v30 fuer die
+        // Pruefschritte der Anleitung.
+        if (f.typ === 'befund' || f.typ === 'auswahl') {
+            var opts = f.typ === 'befund' ? ['ok', 'nicht ok'] : (f.optionen || []);
+            return '<select' + attr + ' onchange="autoSave()" class="mb-feld">'
+                + '<option value="">&ndash;</option>'
+                + opts.map(function (o) { return '<option>' + esc(o) + '</option>'; }).join('')
+                + '</select>';
+        }
+
         var typ = f.typ === 'date' ? 'date' : 'text';
         var mode = f.regel ? ' inputmode="decimal"' : '';
+        var text = f.typ === 'text';
 
         return '<input type="' + typ + '"' + attr + mode
             + ' oninput="autoSave()"'
+            + ' class="mb-feld' + (text ? ' mb-text' : '') + '"'
             + ' style="width:100%;padding:0.4rem;border:1px solid var(--border);'
             + 'border-radius:6px;background:var(--input-bg);font-size:0.82rem;'
-            + 'min-height:36px;text-align:right;">';
+            + 'min-height:36px;text-align:' + (text ? 'left' : 'right') + ';">';
     }
 
     function beschriftung(f) {
@@ -336,6 +350,10 @@
 
     window.messblattZeichnen = zeichnen;
     window.messblattErgebnisse = zeichneErgebnisse;
+
+    // Die Anleitung zeigt dieselben Felder in ihren Arbeitsschritten. Sie baut
+    // sie hiermit, nicht mit einer eigenen Kopie (Regel 4).
+    window.Messblatt = { feld: baueFeld, beschriftung: beschriftung };
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);

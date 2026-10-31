@@ -153,9 +153,11 @@
    * @param {string} [notiz]  freier Text, etwa "Platte 2, LF"
    * @returns {string} Journal-ID
    */
-  function eintragen(groesse, notiz) {
+  function eintragen(groesse, notiz, werte) {
     var id = neueId();
     _data.journal[id] = { g: String(groesse), n: notiz || '', m: now() };
+    // Verlauf der Einsteller (v30, Zielbild 3a): je Feld [alt, neu].
+    if (werte) _data.journal[id].w = werte;
     speichern();
     abgleichPlanen();
     return id;
@@ -175,13 +177,29 @@
     return true;
   }
 
+  /**
+   * Verlauf eines Eintrags als Text: "Shim vorderer Bolzen LF 4,8 -> 5,6 mm".
+   * Name und Einheit kommen aus messwerte.js, wenn es geladen ist.
+   */
+  function verlaufText(werte) {
+    if (!werte) return '';
+    return Object.keys(werte).map(function (feld) {
+      var f = (typeof Messwerte !== 'undefined') ? Messwerte.feld(feld) : null;
+      var name = f ? f.label + (f.rad ? ' ' + f.rad : '') : feld;
+      var ein = f && f.einheit ? ' ' + f.einheit : '';
+      var a = werte[feld][0] === '' ? '(leer)' : werte[feld][0];
+      var n = werte[feld][1] === '' ? '(leer)' : werte[feld][1];
+      return name + ' ' + a + ' \u2192 ' + n + ein;
+    }).join('; ');
+  }
+
   /** Alle gueltigen Eintraege, juengste zuerst. */
   function journal() {
     var out = [];
     for (var id in _data.journal) {
       var e = _data.journal[id];
       if (e.del) continue;
-      out.push({ id: id, groesse: e.g, notiz: e.n, zeit: e.m });
+      out.push({ id: id, groesse: e.g, notiz: e.n, zeit: e.m, werte: e.w || null });
     }
     return out.sort(function (a, b) { return b.zeit - a.zeit; });
   }
@@ -200,14 +218,29 @@
    */
   var ZUSAMMENFASSEN = 60 * 1000;
 
-  function ausFeld(groesse, notiz) {
+  /**
+   * `feld`, `alt`, `neu` (seit v30): der Verlauf eines Einstellers. Beim
+   * Zusammenfassen bleibt der erste alte Wert stehen und nur der neue
+   * wandert mit - wer 4,8 auf 5,0 und dann auf 5,6 tippt, hat 4,8 -> 5,6
+   * verstellt, nicht 5,0 -> 5,6.
+   */
+  function ausFeld(groesse, notiz, feld, alt, neu) {
     var grenze = now() - ZUSAMMENFASSEN;
     for (var id in _data.journal) {
       var e = _data.journal[id];
       if (e.del || e.g !== groesse) continue;
-      if (e.m >= grenze) { e.m = now(); speichern(); abgleichPlanen(); return id; }
+      if (e.m >= grenze) {
+        e.m = now();
+        if (feld) {
+          e.w = e.w || {};
+          e.w[feld] = [e.w[feld] ? e.w[feld][0] : String(alt == null ? '' : alt), String(neu == null ? '' : neu)];
+        }
+        speichern(); abgleichPlanen(); return id;
+      }
     }
-    return eintragen(groesse, notiz);
+    var werte = null;
+    if (feld) { werte = {}; werte[feld] = [String(alt == null ? '' : alt), String(neu == null ? '' : neu)]; }
+    return eintragen(groesse, notiz, werte);
   }
 
   // ==== Der vierte Status: veraltet ====
@@ -481,10 +514,19 @@
   // Danach ein Ereignis, damit jede Seite ihre Anzeige nachziehen kann, ohne
   // dass dieses Modul die Seiten kennen muss.
   if (typeof document !== 'undefined') {
+    // Den Wert vor dem Tippen merken - fuer den Verlauf (v30). Nicht als
+    // data-Attribut: das saehe aus wie ein Feld und wanderte womoeglich mit.
+    var _vorher = new WeakMap();
+    document.addEventListener('focusin', function (e) {
+      var el = e.target;
+      if (el && el.dataset && el.dataset.groesse) _vorher.set(el, el.value);
+    });
     document.addEventListener('change', function (e) {
       var el = e.target;
       if (!el || !el.dataset || !el.dataset.groesse) return;
-      ausFeld(el.dataset.groesse);
+      var alt = _vorher.has(el) ? _vorher.get(el) : '';
+      ausFeld(el.dataset.groesse, '', el.dataset.field || '', alt, el.value);
+      _vorher.set(el, el.value);
       document.dispatchEvent(new CustomEvent('status-geaendert', {
         detail: { groesse: el.dataset.groesse, feld: el.dataset.field || '' }
       }));
@@ -503,6 +545,7 @@
     eintragen: eintragen,
     zuruecknehmen: zuruecknehmen,
     journal: journal,
+    verlaufText: verlaufText,
     ausFeld: ausFeld,
     pruefen: pruefen,
     fortschritt: fortschritt,

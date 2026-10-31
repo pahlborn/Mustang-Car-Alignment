@@ -683,6 +683,24 @@ kein Codebefund (Regel 7e). Der zweite Job, `Versionsdisziplin`, war die
 ganze Zeit gruen - er braucht keinen Browser. Dass genau ein Job faellt und
 der andere nicht, sagt schon, wo man suchen muss.
 
+## 13. Das Zielbild ist massgeblich
+
+Seit v30 wird die App nach `docs/zielbild/` umgebaut, Phase fuer Phase.
+Was dort nicht steht, wird nicht gebaut. Aendert sich das Ziel, wird zuerst
+das Zielbild geaendert und von Peter freigegeben, dann gebaut. Jede Phase
+sieht Peter am iPad, bevor die naechste kommt.
+
+**Warum:** Das fruehere Konzept (`archive/MASTER_CONCEPT.md`) war nach Themen
+geordnet, die Umsetzung lief ueber 27 Versionen in Technik und Nachschlagewerk
+statt in eine Anleitung. Peter, 2026-10-30: "Das fruehere Konzept klang auch
+klasse, aber es ging mit der Umsetzung dann total aus der Spur."
+
+**Die Kartenregeln** (Zielbild, Erklaerung 2) prueft
+`tests/anleitung.test.mjs` fuer jede Karte: Schritt steht im Zielbild,
+Bloecke in fester Reihenfolge mit Ziel, Fertig-wenn und Zeitbedarf, jede
+Quellenmarke mit Beleg, kein Anzugsmoment ohne Quelle, kein Verweis auf
+andere Reiter, jedes Feld nur einmal.
+
 ## Tests
 
 ```

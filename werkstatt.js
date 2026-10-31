@@ -119,6 +119,7 @@
                 + '<span class="spec-label">' + zeit(e.zeit) + '</span>'
                 + '<span class="spec-value">' + esc(nameVon(e.groesse))
                 + (e.notiz ? ' <span style="font-weight:400;color:var(--text-light);">' + esc(e.notiz) + '</span>' : '')
+                + (e.werte ? ' <span class="journal-verlauf" style="font-weight:400;color:var(--text-light);">' + esc(Status.verlaufText(e.werte)) + '</span>' : '')
                 + ' <button type="button" class="fx-del" onclick="journalZuruecknehmen(\'' + esc(e.id) + '\')"'
                 + ' title="Zur&uuml;cknehmen" style="border:none;background:none;color:var(--danger);cursor:pointer;font-size:1rem;padding:0 0.3rem;">&times;</button>'
                 + '</span></div>';

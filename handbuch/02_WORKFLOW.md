@@ -69,9 +69,9 @@ Longacre selbst zeigt diese Rückkopplung indirekt: Für finales Scaling soll da
 
 ### Eine frühe Phase wird ersetzt, nicht wiederholt
 
-Eine frühe Phase gilt als ersetzt, sobald eine spätere Phase dieselben Werte nach der Änderung neu erfasst hat. Sie muss dann nicht erneut bestätigt werden. Beispiel: Phase 13 setzt Castor, Camber und Toe nach den Shimänderungen neu; Phase 6 ist damit erledigt.
+Eine frühe Phase gilt als ersetzt, sobald eine spätere Phase dieselben Werte nach der Änderung neu erfasst hat. Sie muss dann nicht erneut bestätigt werden. Beispiel: Phase 12 setzt Castor, Camber und Toe nach den Shimänderungen neu; Phase 6 ist damit erledigt.
 
-Das gilt nur für Werte, die eine spätere Phase tatsächlich neu erfasst. Die Hinterachsreferenz (Phase 5) hat keine solche Phase: Nach einer Balanceänderung in Phase 8 wird sie in Phase 9 erneut bestätigt. Und wer nach Phase 13 noch einmal verstellt, muss Phase 13 wiederholen.
+Das gilt nur für Werte, die eine spätere Phase tatsächlich neu erfasst. Die Hinterachsreferenz (Phase 5) hat keine solche Phase: Nach einer Balanceänderung in Phase 8 wird sie in Phase 9 erneut bestätigt. Und wer nach Phase 12 noch einmal verstellt, muss Phase 12 wiederholen.
 
 ---
 
@@ -398,29 +398,7 @@ Damit wird sichtbar, was aus dem statischen Camber während realer Radbewegung w
 
 ---
 
-## 15. Phase 12 — Ackermann
-
-Mit geeigneten Steering Turntables / Lenkwinkelplatten:
-
-- Linkskurve
-- Rechtskurve
-- 20°-Messung
-- Symmetrie
-
-Später optional:
-- 5°
-- 10°
-- 15°
-- 20°
-- 25°
-
-als Kennlinie.
-
-Ackermann ist keine pauschale Zielzahl, sondern eine Lenkwinkelcharakteristik.
-
----
-
-## 16. Phase 13 — Final Front Alignment
+## 15. Phase 12 — Final Front Alignment
 
 Jetzt erst finale statische Werte.
 
@@ -444,6 +422,32 @@ Longacre verlangt für finales Toe u. a.:
 - Caster
 - Ackermann
 - Air Pressure
+
+Ackermann ist an diesem Auto nicht einstellbar. Er wird deshalb erst danach gemessen, als Diagnose (Phase 13, Ford).
+
+---
+
+## 16. Phase 13 — Ackermann
+
+Mit geeigneten Steering Turntables / Lenkwinkelplatten:
+
+- Linkskurve
+- Rechtskurve
+- 20°-Messung
+- Symmetrie
+
+Später optional:
+- 5°
+- 10°
+- 15°
+- 20°
+- 25°
+
+als Kennlinie.
+
+Ackermann ist keine pauschale Zielzahl, sondern eine Lenkwinkelcharakteristik. An diesem Auto ist er nicht einstellbar, sondern ein Diagnosewert.
+
+Er wird erst nach dem endgültigen Ausrichten (Phase 12) gemessen. Ford: „The turning angle … should, therefore, be measured only after these adjustments have been made“ (Ford Shop Manual 1966, A-11, S. 3-5). Weicht er ab, sind Achsschenkel oder andere Teile auf Verbiegung zu prüfen.
 
 ---
 
@@ -646,7 +650,6 @@ Nicht aussagekräftig ist ein valides Ergebnis und darf dokumentiert werden.
 ### Kinematics
 - [ ] Bump Steer
 - [ ] optional Camber Gain
-- [ ] Ackermann
 
 ### Final Alignment
 - [ ] Castor
@@ -655,12 +658,13 @@ Nicht aussagekräftig ist ein valides Ergebnis und darf dokumentiert werden.
 - [ ] Steering Center
 - [ ] Individual Toe
 - [ ] Total Toe
-- [ ] Full Lock
+- [ ] Ackermann (Diagnose, nach dem Ausrichten)
 
 ### Final Verification
+- [ ] Settling und Kontrollmessung
 - [ ] Final Scaling
 - [ ] Driveline Angles
-- [ ] Panhard
+- [ ] Full Lock
 - [ ] dokumentieren
 
 ### Track

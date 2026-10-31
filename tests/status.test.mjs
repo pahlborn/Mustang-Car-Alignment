@@ -194,7 +194,7 @@ await test('und zwar genau die drei richtigen Phasen', async () => {
   S.eintragen('camber');
 
   const alt = S.uebersicht().filter((p) => p.veraltet).map((p) => p.nr);
-  assertEqual(alt, [3, 6, 13], 'Veraltete Phasen');
+  assertEqual(alt, [3, 6, 12], 'Veraltete Phasen');
 
   // Der Punkt der ganzen Uebung: die Hinterachse bleibt unberuehrt. Eine
   // Anzeige, die hier auch Driveline und Full Lock nennt, kostet einen
@@ -212,7 +212,7 @@ await test('nach dem Neumessen ist das Fahrzeug wieder bereit', async () => {
   assertEqual(S.fortschritt().veraltet, 3, 'Zwischenstand');
 
   uhr += 60_000;
-  for (const nr of [3, 6, 13]) S.setzen('phase' + nr, 'done');
+  for (const id of ['phase3', 'phase6', 'phase13']) S.setzen(id, 'done');
 
   assertEqual(S.fortschritt().veraltet, 0, 'Nichts mehr veraltet');
   assertEqual(S.rennstreckenbereit().bereit, true, 'Wieder bereit');
@@ -298,6 +298,34 @@ await test('Phase 9 und 14 veralten nie', async () => {
 });
 
 // ---------------------------------------------------------------------------
+suite('v30: Tausch von Phase 12 und 13, gespeicherter Stand bleibt richtig');
+
+await test('ein Stand von vor dem Tausch bleibt bei der richtigen Phase', async () => {
+  // So hat v29 gespeichert: phase12 = Ackermann (in Arbeit), phase13 =
+  // Final Front Alignment (erledigt). Nach dem Tausch muss das Endausrichten
+  // erledigt sein und Ackermann in Arbeit - nur die Nummern wechseln.
+  zuruecksetzen();
+  uhr += 60_000;
+  localStorage.setItem('chassisStatus', JSON.stringify({
+    version: 1, savedAt: uhr,
+    phasen: { phase12: { s: 'wip', m: uhr }, phase13: { s: 'done', m: uhr } },
+    journal: {}
+  }));
+  S._setzeRoh({ version: 1, phasen: {}, journal: {} });
+  S._laden();
+  const nachNr = (nr) => S.uebersicht().filter((p) => p.nr === nr)[0];
+  assertEqual(nachNr(12).titel, 'Final Front Alignment', 'Titel Nr. 12');
+  assertEqual(nachNr(12).stufe, 'done', 'Endausrichten bleibt erledigt');
+  assertEqual(nachNr(13).titel, 'Ackermann', 'Titel Nr. 13');
+  assertEqual(nachNr(13).stufe, 'wip', 'Ackermann bleibt in Arbeit');
+});
+
+await test('die Reihenfolge der Uebersicht folgt den Nummern', async () => {
+  const nr = S.uebersicht().map((p) => p.nr);
+  assertEqual(nr, [...Array(19).keys()], 'Nummern 0-18 aufsteigend');
+});
+
+// ---------------------------------------------------------------------------
 suite('v25: eine spaetere Phase ersetzt eine fruehe');
 
 /**
@@ -312,7 +340,7 @@ function durchlauf({ phase5Bestaetigt }) {
     if (p.nr === 6) S.eintragen('camber', 'Shims, grobes Ausrichten');
     if (p.nr === 8) S.eintragen('ride_height', 'Balance');
     if (p.nr === 9 && phase5Bestaetigt) S.setzen('phase5', 'done');
-    if (p.nr === 13) S.eintragen('castor', 'Shims, finales Ausrichten');
+    if (p.id === 'phase13') S.eintragen('castor', 'Shims, finales Ausrichten');
     uhr += 60_000;
     S.setzen(p.id, 'done');
   }
@@ -337,21 +365,21 @@ await test('ohne erneute Bestaetigung bleibt genau Phase 5 veraltet', async () =
   assertEqual(veraltetNr(), [5], 'Veraltete Phasen');
 });
 
-await test('Camber an der Strecke: 13 neu abhaken ersetzt auch 6', async () => {
+await test('Camber an der Strecke: Endausrichten (12) neu abhaken ersetzt auch 6', async () => {
   zuruecksetzen();
   durchlauf({ phase5Bestaetigt: true });
   uhr += 60_000;
   S.eintragen('camber', 'Strecke');
   const nachher = veraltetNr();
-  assert(nachher.includes(6) && nachher.includes(13), 'Nach der Aenderung: ' + nachher);
-  assertEqual(nachher, [3, 6, 13], 'Nach der Aenderung');
+  assert(nachher.includes(6) && nachher.includes(12), 'Nach der Aenderung: ' + nachher);
+  assertEqual(nachher, [3, 6, 12], 'Nach der Aenderung');
 
   uhr += 60_000;
   S.setzen('phase13', 'done');
-  assertEqual(veraltetNr(), [], 'Nach erneutem Abhaken von Phase 13');
+  assertEqual(veraltetNr(), [], 'Nach erneutem Abhaken des Endausrichtens');
 });
 
-await test('nur eine SPAETERE Phase ersetzt: 3 und 6 neu abhaken laesst 13 veraltet', async () => {
+await test('nur eine SPAETERE Phase ersetzt: 3 und 6 neu abhaken laesst das Endausrichten (12) veraltet', async () => {
   // 3 und 6 zusammen liefern alles, was die Aenderung in Phase 13 trifft
   // (Camber, Toe, Lenkungsmitte). Mit nur Phase 6 bliebe 13 schon wegen der
   // Lenkungsmitte veraltet - der Test haette den Fehler nicht unterschieden
@@ -363,7 +391,7 @@ await test('nur eine SPAETERE Phase ersetzt: 3 und 6 neu abhaken laesst 13 veral
   uhr += 60_000;
   S.setzen('phase3', 'done');
   S.setzen('phase6', 'done');
-  assertEqual(veraltetNr(), [13], 'Fruehere Phasen duerfen Phase 13 nicht ersetzen');
+  assertEqual(veraltetNr(), [12], 'Fruehere Phasen duerfen das Endausrichten nicht ersetzen');
 });
 
 await test('eine Aenderung NACH der spaeteren Phase macht die fruehe wieder veraltet', async () => {
@@ -375,7 +403,7 @@ await test('eine Aenderung NACH der spaeteren Phase macht die fruehe wieder vera
   S.eintragen('castor', 'Shim nach Phase 13');
   const alt = veraltetNr();
   assert(alt.includes(6), 'Phase 6 nicht veraltet: ' + alt);
-  assert(alt.includes(13), 'Phase 13 nicht veraltet: ' + alt);
+  assert(alt.includes(12), 'Endausrichten (12) nicht veraltet: ' + alt);
 });
 
 await test('dieselbe Millisekunde: die Reihenfolge entscheidet, nicht der Zufall', async () => {
@@ -411,6 +439,29 @@ await test('wegen nennt nur, was nicht abgedeckt ist', async () => {
 
 // ---------------------------------------------------------------------------
 suite('Das Journal');
+
+await test('v30: ein Einsteller traegt alten und neuen Wert, beim Zusammenfassen bleibt der erste alte', async () => {
+  zuruecksetzen();
+  uhr += 60_000;
+  S.ausFeld('castor', '', 'st_shim_vorn_lf', '4,8', '5,0');
+  uhr += 1_000;
+  S.ausFeld('castor', '', 'st_shim_vorn_lf', '5,0', '5,6');
+  uhr += 1_000;
+  S.ausFeld('castor', '', 'st_shim_hinten_lf', '4,0', '3,2');
+  const j = S.journal();
+  assertEqual(j.length, 1, 'ein Eintrag (zusammengefasst)');
+  assertEqual(j[0].werte, { st_shim_vorn_lf: ['4,8', '5,6'], st_shim_hinten_lf: ['4,0', '3,2'] }, 'Verlauf');
+  assertEqual(S.verlaufText({ x: ['', '1'] }), 'x (leer) \u2192 1', 'Text ohne messwerte.js');
+});
+
+await test('v30: der Verlauf wandert mit dem Abgleich', async () => {
+  zuruecksetzen();
+  uhr += 60_000;
+  S.ausFeld('camber', '', 'st_lca_platte_rf', '1', '3');
+  const fremd = S._mischen({ version: 1, phasen: {}, journal: {} }, S._roh());
+  const k = Object.keys(fremd.journal)[0];
+  assertEqual(fremd.journal[k].w, { st_lca_platte_rf: ['1', '3'] }, 'Verlauf im gemischten Stand');
+});
 
 await test('ein Eintrag taucht auf und laesst sich zuruecknehmen', async () => {
   zuruecksetzen();

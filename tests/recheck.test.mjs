@@ -300,7 +300,7 @@ await test('Camber nachgestellt: Toe und Final Alignment werden veraltet', async
   const p = R.phasenNach('camber');
   const veraltet = p.veraltet.map((x) => x.nr);
 
-  assert(veraltet.includes(13), 'Phase 13 Final Front Alignment muss veralten');
+  assert(veraltet.includes(12), 'Phase 12 Final Front Alignment muss veralten');
   assert(veraltet.includes(6), 'Phase 6 Initial Front Alignment muss veralten');
 
   // Und das ist der Punkt: die Hinterachse bleibt unberuehrt. Eine Anzeige,
@@ -318,7 +318,7 @@ await test('Camber nachgestellt: Toe und Final Alignment werden veraltet', async
 await test('Blattfeder getauscht: fast alles muss neu', async () => {
   // Die Gegenprobe zum Camber-Fall. Hier ist die lange Kette richtig.
   const veraltet = R.phasenNach('blattfeder').veraltet.map((x) => x.nr);
-  for (const nr of [4, 5, 7, 13, 15, 16]) {
+  for (const nr of [4, 5, 7, 12, 15, 16]) {
     assert(veraltet.includes(nr), 'Phase ' + nr + ' muss nach Federwechsel veralten');
   }
 });

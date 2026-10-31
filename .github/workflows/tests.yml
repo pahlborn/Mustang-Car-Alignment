@@ -61,6 +61,9 @@ jobs:
       - name: Messblatt
         run: node tests/messblatt.test.mjs
 
+      - name: Anleitung
+        run: node tests/anleitung.test.mjs
+
       - name: Glossar, Nachschlagekarte und Suche
         run: node tests/nachschlagen.test.mjs
 

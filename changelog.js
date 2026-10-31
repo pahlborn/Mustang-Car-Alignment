@@ -12,6 +12,21 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v30',
+      date: '2026-10-31',
+      time: '18:01',
+      title: 'Anleitung, Teil 1: Phase 0 und die Technik dafür',
+      changes: [
+        { type: 'neu', text: 'Neuer Reiter Anleitung nach dem freigegebenen Zielbild: Schrittkarten wie im Build Log von jerico und gt40. Erste Phase: 0 Bestandsaufnahme nach dem Umbau, sieben Schritte mit Ziel, Werkzeug, Handgriffen, Feldern, Fertig wenn, Wenn nicht und Zeitbedarf. Jede Angabe trägt ihre Quelle (A, C, D) oder steht als offen da.' },
+        { type: 'neu', text: 'Status je Schritt (offen, in Arbeit, erledigt), Weiter-Knopf zum nächsten offenen Schritt, Phase am Ende direkt als erledigt melden. Der Phasenstatus bleibt die Grundlage für veraltet und rennstreckenbereit.' },
+        { type: 'neu', text: 'Das Änderungsjournal merkt sich bei Einstellern den alten und den neuen Wert, zum Beispiel "UCA Heim vorn, Gewindelänge LF 31,5 → 33 mm".' },
+        { type: 'neu', text: 'Messblatt: neuer Abschnitt Bestand nach dem Umbau (Teilenummern, Shelby Drop, Einpresstiefe …), Textfelder und Auswahlfelder.' },
+        { type: 'fix', text: 'Phase 12 und 13 getauscht: erst endgültig ausrichten (12), dann den Lenkwinkel prüfen (13), wie Ford es verlangt. Dein gespeicherter Status bleibt bei der richtigen Phase.' },
+        { type: 'fix', text: 'UCA-Heim-Gelenke werden als sichtbare Gewindelänge in mm erfasst, nicht mehr in Umdrehungen ab Anschlag. Zum Zählen müsste man das Gelenk verdrehen, und das wäre schon eine Verstellung.' },
+        { type: 'intern', text: 'Zielbild-Technik 3a vor Phase 0: Schrittstatus als Feld im Messwerte-Abgleich, "neu messen" je Schritt aus Status.pruefen und der Matrix abgeleitet (data-liefert), Journal mit w: {feld: [alt, neu]}, Tausch 12/13 über Nummer und Reihenfolge bei gleichen Kennungen (Test mit Stand von v29). Ford-Toleranz: L−R gelb über 1/4°, rot über 1/2°. tests/anleitung.test.mjs prüft die Kartenregeln für jede Karte.' }
+      ]
+    },
+    {
       version: 'v29',
       date: '2026-10-31',
       time: '07:31',

@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a365d">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <title>Anleitung &ndash; Mustang 1966 Chassis Setup</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="version.js"></script>
+<script src="aktualisieren.js"></script>
+    <script src="changelog.js"></script>
+    <script src="field-sync.js"></script>
+    <script src="validation.js"></script>
+    <script src="errorlog.js"></script>
+    <script src="abgleich.js"></script>
+    <script src="recheck.js"></script>
+    <script src="status.js"></script>
+    <script src="messwerte.js"></script>
+    <script src="rollsteifigkeit.js"></script>
+    <script src="kapitel.js"></script>
+    <script src="markdown.js"></script>
+    <script src="glossar.js"></script>
+    <script src="referenz.js"></script>
+    <script src="github-zugang.js"></script>
+    <script src="app.js"></script>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-row">
+        <a href="index.html" class="header-title">
+            <span class="ht-name">Mustang Chassis<span class="ht-sub">1966 &middot; Rundstrecke</span></span>
+            <span class="ht-meta" onclick="openChangelog()" title="Release-Dokumentation"><span class="ht-version" id="appVersion"></span><span class="ht-built"></span></span>
+        </a>
+        <a class="nav-item" href="index.html" title="&Uuml;bersicht"><span class="nav-icon">&#128202;</span><span class="nav-label">&Uuml;bersicht</span></a>
+        <a class="nav-item active" href="anleitung.html" title="Anleitung"><span class="nav-icon">&#128203;</span><span class="nav-label">Anleitung</span></a>
+        <a class="nav-item" href="werkstatt.html" title="Werkstatt"><span class="nav-icon">&#128295;</span><span class="nav-label">Werkstatt</span></a>
+        <a class="nav-item" href="messblatt.html" title="Messblatt"><span class="nav-icon">&#128207;</span><span class="nav-label">Messblatt</span></a>
+        <a class="nav-item" href="bumpsteer.html" title="Bump Steer"><span class="nav-icon">&#128200;</span><span class="nav-label">Bump Steer</span></a>
+        <a class="nav-item" href="bind.html" title="Bind-Diagnose"><span class="nav-icon">&#9878;</span><span class="nav-label">Bind</span></a>
+        <a class="nav-item" href="handbuch.html" title="Handbuch"><span class="nav-icon">&#128214;</span><span class="nav-label">Handbuch</span></a>
+        <a class="nav-item" href="diagnose.html" title="Diagnose"><span class="nav-icon">&#127937;</span><span class="nav-label">Diagnose</span></a>
+        <div style="position:relative;">
+            <button class="header-gear" onclick="toggleToolMenu()" id="toolMenuBtn" title="Werkzeuge">&#9881;</button>
+            <div id="toolMenu" class="tool-menu">
+                <button type="button" onclick="openSettings();closeToolMenu()">&#9729; Cloud-Sync</button>
+                <button type="button" onclick="syncFromCloud();closeToolMenu()">&#8635; Jetzt abgleichen</button>
+                <hr>
+                <button type="button" onclick="saveData();closeToolMenu()">&#128190; Speichern</button>
+                <button type="button" onclick="exportJSON();closeToolMenu()">&#128229; Export</button>
+                <button type="button" onclick="document.getElementById('importFile').click();closeToolMenu()">&#128228; Import</button>
+                <button type="button" onclick="window.print();closeToolMenu()">&#128424; Drucken</button>
+                <hr>
+                <button type="button" onclick="showErrorLog();closeToolMenu()">&#128203; Fehlerprotokoll</button>
+                <button type="button" class="menu-version" onclick="openChangelog();closeToolMenu()" title="Release-Dokumentation">Version <span class="app-version"></span><span class="app-built"></span> &rsaquo;</button>
+            </div>
+        </div>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
+    </div>
+    <div class="search-bar">
+        <input type="search" id="sucheFeld" placeholder="Suchen... (Strg+F)" oninput="sucheEingabe()" onkeydown="sucheTaste(event)" autocomplete="off">
+        <div class="search-nav" id="sucheNav">
+            <button type="button" onclick="sucheSpringen(-1)" title="Zur&uuml;ck">&#9650;</button>
+            <span class="search-count" id="sucheZahl"></span>
+            <button type="button" onclick="sucheSpringen(1)" title="Weiter">&#9660;</button>
+            <button type="button" onclick="sucheLeeren()" title="Schliessen">&#10005;</button>
+        </div>
+    </div>    <div class="save-status"><span id="syncBadge"></span><span id="saveTime"></span></div>
+</div>
+
+<div class="container" id="mainContent">
+<div id="anleitung">
+
+<div class="info-box">
+    <strong>Die Anleitung entsteht Phase für Phase.</strong> Was hier schon steht, ist fertig und geprüft.
+    Die übrigen Phasen arbeitest du bis dahin wie gewohnt im Reiter Werkstatt ab.
+    <br>Den Kasten links neben einem Schritt antippen: offen &rarr; in Arbeit &rarr; erledigt.
+    Am Ende jeder Phase meldest du die ganze Phase als erledigt.
+    <br>Die Kürzel <span class="src src-a">A</span> <span class="src src-c">C</span> <span class="src src-d">D</span>
+    zeigen, woher eine Angabe stammt: A = Hersteller (Ford, Street or Track, Global West …),
+    C = Fachliteratur wie Longacre, D = Werkstattpraxis ohne schriftliche Quelle. <span class="offen">offen</span> heißt: keine Quelle, nicht geschätzt.
+</div>
+
+<button type="button" class="anl-weiter" id="anlWeiter" hidden>&#9654; Weiter: <span class="anl-weiter-titel"></span><small>öffnet den nächsten offenen Schritt</small></button>
+
+<!-- Bausteine: wiederkehrende Ablaeufe, an einer Stelle gepflegt (Zielbild Regel 3). -->
+<template data-baustein="waage" data-titel="So baust du die Longacre-Waagen auf">
+    <ol>
+        <li>Waagen flach auf die markierten Plätze legen. Jedes Kabel an die richtige Ecke stecken und doppelt prüfen, sonst liest du falsche Zahlen.<span class="src src-c" title="Longacre, Scaling a Race Car Properly: Setting up the Scales">C</span></li>
+        <li>Einschalten und zwei bis drei Minuten warmlaufen lassen.<span class="src src-c" title="Longacre, Scaling a Race Car Properly: Setting up the Scales">C</span></li>
+        <li>Null drücken. Jede Ecke muss 0 zeigen, und die Waagen müssen dabei flach liegen. Ladezustand des Akkus prüfen.<span class="src src-c" title="Longacre, Scaling a Race Car Properly: Setting up the Scales">C</span></li>
+        <li>Probe: Eine Person stellt sich nacheinander auf jede Waage. Alle vier zeigen fast dasselbe, Longacre nennt ein bis zwei Pfund (rund 1 kg). Danach muss jede Ecke wieder 0 zeigen.<span class="src src-c" title="Longacre, Scaling a Race Car Properly: Setting up the Scales">C</span></li>
+        <li>Zum Wiegen den Stabi lösen, sonst wiegst du seine Spannung mit.<span class="src src-c" title="Longacre, Scaling a Race Car Properly: Common Problems, Sway Bar">C</span></li>
+    </ol>
+</template>
+
+<div class="phase" id="phase0" data-phase="phase0">
+<div class="phase-banner" onclick="togglePhase('phase0body')">
+    <div class="phase-num">0</div>
+    <div class="phase-info">
+        <h2>Bestandsaufnahme nach dem Umbau</h2>
+        <p>Welche Teile sind verbaut, wie stehen die Einsteller</p>
+    </div>
+    <span class="phase-stand" data-phasen-stand="phase0"></span>
+    <span class="phase-toggle collapsed" id="toggle_phase0body">&#9660;</span>
+</div>
+<div class="phase-body collapsed" id="phase0body">
+<div class="info-box"><strong>Vorher erledigt:</strong> Der Umbau ist fertig, das Auto steht in der Werkstatt.
+    <br><strong>In dieser Phase wird nur erfasst.</strong> Nichts lösen, nichts verdrehen, nichts verstellen. Jede Karte zeigt, was laut Teileliste verbaut sein soll. Du vergleichst und trägst ein, was fehlt oder abweicht.</div>
+
+<!-- Schritt 0.1 -->
+<div class="step-card" id="anl_0_1_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_0_1" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">0.1 Vorderachse: Teile und Teilenummern ablesen</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block guide-full"><h4 class="ziel">Ziel</h4><p>Für jedes Teil der Vorderachse weißt du, was verbaut ist. Offene Teilenummern und die Lage der Shelby-Drop-Bohrungen sind eingetragen.</p></div>
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Taschenlampe, Spiegel</li>
+                    <li>Handy für Fotos</li>
+                    <li>Messschieber, Maßband</li>
+                    <li>Bremsenreiniger und Lappen, um Prägungen lesbar zu machen</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>Rechnungen und Lieferscheine des Umbaus bereitlegen. Viele Teilenummern stehen nur dort.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Vorderachse auf Böcken unter dem Rahmen, Vorderräder ab. So siehst du alles.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Handgriffe, je Seite</h4>
+                <ol>
+                    <li>Jedes Teil aus der Liste unten ansehen. Stimmt es mit der Liste, weiter zum nächsten. Weicht es ab, ins Feld „Abweichungen Vorderachse“ schreiben: was, wo, welche Nummer.</li>
+                    <li><strong>Kugelgelenke:</strong> Teilenummer am Gehäuse oder an der Manschette suchen. Steht dort nichts: Rechnung oder Verpackung. Foto machen.</li>
+                    <li><strong>Federn vorn:</strong> Hersteller und Teilenummer stehen meist nicht auf der Feder, sondern auf der Rechnung. Die freie Länge misst du erst, wenn die Feder in 10.1 ausgebaut ist.</li>
+                    <li><strong>Stabi vorn:</strong> Teilenummer aus der Rechnung. Dann den Hebelarm messen: von der Mitte des geraden Stabi-Rohrs (Achse der Lagerbuchsen am Rahmen) entlang des Arms bis zur Mitte der Endlink-Bohrung.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li><strong>Shelby Drop:</strong> Im Motorraum am Federdom sitzen die beiden Bolzen der Querachse des oberen Querlenkers. Sind die alten Serienbohrungen noch zu sehen, den Abstand Mitte alt zu Mitte neu messen: einmal senkrecht (wie viel tiefer), einmal waagerecht (wie viel nach hinten). Sind die alten Bohrungen nicht zu sehen, „nicht messbar“ eintragen. Beide Seiten.</li>
+                    <li><strong>LCA-Platte und Strut-Rod-Maß</strong> sind Einsteller. Sie werden in 6.3 aufgeschrieben, unmittelbar bevor du etwas verstellst. Hier nur ansehen, nicht verstellen.</li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Abgleichen und eintragen</h4>
+                <div class="spec-line"><span>Oberer Querlenker</span><span class="spec-val">Street or Track Tubular, SOT-UCA65-66, Querachse Standard (nicht „Dropped“)</span></div>
+                <div class="spec-line"><span>Unterer Querlenker</span><span class="spec-val">Street or Track Tubular, SOT-LCA6566</span></div>
+                <div class="spec-line"><span>Camber Kit unten</span><span class="spec-val">Street or Track SOT-LCACK65-66, eingeschweißt</span></div>
+                <div class="spec-line"><span>Strut Rods</span><span class="spec-val">Global West ASR-4, einstellbar</span></div>
+                <div class="spec-line"><span>Kugelgelenke</span><span class="spec-val">oben Moog, unten Howe &ndash; Teilenummern <span class="offen">offen</span></span></div>
+                <div class="spec-line"><span>Federn vorn</span><span class="spec-val">620 lb/in, über Street or Track &ndash; Teilenummer <span class="offen">offen</span></span></div>
+                <div class="spec-line"><span>Federteller</span><span class="spec-val">Roller Spring Perches ORP-RSP64-73</span></div>
+                <div class="spec-line"><span>Dämpfer vorn</span><span class="spec-val">Bilstein RCD-55-R054</span></div>
+                <div class="spec-line"><span>Stabi vorn</span><span class="spec-val">1" (25,4 mm), Endlinks verstellbar, Poly-Buchsen &ndash; Teilenummer und Hebelarm <span class="offen">offen</span></span></div>
+                <div class="spec-line"><span>Anschlagpuffer</span><span class="spec-val">vorhanden und unbeschädigt?</span></div>
+                <div class="spec-line"><span>Shelby Drop, belegtes Maß für 64–66</span><span class="spec-val">1" (25,4 mm) tiefer und 1/8" (3,2 mm) nach hinten<span class="src src-c" title="Suesz/Burgy, The Arning/Shelby Control Arm Drop (Quelle B-01)">C</span></span></div>
+                <div data-messfelder="best_bj_oben best_bj_unten best_feder_vorn best_stabi_vorn best_stabi_hebel"></div>
+                <div data-messtabelle="best_drop"></div>
+                <div data-messfelder="best_abw_va"></div>
+            </div>
+            <div class="guide-block"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Jede Zeile der Liste angesehen</li>
+                    <li>Offene Felder ausgefüllt oder „nicht lesbar“ eingetragen</li>
+                    <li>Shelby Drop an beiden Seiten gemessen oder „nicht messbar“</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="abw">Wenn nicht</h4>
+                <ul>
+                    <li>Ein Teil weicht von der Liste ab: eintragen, nicht tauschen. Die Liste wird danach angepasst.</li>
+                    <li>Shelby Drop links anders als rechts: eintragen, nichts korrigieren.</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="tips">Praxis-Tipps</h4>
+                <ul>
+                    <li>Von jeder Prägung und jedem Etikett ein Foto machen, auch wenn du die Nummer schon abgeschrieben hast.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Den Shelby Drop messen, nicht aus dem Gedächtnis eintragen. Schon die Quelle kennt zwei Ausführungen: mit Versatz nach hinten (64–66) und ohne (67–70).<span class="src src-c" title="Suesz/Burgy, The Arning/Shelby Control Arm Drop (Quelle B-01): Maß für 64–66 und abweichende Ausführung bei 67–70">C</span></li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="time">Zeitbedarf</h4><p>ca. 45 min für beide Seiten<span class="src src-d" title="Schätzung (Werkstattpraxis), nach dem ersten Durchgang durch die echte Zeit ersetzen">D</span></p></div>
+            <div class="guide-block guide-full"><details class="warum"><summary>Warum? Hintergrund</summary><div>
+                Alle späteren Verstellregeln (Shims, Platte, Strut Rod) gelten nur für die Teile, die wirklich verbaut sind. Der Shelby Drop setzt die Innenlager des oberen Querlenkers tiefer. Das hebt das vordere Rollzentrum an und wirkt wie ein stärkerer Stabi.<span class="src src-c" title="Suesz/Burgy, The Arning/Shelby Control Arm Drop (Quelle B-01)">C</span> Deshalb muss die tatsächliche Bohrung bekannt sein.
+            </div></details></div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 0.2 -->
+<div class="step-card" id="anl_0_2_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_0_2" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">0.2 Obere Querlenker: Heim-Gelenke vermessen, beide Arme gleich lang?</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block guide-full"><h4 class="ziel">Ziel</h4><p>Du weißt, wie weit die vier Heim-Gelenke (Gelenkköpfe mit Gewinde) herausgedreht sind und ob linker und rechter Arm gleich lang sind. Gemessen wird am Gewinde, nicht durch Drehen.</p></div>
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Messschieber</li>
+                    <li>Taschenlampe</li>
+                    <li>Lackstift</li>
+                    <li>Handy für Fotos</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>Vorderräder ab (wie in 0.1), dann kommst du gut an beide Gelenke</li>
+                    <li>Gewinde und Stirnflächen sauber wischen</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Handgriffe, je Seite</h4>
+                <ol>
+                    <li><strong>Nichts lösen, nichts drehen.</strong> Ein Gelenk zum Zählen der Umdrehungen herauszudrehen ist bereits eine Verstellung.</li>
+                    <li>Am vorderen Gelenk die sichtbare Gewindelänge messen: von der Stirnfläche des Querlenkerrohrs bis zur Schulter des Gelenkkopfs. Kontermutter und freies Gewinde liegen dazwischen.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Am hinteren Gelenk genauso. Immer dieselben zwei Flächen nehmen, an beiden Seiten.</li>
+                    <li>Jedes Maß zweimal nehmen. Beide Male muss dasselbe herauskommen.</li>
+                    <li>Einen Lackstrich über Kontermutter und Rohr ziehen. Dann siehst du später, ob sich etwas gedreht hat.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li>Je Gelenk ein Foto mit angelegtem Messschieber.</li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Messen und eintragen</h4>
+                <div data-messtabelle="st_uca_vorn st_uca_hinten"></div>
+                <div class="spec-line"><span>Lieferzustand</span><span class="spec-val">vorderes Gelenk 3 Umdrehungen weiter heraus als das hintere, ergibt etwa +3° Castor<span class="src src-a" title="Street or Track, Produktseite SOT-UCA65-66">A</span></span></div>
+                <div class="spec-line"><span>Linker und rechter Arm</span><span class="spec-val">gleich lang<span class="src src-a" title="Street or Track, Produktseite SOT-UCA65-66: unterschiedlich lange Arme ergeben links und rechts verschiedene Camberkurven">A</span></span></div>
+                <div class="spec-line"><span>Zulässiger Unterschied links/rechts</span><span class="spec-val"><span class="offen">offen</span></span></div>
+                <div class="spec-line"><span>Gewindesteigung, also mm je Umdrehung</span><span class="spec-val"><span class="offen">offen</span></span></div>
+            </div>
+            <div class="guide-block"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Vier Maße eingetragen, jedes zweimal gleich gemessen</li>
+                    <li>Links und rechts verglichen: vorn mit vorn, hinten mit hinten</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="abw">Wenn nicht</h4>
+                <ul>
+                    <li>Links und rechts verschieden: hier <strong>nicht</strong> angleichen, nur eintragen. Die Armlänge ist eine Grundeinstellung. Wird sie geändert, müssen Castor, Camber und Spur danach komplett neu (ab 6.1).</li>
+                    <li>Kontermutter lose: festziehen, ohne das Gelenk zu drehen. Anzugsmoment <span class="offen">offen</span>.</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="torque">Anzugsmomente</h4>
+                <div class="spec-line"><span>Kontermuttern Heim-Gelenke</span><span class="spec-val">offen</span></div>
+                <p>Keine Herstellerangabe in den vorliegenden Quellen. Nicht schätzen.</p>
+            </div>
+            <div class="guide-block"><h4 class="time">Zeitbedarf</h4><p>ca. 20 min<span class="src src-d" title="Schätzung (Werkstattpraxis), nach dem ersten Durchgang durch die echte Zeit ersetzen">D</span></p></div>
+            <div class="guide-block guide-full"><details class="warum"><summary>Warum? Hintergrund</summary><div>
+                Am Tubular-Querlenker verstellt man über die Heim-Gelenke die Armlänge. Beide gleich hinein ergibt mehr negativen Camber, das vordere weiter heraus ergibt mehr Castor.<span class="src src-a" title="Street or Track, Produktseite SOT-UCA65-66">A</span>
+                Street or Track warnt: Sind die Arme verschieden lang, liegen die Drehpunkte links und rechts nicht gleich, und die Camberkurven unterscheiden sich.<span class="src src-a" title="Street or Track, Produktseite SOT-UCA65-66">A</span>
+                Deshalb gilt in diesem Projekt: Camber wird am Camber Kit unten eingestellt, nicht über unterschiedlich lange obere Arme (Projektfestlegung).
+            </div></details></div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 0.3 -->
+<div class="step-card" id="anl_0_3_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_0_3" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">0.3 Lenkung: Lenkgetriebe, Gestänge, Achsschenkel erfassen</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block guide-full"><h4 class="ziel">Ziel</h4><p>Jedes Teil der Lenkung ist mit Hersteller oder Teilenummer erfasst. Du weißt, welche Achsschenkel verbaut sind und wie hoch die Distanzstücke am Bump-Steer-Kit sind.</p></div>
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Taschenlampe, Spiegel</li>
+                    <li>Messschieber</li>
+                    <li>Bremsenreiniger, weiche Drahtbürste</li>
+                    <li>Handy für Fotos</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>Vorderachse auf Böcken, Räder ab (wie in 0.1)</li>
+                    <li>Lenkung geradeaus</li>
+                    <li>Rechnungen des Umbaus bereit</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Handgriffe</h4>
+                <ol>
+                    <li><strong>Lenkgetriebe:</strong> Typenschild oder Prägung am Gehäuse ablesen. Stimmt es mit der Liste?</li>
+                    <li><strong>Lenkstockhebel (Pitman Arm), Zwischenhebel (Idler Arm), Mittelstange (Center Link), innere Spurstangenköpfe:</strong> Hersteller und Teilenummer von der Prägung am Schaft oder Gelenkgehäuse ablesen, sonst aus der Rechnung.</li>
+                    <li><strong>Spurstangenhülsen:</strong> Art notieren, zum Beispiel geschlitzte Serienhülse mit Klemmschellen.</li>
+                    <li><strong>Achsschenkel:</strong> Gussnummer suchen und vorsichtig sauber bürsten. Nummer und Bremsenart (Scheibe oder Trommel) notieren. Foto.</li>
+                    <li><strong>Distanzstücke am Bump-Steer-Kit:</strong> Je Seite zählen und die Gesamthöhe des Stapels mit dem Messschieber messen. Nichts zerlegen.</li>
+                    <li>Lenkhebel am Achsschenkel: Serie oder anderes Teil? Ins Feld „Abweichungen Lenkung“, falls nicht Serie.</li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Abgleichen und eintragen</h4>
+                <div class="spec-line"><span>Lenkgetriebe</span><span class="spec-val">Flaming River FR1497-1Q, 1" Sektorwelle, 16:1 &ndash; nach dem Umbau bestätigen</span></div>
+                <div class="spec-line"><span>Äußere Spurstangenköpfe</span><span class="spec-val">Bump-Steer-Kit Baer Tracker BAE-3261001</span></div>
+                <div class="spec-line"><span>Lenkstockhebel, Zwischenhebel, Mittelstange, innere Spurstangen, Hülsen, Lenkhebel</span><span class="spec-val"><span class="offen">offen</span></span></div>
+                <div class="spec-line"><span>Achsschenkel</span><span class="spec-val">Bauart 1965–66 nötig für das Kit<span class="src src-a" title="Baer Tracker BAE-3261001 über Street or Track: fit the spindle you have, not necessarily the model and year of your vehicle; fits manual steering cars only">A</span>; Zuordnung Gussnummer zu Bauart <span class="offen">offen</span></span></div>
+                <div data-messfelder="best_lenkgetriebe best_pitman best_idler best_center_link best_spurstange best_achsschenkel"></div>
+                <div data-messtabelle="st_distanz"></div>
+                <div data-messfelder="best_abw_lenkung"></div>
+            </div>
+            <div class="guide-block"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Jedes Lenkungsteil eingetragen oder „nicht lesbar“</li>
+                    <li>Achsschenkel-Gussnummer und Bremsenart notiert</li>
+                    <li>Distanzstapel beider Seiten gemessen</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="abw">Wenn nicht</h4>
+                <ul>
+                    <li>Keine Gussnummer lesbar: Fotos von Achsschenkel und Lenkhebel machen und eintragen „nicht lesbar“.</li>
+                    <li>Distanzstapel links und rechts verschieden: eintragen, nicht ändern. Das wird in Phase 10 gemessen und korrigiert.</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="time">Zeitbedarf</h4><p>ca. 30 min<span class="src src-d" title="Schätzung (Werkstattpraxis), nach dem ersten Durchgang durch die echte Zeit ersetzen">D</span></p></div>
+            <div class="guide-block guide-full"><details class="warum"><summary>Warum? Hintergrund</summary><div>
+                Baer schreibt, das Kit passe zum Achsschenkel, den man hat, nicht zum Modelljahr des Autos.<span class="src src-a" title="Baer Tracker BAE-3261001 über Street or Track">A</span> Passen Kit und Achsschenkel nicht zusammen, stimmt die Bump-Steer-Geometrie schon vor der ersten Messung nicht. Die Höhe des Distanzstapels ist der Einsteller dafür. Wer sie kennt, kann jede spätere Änderung zurückverfolgen.
+            </div></details></div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 0.4 -->
+<div class="step-card" id="anl_0_4_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_0_4" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">0.4 Hinterachse: Blattfedern, Shackles, U-Bolts, Panhard erfassen</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block guide-full"><h4 class="ziel">Ziel</h4><p>Die Teile der Hinterachse sind mit der Liste abgeglichen. U-Bolts, Panhard-Version und das benutzte Panhard-Loch sind eingetragen.</p></div>
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Taschenlampe</li>
+                    <li>Messschieber, Maßband</li>
+                    <li>Handy für Fotos</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>Heck auf Böcken unter dem Rahmen oder Auto auf der Grube</li>
+                    <li>Rechnungen des Umbaus bereit</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Handgriffe</h4>
+                <ol>
+                    <li>Achse, Blattfedern, Shackles und Dämpfer mit der Liste vergleichen. Bei den Blattfedern die Lagen zählen.</li>
+                    <li><strong>U-Bolts (Federbügel):</strong> Durchmesser am Schaft messen, Gewinde und Hersteller notieren. Federplatten ansehen. Liegt zwischen Feder und Achsauflage ein Keil? Wenn ja: Winkel oder Dicke, die auf dem Keil steht.</li>
+                    <li><strong>Panhard, Version:</strong> Der Hersteller nennt online nicht, welche Version verbaut ist. Deshalb Merkmale notieren: Zahl der Löcher je Halter, Lochabstand, Art der Lager an beiden Enden (Gummi, Kunststoff, Heim-Gelenk). Fotos von beiden Haltern.</li>
+                    <li><strong>Panhard, benutztes Loch:</strong> je Halter von oben zählen, rahmenseitig und achsseitig. Nicht umstecken.</li>
+                    <li><strong>Stabi hinten:</strong> vorhanden? Wenn ja: Teilenummer und Durchmesser.</li>
+                    <li><strong>Dämpfer hinten:</strong> Abstimmung vom Aufkleber ablesen (Street, Sport, Race).</li>
+                    <li>Den Winkel der Shackles misst du erst in Phase 5, wenn das Auto in Fahrhöhe steht.</li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Abgleichen und eintragen</h4>
+                <div class="spec-line"><span>Achse</span><span class="spec-val">Ford 9", Eaton TrueTrac, 3.50:1</span></div>
+                <div class="spec-line"><span>Blattfedern</span><span class="spec-val">Street or Track SCD-C5ZZ-5560-4ME, 4,5 Lagen Mid-Eye, 175 lb/in</span></div>
+                <div class="spec-line"><span>Shackles und Federaugenbuchsen</span><span class="spec-val">Global West 106SH, Del-A-Lum, mit Fettnippeln</span></div>
+                <div class="spec-line"><span>Panhard</span><span class="spec-val">Maier Racing &ndash; Version und Loch <span class="offen">offen</span></span></div>
+                <div class="spec-line"><span>Dämpfer hinten</span><span class="spec-val">Bilstein RCD-55-R056 &ndash; Abstimmung <span class="offen">offen</span></span></div>
+                <div class="spec-line"><span>U-Bolts, Federplatten, Stabi hinten</span><span class="spec-val"><span class="offen">offen</span></span></div>
+                <div data-messfelder="best_ubolts best_panhard_version st_panhard_loch best_stabi_hinten best_daempfer_hinten best_abw_ha"></div>
+            </div>
+            <div class="guide-block"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Alle Zeilen der Liste angesehen</li>
+                    <li>U-Bolts, Panhard-Merkmale und Panhard-Loch eingetragen</li>
+                    <li>Fotos der Panhard-Halter gemacht</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="abw">Wenn nicht</h4>
+                <ul>
+                    <li>Teil weicht ab oder fehlt: eintragen, nichts tauschen.</li>
+                    <li>Panhard steckt links und rechts in verschiedenen Höhen: eintragen. Ausgerichtet wird er in Phase 5.</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="time">Zeitbedarf</h4><p>ca. 30 min<span class="src src-d" title="Schätzung (Werkstattpraxis), nach dem ersten Durchgang durch die echte Zeit ersetzen">D</span></p></div>
+            <div class="guide-block guide-full"><details class="warum"><summary>Warum? Hintergrund</summary><div>
+                Die Del-A-Lum-Buchsen führen die Blattfeder auch seitlich.<span class="src src-a" title="Global West, Produktseite 106SH: provide lateral control of the leaf springs">A</span> Für das Schwester-Kit mit derselben Lagerung warnt Global West: zusammen mit einem Panhard entsteht Verspannung (Bind).<span class="src src-a" title="Global West, Produktseite 114SH">A</span> Dieses Auto hat genau diese Kombination. Darum zählt jedes Detail am Panhard, und darum gibt es den Bind-Test in Phase 3.
+            </div></details></div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 0.5 -->
+<div class="step-card" id="anl_0_5_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_0_5" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">0.5 Antriebsstrang: Kardanwelle und Kreuzgelenke</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block guide-full"><h4 class="ziel">Ziel</h4><p>Getriebe bestätigt, Rohrdurchmesser der Kardanwelle gemessen, Baureihe der Kreuzgelenke (U-Joints) eingetragen.</p></div>
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Messschieber, Maßband</li>
+                    <li>Taschenlampe, Lappen</li>
+                    <li>Handy für Fotos</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>Auto auf Böcken oder auf der Grube</li>
+                    <li>Gang heraus, damit du die Welle von Hand drehen kannst</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Handgriffe</h4>
+                <ol>
+                    <li><strong>Getriebe:</strong> Kennzeichnung am Gehäuse ansehen. Toploader?</li>
+                    <li><strong>Kardanwelle:</strong> Rohrdurchmesser mit dem Messschieber an zwei Stellen messen, um 90° versetzt. Ohne großen Messschieber: Umfang mit dem Maßband messen und durch 3,14 teilen.</li>
+                    <li><strong>Kreuzgelenke vorn und hinten:</strong> Aufdruck oder Teilenummer an einer Lagerbüchse suchen, dazu die Welle von Hand drehen. Ist nichts lesbar: Durchmesser einer Lagerbüchse und das Maß über zwei gegenüberliegende Büchsen messen und ins Feld schreiben.</li>
+                    <li>Die Winkel von Getriebe, Welle und Achse misst du in 5.4 und Phase 16, nicht hier.</li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Abgleichen und eintragen</h4>
+                <div class="spec-line"><span>Getriebe</span><span class="spec-val">Ford Toploader (Original)</span></div>
+                <div class="spec-line"><span>Kardanwelle</span><span class="spec-val">Hersteller unbekannt &ndash; Rohr 3" (76,2 mm) oder 3,5" (88,9 mm)?</span></div>
+                <div class="spec-line"><span>Kreuzgelenke</span><span class="spec-val">Spicer &ndash; Baureihe (z. B. 1310, 1330, 1350) <span class="offen">offen</span></span></div>
+                <div class="spec-line"><span>Zuordnung Büchsenmaß zu Baureihe</span><span class="spec-val"><span class="offen">offen</span> (Maßtabelle von Spicer liegt nicht vor)</span></div>
+                <div data-messfelder="best_kardan_rohr best_kreuzgelenk best_abw_antrieb"></div>
+            </div>
+            <div class="guide-block"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Getriebe bestätigt</li>
+                    <li>Rohrdurchmesser und Kreuzgelenke eingetragen</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="abw">Wenn nicht</h4>
+                <ul>
+                    <li>Kreuzgelenk ohne Kennzeichnung: Maße und Foto reichen vorerst.</li>
+                    <li>Kreuzgelenk hat Spiel oder hakt beim Drehen: notieren. Geprüft wird es in Phase 1.</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="time">Zeitbedarf</h4><p>ca. 15 min<span class="src src-d" title="Schätzung (Werkstattpraxis), nach dem ersten Durchgang durch die echte Zeit ersetzen">D</span></p></div>
+            <div class="guide-block guide-full"><details class="warum"><summary>Warum? Hintergrund</summary><div>
+                Baureihe und Rohrdurchmesser braucht man für Ersatzteile und für die Grenzdrehzahl der Welle. Spicer verweist dafür auf einen eigenen Rechner für die kritische Drehzahl.<span class="src src-a" title="Spicer/Dana, Driveline Operating Angle Calculator, Points to remember (Quelle A-12)">A</span>
+            </div></details></div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 0.6 -->
+<div class="step-card" id="anl_0_6_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_0_6" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">0.6 Räder und Reifen: Satznummer, Einpresstiefe</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block guide-full"><h4 class="ziel">Ziel</h4><p>Der Reifensatz hat einen Namen, das Alter jedes Reifens ist notiert, die Einpresstiefe (ET) der Felgen ist bekannt.</p></div>
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Richtscheit oder gerade Latte, länger als die Felge breit ist</li>
+                    <li>Maßband oder Stahllineal, Messschieber</li>
+                    <li>Reifenkreide oder Reifenstift</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>Ein Rad abgebaut, zum Messen der Einpresstiefe</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Handgriffe</h4>
+                <ol>
+                    <li>An allen vier Rädern Felge und Reifen mit der Liste vergleichen: Hersteller, Größe, Last- und Geschwindigkeitsindex.</li>
+                    <li>An jedem Reifen die DOT-Nummer suchen. Die letzten vier Ziffern sind Woche und Jahr der Herstellung.<span class="src src-d" title="Werkstattpraxis">D</span> Alle vier mit Position eintragen, zum Beispiel „LF 2423, RF 2423 …“.</li>
+                    <li>Dem Satz einen Namen geben, Schema „TYRE-…“, zum Beispiel TYRE-01 (Projektfestlegung). Jeden Reifen innen mit Satz und Position beschriften.</li>
+                    <li><strong>Einpresstiefe:</strong> Zuerst an der Felge nach einer eingeschlagenen ET-Angabe suchen. Steht keine drauf:
+                        <ol>
+                            <li>Rad mit der Außenseite nach unten flach hinlegen.</li>
+                            <li>Richtscheit quer über das innere Felgenhorn legen. Abstand Richtscheit bis Anlagefläche der Nabe messen. Das ist der Rückabstand (Backspacing).</li>
+                            <li>Gesamtbreite der Felge über beide Hörner messen.</li>
+                            <li>Einpresstiefe = Rückabstand &minus; halbe Gesamtbreite. Plus heißt: Anlagefläche liegt außerhalb der Felgenmitte.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                        </ol>
+                    </li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Abgleichen und eintragen</h4>
+                <div class="spec-line"><span>Felgen</span><span class="spec-val">American Racing 15×7</span></div>
+                <div class="spec-line"><span>Reifen</span><span class="spec-val">Avon CR6ZZ 225/65 R15 99V</span></div>
+                <div class="spec-line"><span>Einpresstiefe, Reifensatz-Name</span><span class="spec-val"><span class="offen">offen</span></span></div>
+                <div data-messfelder="ms_reifensatz best_reifen_alter best_einpresstiefe best_abw_raeder"></div>
+            </div>
+            <div class="guide-block"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Satzname vergeben, Reifen beschriftet</li>
+                    <li>DOT-Datum aller vier Reifen eingetragen</li>
+                    <li>Einpresstiefe eingetragen</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="abw">Wenn nicht</h4>
+                <ul>
+                    <li>Felgen nicht alle gleich: jede Felge einzeln messen und ins Feld „Abweichungen“.</li>
+                    <li>Reifen verschiedenen Alters oder verschiedener Größe: eintragen. Ob der Satz so bleibt, wird vor Phase 3 entschieden.</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="time">Zeitbedarf</h4><p>ca. 30 min<span class="src src-d" title="Schätzung (Werkstattpraxis), nach dem ersten Durchgang durch die echte Zeit ersetzen">D</span></p></div>
+            <div class="guide-block guide-full"><details class="warum"><summary>Warum? Hintergrund</summary><div>
+                Die Einpresstiefe legt fest, wie weit das Rad außen sitzt. Ändert sie sich, ändern sich Spurweite und Lenkrollradius, ohne dass am Fahrwerk etwas verstellt wurde. Der Satzname macht später sichtbar, mit welchen Reifen eine Messung oder eine Runde gemacht wurde.
+            </div></details></div>
+        </div>
+    </div>
+</div>
+
+<!-- Schritt 0.7 -->
+<div class="step-card" id="anl_0_7_card">
+    <div class="step-header">
+        <button type="button" class="step-status" data-field="anl_0_7" value="" onclick="schrittStatus(this)"></button>
+        <span class="step-title" onclick="toggleGuide(this)">0.7 Messmittel prüfen und bereitlegen</span>
+        <span class="guide-toggle" onclick="toggleGuide(this)"></span>
+    </div>
+    <div class="step-guide">
+        <div class="guide-grid">
+            <div class="guide-block guide-full"><h4 class="ziel">Ziel</h4><p>Jedes Messmittel ist da, funktioniert und sein Modell ist bekannt. Was fehlt, ist benannt.</p></div>
+            <div class="guide-block"><h4 class="tools">Werkzeug</h4>
+                <ul>
+                    <li>Alle Messmittel aus der Liste unten</li>
+                    <li>Ein Helfer für die Waagenprobe</li>
+                </ul>
+                <div data-baustein="waage"></div>
+            </div>
+            <div class="guide-block"><h4 class="prereq">Vorbereitung</h4>
+                <ul>
+                    <li>Ebene, saubere Fläche zum Auslegen</li>
+                    <li>Batterien und Ladegerät der Waage bereit</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="prereq">Handgriffe</h4>
+                <ol>
+                    <li><strong>Waagen:</strong> Modell vom Typenschild der Anzeige ablesen und eintragen. Dann wie im Baustein oben aufbauen und nullen. Eine Person stellt sich nacheinander auf jede Waage: alle zeigen fast gleich viel. Danach wieder 0?<span class="src src-c" title="Longacre, Scaling a Race Car Properly">C</span></li>
+                    <li><strong>Pyrometer:</strong> Modell ablesen und eintragen. Batterie, Anzeige, Fühlerspitze unbeschädigt?</li>
+                    <li><strong>Dunlop CG/6 Drehteller:</strong> drehen leicht, Gradskala lesbar, Arretierstifte vorhanden?</li>
+                    <li><strong>Dunlop CG/4-5:</strong> Libellen ganz, Stellräder drehen sauber?</li>
+                    <li><strong>Longacre Spurplatten:</strong> auf ebenen Boden legen. Liegen sie flach, sind die Kanten gerade?<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li><strong>Reifendruckprüfer:</strong> Batterie, Anzeige. Hast du zwei, am selben Reifen vergleichen.<span class="src src-d" title="Werkstattpraxis">D</span></li>
+                    <li><strong>B-G Racing BGR310:</strong> vollständig, Adapter für den Lochkreis dabei?</li>
+                    <li>Shore-Messgerät, Maßbänder, Messschieber: vorhanden und lesbar?</li>
+                    <li><strong>Für Phase 2 bereitlegen:</strong> durchsichtiger Schlauch für eine Schlauchwaage (länger als die Diagonale des Autos), langes Richtscheit, Wasserwaage, Maurerschnur, harte Platten zum Unterlegen.</li>
+                </ol>
+            </div>
+            <div class="guide-block guide-full"><h4 class="measure">Abgleichen und eintragen</h4>
+                <div class="spec-line"><span>Vorhanden</span><span class="spec-val">Dunlop CG/4-5 und CG/6, Longacre Waagen (kabelgebunden), Spurplatten, Reifendruckprüfer, Einstich-Pyrometer, Shore-Messgerät, B-G Racing BGR310</span></div>
+                <div class="spec-line"><span>Fehlt: Rollenplatte</span><span class="spec-val">Wiegen ohne Verspannung, wichtigste Anschaffung</span></div>
+                <div class="spec-line"><span>Fehlt: Klemme für den Center Link</span><span class="spec-val">Bump Steer (Phase 10); B-G BG5163 passt am Mustang nicht</span></div>
+                <div class="spec-line"><span>Fehlt: Winkelmesser auf 1/4° genau</span><span class="spec-val">Antriebsstrang-Winkel (5.4, Phase 16)<span class="src src-a" title="Spicer/Dana, Driveline Operating Angle Calculator: spirit level or digital protractor accurate to 1/4 degree (Quelle A-12)">A</span> &ndash; Anschaffung nötig</span></div>
+                <div class="spec-line"><span>Fehlt: Nivelliergerät oder Laser</span><span class="spec-val">Setup Pad (Phase 2); Behelf Schlauchwaage oder Richtscheit</span></div>
+                <div data-messfelder="best_waage_modell best_pyrometer_modell"></div>
+            </div>
+            <div class="guide-block"><h4 class="release">Fertig, wenn</h4>
+                <ul>
+                    <li>Alle vorhandenen Messmittel geprüft</li>
+                    <li>Modell von Waage und Pyrometer eingetragen</li>
+                    <li>Material für Phase 2 liegt bereit</li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="abw">Wenn nicht</h4>
+                <ul>
+                    <li>Waage zeigt bei derselben Person sehr verschiedene Werte oder springt: Kabel auf Schaden prüfen, Stecker trocken, Batterie laden.<span class="src src-c" title="Longacre, Scaling a Race Car Properly, Common Problems">C</span></li>
+                    <li>Messmittel defekt: nicht damit messen. Erst reparieren oder ersetzen.</li>
+                </ul>
+            </div>
+            <div class="guide-block guide-full"><h4 class="tips">Praxis-Tipps</h4>
+                <ul>
+                    <li>Die Waagenanzeige nicht in die pralle Sonne legen. Die Ziffern verschwinden, das Gerät ist aber nicht kaputt.<span class="src src-c" title="Longacre, Scaling a Race Car Properly, Display Disappears">C</span></li>
+                </ul>
+            </div>
+            <div class="guide-block"><h4 class="time">Zeitbedarf</h4><p>ca. 30 min<span class="src src-d" title="Schätzung (Werkstattpraxis), nach dem ersten Durchgang durch die echte Zeit ersetzen">D</span></p></div>
+        </div>
+    </div>
+</div>
+
+<div class="phase-abschluss" data-anl-phase="phase0"></div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="modal-overlay" id="settingsModal">
+    <div class="modal" role="dialog" aria-label="Cloud-Sync einrichten">
+        <h3>Cloud-Sync</h3>
+        <div class="status-line" id="connectionStatus">Nicht verbunden</div>
+        <label for="ghToken">GitHub Personal Access Token</label>
+        <input type="password" id="ghToken" placeholder="ghp_...">
+        <p class="hint" data-token-vorgabe></p>
+        <div class="btn-row">
+            <button type="button" class="btn-danger" onclick="disconnectGist()">Trennen</button>
+            <button type="button" class="btn-secondary" onclick="closeSettings()">Abbrechen</button>
+            <button type="button" class="btn-primary" onclick="saveSettings()">Verbinden</button>
+        </div>
+    </div>
+</div>
+
+<script src="messblatt.js"></script>
+<script src="anleitung.js"></script>
+
+<script src="nachschlagen.js"></script>
+
+</body>
+</html>

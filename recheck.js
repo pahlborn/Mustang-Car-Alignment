@@ -188,8 +188,12 @@
     { nr: 9,  id: 'phase9',  titel: 'Recheck nach Balance',     liefert: [] },
     { nr: 10, id: 'phase10', titel: 'Bump Steer',               liefert: ['bump_steer'] },
     { nr: 11, id: 'phase11', titel: 'Camber Gain',              liefert: ['camber_gain'] },
-    { nr: 12, id: 'phase12', titel: 'Ackermann',                liefert: ['ackermann'] },
-    { nr: 13, id: 'phase13', titel: 'Final Front Alignment',    liefert: ['castor', 'camber', 'toe', 'kpi', 'steering_center'] },
+    // Tausch 12/13 (v30, Zielbild 3a): Ford misst den Lenkwinkel erst, wenn
+    // Castor, Camber und Spur stimmen (A-11, S. 3-5). Getauscht sind nur
+    // Nummer und Reihenfolge. Die Kennungen bleiben, denn an ihnen haengt der
+    // gespeicherte Status: 'phase13' war und ist das endgueltige Ausrichten.
+    { nr: 12, id: 'phase13', titel: 'Final Front Alignment',    liefert: ['castor', 'camber', 'toe', 'kpi', 'steering_center'] },
+    { nr: 13, id: 'phase12', titel: 'Ackermann',                liefert: ['ackermann'] },
     { nr: 14, id: 'phase14', titel: 'Settling',                 liefert: [] },
     { nr: 15, id: 'phase15', titel: 'Final Scaling',            liefert: ['corner_weight', 'cross', 'radlasten', 'ride_height'] },
     { nr: 16, id: 'phase16', titel: 'Driveline / Pinion',       liefert: ['pinion_slope', 'u_joint_winkel', 'wedge'] },

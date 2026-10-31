@@ -68,11 +68,18 @@
   // Aus TEMPLATE_ALIGNMENT_SHEET 1.1 bis 1.4. Das sind die Griffe, die es an
   // diesem Fahrzeug wirklich gibt - nicht mehr und nicht weniger.
   VORN.forEach(function (r) {
+    // Gewindelaenge statt "Umdrehungen ab Anschlag" (v30): Zum Zaehlen der
+    // Umdrehungen muesste man das Gelenk verdrehen - das waere schon eine
+    // Verstellung (Pruefung 2026-10-30). Gemessen wird das sichtbare Gewinde.
     feld({ id: 'st_uca_vorn_' + r.toLowerCase(), gruppe: 'stell', art: 'stell', rad: r,
-           label: 'UCA Heim vorn', einheit: 'U ab Anschlag', regel: 'numeric:0:30',
+           label: 'UCA Heim vorn, Gewindelänge', einheit: 'mm', regel: 'numeric:0:100',
+           grenze: 'L/R gleich (Street or Track); nicht verdrehen',
+           messmittel: 'Messschieber, Rohrstirnfläche bis Schulter Gelenkkopf',
            groesse: 'castor' });
     feld({ id: 'st_uca_hinten_' + r.toLowerCase(), gruppe: 'stell', art: 'stell', rad: r,
-           label: 'UCA Heim hinten', einheit: 'U ab Anschlag', regel: 'numeric:0:30',
+           label: 'UCA Heim hinten, Gewindelänge', einheit: 'mm', regel: 'numeric:0:100',
+           grenze: 'L/R gleich (Street or Track); nicht verdrehen',
+           messmittel: 'Messschieber, Rohrstirnfläche bis Schulter Gelenkkopf',
            groesse: 'castor' });
     feld({ id: 'st_shim_vorn_' + r.toLowerCase(), gruppe: 'stell', art: 'stell', rad: r,
            label: 'Shim vorderer Bolzen', einheit: 'mm', regel: 'numeric:0:14.3',
@@ -191,6 +198,62 @@
              regel: 'numeric:0:200', messmittel: 'Longacre Einstich-Pyrometer' });
     });
   });
+
+  // ---- Bestand nach dem Umbau (Phase 0, seit v30) ----------------------------
+  // Was laut 00_PROJECT.md noch "offen" ist, wird hier am Auto abgelesen.
+  // `typ: 'text'` sind Freitextfelder (Teilenummern), keine Zahlen.
+  function bestand(id, label, o) {
+    o = o || {};
+    var f = { id: 'best_' + id, gruppe: 'bestand', art: 'mess', label: label };
+    for (var k in o) f[k] = o[k];
+    if (!f.regel && !f.typ) f.typ = 'text';
+    return feld(f);
+  }
+  bestand('bj_oben', 'Kugelgelenk oben (Moog), Teilenummer', { messmittel: 'Prägung oder Rechnung' });
+  bestand('bj_unten', 'Kugelgelenk unten (Howe), Teilenummer', { messmittel: 'Prägung oder Rechnung' });
+  bestand('feder_vorn', 'Feder vorn, Hersteller und Teilenummer', { messmittel: 'Rechnung' });
+  bestand('stabi_vorn', 'Stabi vorn, Teilenummer', { messmittel: 'Rechnung' });
+  bestand('stabi_hebel', 'Stabi vorn, Hebelarm bis Endlink', { einheit: 'mm', regel: 'numeric:50:600',
+          messmittel: 'Maßband, Mitte Stabi-Rohr bis Mitte Endlink-Bohrung' });
+  VORN.forEach(function (r) {
+    bestand('drop_' + r.toLowerCase(), 'Shelby Drop, Versatz alt zu neu', { rad: r, typ: 'text',
+            einheit: 'mm', platzhalter: 'tiefer … / nach hinten …',
+            messmittel: 'Messschieber, Bohrungsmitte zu Bohrungsmitte' });
+  });
+  bestand('abw_va', 'Abweichungen Vorderachse');
+  bestand('lenkgetriebe', 'Lenkgetriebe, Hersteller und Teilenummer', { messmittel: 'Typenschild' });
+  bestand('pitman', 'Lenkstockhebel (Pitman Arm), Teilenummer');
+  bestand('idler', 'Zwischenhebel (Idler Arm), Teilenummer');
+  bestand('center_link', 'Mittelstange (Center Link), Teilenummer');
+  bestand('spurstange', 'Innere Spurstangenköpfe und Hülsen');
+  bestand('achsschenkel', 'Achsschenkel, Gussnummer und Bremsenart');
+  bestand('abw_lenkung', 'Abweichungen Lenkung');
+  bestand('ubolts', 'U-Bolts, Federplatten, Keil', { platzhalter: 'Ø, Gewinde, Hersteller, Keil ja/nein' });
+  bestand('panhard_version', 'Panhard, Version und Merkmale', { platzhalter: 'Löcher je Halter, Lochabstand, Lagerart' });
+  bestand('stabi_hinten', 'Stabi hinten', { platzhalter: 'nicht vorhanden / Teilenummer, Ø' });
+  bestand('daempfer_hinten', 'Dämpfer hinten, Abstimmung', { platzhalter: 'Street / Sport / Race' });
+  bestand('abw_ha', 'Abweichungen Hinterachse');
+  bestand('kardan_rohr', 'Kardanwelle, Rohrdurchmesser', { einheit: 'mm', regel: 'numeric:50:120',
+          messmittel: 'Messschieber oder Umfang ÷ 3,14' });
+  bestand('kreuzgelenk', 'Kreuzgelenke, Baureihe', { platzhalter: 'Aufdruck oder Büchsen-Ø / Maß über Büchsen' });
+  bestand('abw_antrieb', 'Abweichungen Antriebsstrang');
+  bestand('reifen_alter', 'Reifen, DOT-Datum je Position', { platzhalter: 'LF …, RF …, LR …, RR …' });
+  bestand('einpresstiefe', 'Einpresstiefe (ET)', { einheit: 'mm', regel: 'numeric:-50:80',
+          grenze: 'Rückabstand minus halbe Gesamtbreite', messmittel: 'Prägung oder Richtscheit und Maßband' });
+  bestand('abw_raeder', 'Abweichungen Räder und Reifen');
+  bestand('waage_modell', 'Longacre-Waage, Modell', { messmittel: 'Typenschild der Anzeige' });
+  bestand('pyrometer_modell', 'Pyrometer, Modell', { messmittel: 'Typenschild' });
+
+  // Einsteller, die in Phase 0 zum ersten Mal erfasst werden. Eine spaetere
+  // Aenderung (Phase 3, 5, 10) meldet sich als Verstellung.
+  VORN.forEach(function (r) {
+    feld({ id: 'st_distanz_' + r.toLowerCase(), gruppe: 'stell', art: 'stell', rad: r,
+           label: 'Bump-Steer-Kit, Distanzstapel', einheit: 'mm', regel: 'numeric:0:60',
+           messmittel: 'Messschieber, Gesamthöhe des Stapels', groesse: 'tie_rod_hoehe' });
+  });
+  feld({ id: 'st_panhard_loch', gruppe: 'stell', art: 'stell', typ: 'text',
+         label: 'Panhard, benutztes Loch', platzhalter: 'Rahmen … / Achse … (von oben gezählt)',
+         groesse: 'panhard_hoehe' });
 
   var _nachId = {};
   for (var i = 0; i < FELDER.length; i++) _nachId[FELDER[i].id] = FELDER[i];

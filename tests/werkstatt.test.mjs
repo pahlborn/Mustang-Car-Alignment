@@ -266,13 +266,16 @@ const SCHRANKE_LESEN = `
 await test('ohne Test: Schranke zwischen 3 und 4, Phasen 4-18 markiert', async () => {
   const p = await oeffne('werkstatt.html');
   const r = await p.page.evaluate(`(() => { ${SCHRANKE_LESEN} })()`);
+  // In der Reihenfolge des Ablaufs, nicht der Kennungen: seit v30 steht
+  // phase13 (Endausrichten, Nr. 12) vor phase12 (Ackermann, Nr. 13).
+  const erwartet = await p.page.evaluate(() =>
+    Recheck.PHASEN.filter((x) => x.nr >= 4).map((x) => 'sec-' + x.id));
   await p.close();
   assert(r.da, 'Keine Schranke in der Phasenliste');
   assertEqual([r.vor, r.nach], ['sec-phase3', 'sec-phase4'], 'Lage der Schranke');
   assert(/noch nicht erfasst/i.test(r.text), 'Der fehlende Test wird nicht genannt: ' + r.text);
   assert(r.verweis.includes('bind.html'), 'Kein Weg zur Bind-Seite');
-  const erwartet = [];
-  for (let n = 4; n <= 18; n++) erwartet.push('sec-phase' + n);
+  assert(erwartet.indexOf('sec-phase13') < erwartet.indexOf('sec-phase12'), 'Endausrichten vor Ackermann');
   assertEqual(r.markiert, erwartet, 'Markierte Phasen');
 });
 
@@ -620,7 +623,7 @@ const DURCHLAUF = (phase5Bestaetigt) => `
     if (p.nr === 6) Status.eintragen('camber', 'Shims, grobes Ausrichten');
     if (p.nr === 8) Status.eintragen('ride_height', 'Balance');
     if (${phase5Bestaetigt} && p.nr === 9) Status.setzen('phase5', 'done');
-    if (p.nr === 13) Status.eintragen('castor', 'Shims, finales Ausrichten');
+    if (p.id === 'phase13') Status.eintragen('castor', 'Shims, finales Ausrichten');
     Status.setzen(p.id, 'done');
   }
   werkstattZeichnen();
