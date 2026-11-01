@@ -271,7 +271,7 @@
     if (k && !k.monoton) {
       befunde.push({
         art: 'hinweis',
-        text: 'Die Kurve wechselt die Richtung. Das ist ein eigener Befund \u2013 '
+        text: 'Die Kurve wechselt die Richtung. Das ist eine eigene Auff\u00e4lligkeit \u2013 '
             + 'nicht dasselbe wie ein gro\u00dfer Ausschlag.'
       });
     }

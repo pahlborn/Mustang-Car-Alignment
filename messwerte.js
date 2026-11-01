@@ -256,24 +256,24 @@
          groesse: 'panhard_hoehe' });
 
   // ---- Mechanik pruefen (Phase 1, seit v31) ----------------------------------
-  // Befunde: ok / nicht ok. "nicht ok" heisst Stopp-Regel (02_WORKFLOW 4).
-  function befund(id, label, rad) {
-    return feld({ id: 'mech_' + id, gruppe: 'mechanik', art: 'mess', typ: 'befund',
+  // Ergebnisse: ok / nicht ok. "nicht ok" heisst Stopp-Regel (02_WORKFLOW 4).
+  function ergebnis(id, label, rad) {
+    return feld({ id: 'mech_' + id, gruppe: 'mechanik', art: 'mess', typ: 'ergebnis',
                   label: label, rad: rad });
   }
-  RAEDER.forEach(function (r) { befund('radlager_' + r.toLowerCase(), 'Radlager', r); });
+  RAEDER.forEach(function (r) { ergebnis('radlager_' + r.toLowerCase(), 'Radlager', r); });
   VORN.forEach(function (r) {
-    befund('kg_oben_' + r.toLowerCase(), 'Oberes Kugelgelenk', r);
-    befund('kg_unten_' + r.toLowerCase(), 'Unteres Kugelgelenk', r);
+    ergebnis('kg_oben_' + r.toLowerCase(), 'Oberes Kugelgelenk', r);
+    ergebnis('kg_unten_' + r.toLowerCase(), 'Unteres Kugelgelenk', r);
   });
-  befund('lenkung', 'Lenkung ohne Spiel, alles fest');
-  befund('va_schrauben', 'Querlenker, Strut Rods, Stabi fest, Lager ohne Spiel');
-  befund('ha', 'Hinterachse fest, Buchsen ohne Spiel');
-  befund('raeder_bremse', 'Bremse frei, Räder und Reifen ohne Schaden');
-  befund('lager_fahrhoehe', 'Gummi- und Kunststofflager in Fahrhöhe angezogen');
+  ergebnis('lenkung', 'Lenkung ohne Spiel, alles fest');
+  ergebnis('va_schrauben', 'Querlenker, Strut Rods, Stabi fest, Lager ohne Spiel');
+  ergebnis('ha', 'Hinterachse fest, Buchsen ohne Spiel');
+  ergebnis('raeder_bremse', 'Bremse frei, Räder und Reifen ohne Schaden');
+  ergebnis('lager_fahrhoehe', 'Gummi- und Kunststofflager in Fahrhöhe angezogen');
   feld({ id: 'mech_einfahr_km', gruppe: 'mechanik', art: 'mess',
          label: 'Erste Ausfahrt, gefahrene Strecke', einheit: 'km', regel: 'numeric:0:2000' });
-  befund('nachgezogen', 'Nach der Ausfahrt nachgezogen, Lackstriche unverändert');
+  ergebnis('nachgezogen', 'Nach der Ausfahrt nachgezogen, Lackstriche unverändert');
 
   // ---- Anleitung, Phasen 2-22 (seit v32) ------------------------------------
   // Uebernommen aus den Schrittkarten. Messwerte, die eine spaetere Phase
@@ -296,7 +296,7 @@
   feld({id: "pad_kontrolle_rf",gruppe: "pad",art: "mess",rad: "RF",label: "Höhe nach Wiederaufbau, gegen LF",einheit: "mm",regel: "numeric:-50:50",grenze: "LF = 0",messmittel: "Schlauchwaage"});
   feld({id: "pad_kontrolle_lr",gruppe: "pad",art: "mess",rad: "LR",label: "Höhe nach Wiederaufbau, gegen LF",einheit: "mm",regel: "numeric:-50:50",grenze: "LF = 0",messmittel: "Schlauchwaage"});
   feld({id: "pad_kontrolle_rr",gruppe: "pad",art: "mess",rad: "RR",label: "Höhe nach Wiederaufbau, gegen LF",einheit: "mm",regel: "numeric:-50:50",grenze: "LF = 0",messmittel: "Schlauchwaage"});
-  feld({id: "pad_schnur",gruppe: "pad",art: "mess",typ: "befund",label: "Schnurprobe: Schnüre berühren sich ohne Druck"});
+  feld({id: "pad_schnur",gruppe: "pad",art: "mess",typ: 'ergebnis',label: "Schnurprobe: Schnüre berühren sich ohne Druck"});
   // phase-03
   feld({id: "st_endlink_lf",gruppe: "stell",art: "stell",rad: "LF",label: "Stabi-Endlink, Länge",einheit: "mm",regel: "numeric:0:500",grenze: "Schraube geht ohne Kraft durch (3.2, 8.2)",groesse: "stabilisator",messmittel: "Maßband oder Messschieber, Mitte Auge bis Mitte Auge"});
   feld({id: "st_endlink_rf",gruppe: "stell",art: "stell",rad: "RF",label: "Stabi-Endlink, Länge",einheit: "mm",regel: "numeric:0:500",grenze: "Schraube geht ohne Kraft durch (3.2, 8.2)",groesse: "stabilisator",messmittel: "Maßband oder Messschieber, Mitte Auge bis Mitte Auge"});
@@ -377,7 +377,7 @@
   feld({id: "al12_camber_rf",gruppe: "alignment",art: "mess",rad: "RF",label: "Camber endgültig",einheit: "°",regel: "numeric:-10:10",grenze: "L/R max. 1/2°, bevorzugt 1/4° (Ford)",messmittel: "Dunlop CG/4"});
   feld({id: "al12_kpi_lf",gruppe: "alignment",art: "mess",rad: "LF",label: "KPI endgültig",einheit: "°",regel: "numeric:-20:20",grenze: "Diagnosewert, kein Sollwert",messmittel: "Dunlop CG/5 + CG/6"});
   feld({id: "al12_kpi_rf",gruppe: "alignment",art: "mess",rad: "RF",label: "KPI endgültig",einheit: "°",regel: "numeric:-20:20",grenze: "Diagnosewert, kein Sollwert",messmittel: "Dunlop CG/5 + CG/6"});
-  feld({id: "al12_lenkmitte",gruppe: "alignment",art: "mess",typ: "befund",label: "Lenkungsmitte: Getriebe mittig, Center Link links/rechts gleich",messmittel: "Dunlop CG/5 + CG/6"});
+  feld({id: "al12_lenkmitte",gruppe: "alignment",art: "mess",typ: 'ergebnis',label: "Lenkungsmitte: Getriebe mittig, Center Link links/rechts gleich",messmittel: "Dunlop CG/5 + CG/6"});
   feld({id: "toe12_f",gruppe: "toe",art: "mess",label: "Spur endgültig: Abstand vorn F",einheit: "mm",regel: "numeric:0:3000",messmittel: "Longacre Toe Plates"});
   feld({id: "toe12_r",gruppe: "toe",art: "mess",label: "Spur endgültig: Abstand hinten R",einheit: "mm",regel: "numeric:0:3000",messmittel: "Longacre Toe Plates"});
   feld({id: "toe12_einzel_lf",gruppe: "toe",art: "mess",rad: "LF",label: "Einzelspur LF (Schnur: vorn − hinten)",einheit: "mm",regel: "numeric:-20:20",grenze: "plus = Vorspur; am Felgenhorn gemessen",messmittel: "Schnüre + Stahllineal"});
@@ -420,21 +420,21 @@
   feld({id: "dl16_wedge_grad",gruppe: "antrieb",art: "stell",label: "Keil Blattfeder–Achse",einheit: "°",regel: "numeric:0:10",grenze: "0 = kein Keil",groesse: "wedge"});
   feld({id: "dl16_wedge_lage",gruppe: "antrieb",art: "stell",label: "Keil: dicke Seite",groesse: "wedge",platzhalter: "vorn / hinten / kein Keil"});
   feld({id: "dl16_rpm",gruppe: "antrieb",art: "mess",label: "Höchste Drehzahl der Kardanwelle",einheit: "1/min",regel: "numeric:0:9000",grenze: "für die Spicer-Tabelle, nur nötig über 3°",messmittel: "Drehzahlmesser im direkten Gang"});
-  feld({id: "dl16_befund",gruppe: "antrieb",art: "mess",typ: "befund",label: "Antriebsstrang nach Spicer-Regeln",grenze: "je Gelenk 1/2° bis 3°, Unterschied max. 1°"});
+  feld({id: "dl16_befund",gruppe: "antrieb",art: "mess",typ: 'ergebnis',label: "Antriebsstrang nach Spicer-Regeln",grenze: "je Gelenk 1/2° bis 3°, Unterschied max. 1°"});
   // phase-17
-  feld({id: "fg17_l_kotfluegel",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll links: Reifen – Kotflügel und Innenkotflügel",grenze: "beide Vorderräder, nichts berührt"});
-  feld({id: "fg17_l_rahmen",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll links: Reifen – Rahmen",grenze: "beide Vorderräder, nichts berührt"});
-  feld({id: "fg17_l_stabi",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll links: Reifen – Stabi",grenze: "beide Vorderräder, nichts berührt"});
-  feld({id: "fg17_l_schlauch",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll links: Bremsschlauch frei, nicht gespannt",grenze: "beide Vorderräder"});
-  feld({id: "fg17_l_spurstange",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll links: Spurstange frei",grenze: "beide Seiten"});
-  feld({id: "fg17_l_anschlag",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll links: Lenkanschlag begrenzt den Einschlag",grenze: "nicht das Lenkgetriebe"});
+  feld({id: "fg17_l_kotfluegel",gruppe: "freigaengigkeit",art: "mess",typ: 'ergebnis',label: "Voll links: Reifen – Kotflügel und Innenkotflügel",grenze: "beide Vorderräder, nichts berührt"});
+  feld({id: "fg17_l_rahmen",gruppe: "freigaengigkeit",art: "mess",typ: 'ergebnis',label: "Voll links: Reifen – Rahmen",grenze: "beide Vorderräder, nichts berührt"});
+  feld({id: "fg17_l_stabi",gruppe: "freigaengigkeit",art: "mess",typ: 'ergebnis',label: "Voll links: Reifen – Stabi",grenze: "beide Vorderräder, nichts berührt"});
+  feld({id: "fg17_l_schlauch",gruppe: "freigaengigkeit",art: "mess",typ: 'ergebnis',label: "Voll links: Bremsschlauch frei, nicht gespannt",grenze: "beide Vorderräder"});
+  feld({id: "fg17_l_spurstange",gruppe: "freigaengigkeit",art: "mess",typ: 'ergebnis',label: "Voll links: Spurstange frei",grenze: "beide Seiten"});
+  feld({id: "fg17_l_anschlag",gruppe: "freigaengigkeit",art: "mess",typ: 'ergebnis',label: "Voll links: Lenkanschlag begrenzt den Einschlag",grenze: "nicht das Lenkgetriebe"});
   feld({id: "fg17_l_notiz",gruppe: "freigaengigkeit",art: "mess",label: "Voll links: engste Stelle",platzhalter: "Rad, Ort, Abstand in mm"});
-  feld({id: "fg17_r_kotfluegel",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll rechts: Reifen – Kotflügel und Innenkotflügel",grenze: "beide Vorderräder, nichts berührt"});
-  feld({id: "fg17_r_rahmen",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll rechts: Reifen – Rahmen",grenze: "beide Vorderräder, nichts berührt"});
-  feld({id: "fg17_r_stabi",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll rechts: Reifen – Stabi",grenze: "beide Vorderräder, nichts berührt"});
-  feld({id: "fg17_r_schlauch",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll rechts: Bremsschlauch frei, nicht gespannt",grenze: "beide Vorderräder"});
-  feld({id: "fg17_r_spurstange",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll rechts: Spurstange frei",grenze: "beide Seiten"});
-  feld({id: "fg17_r_anschlag",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll rechts: Lenkanschlag begrenzt den Einschlag",grenze: "nicht das Lenkgetriebe"});
+  feld({id: "fg17_r_kotfluegel",gruppe: "freigaengigkeit",art: "mess",typ: 'ergebnis',label: "Voll rechts: Reifen – Kotflügel und Innenkotflügel",grenze: "beide Vorderräder, nichts berührt"});
+  feld({id: "fg17_r_rahmen",gruppe: "freigaengigkeit",art: "mess",typ: 'ergebnis',label: "Voll rechts: Reifen – Rahmen",grenze: "beide Vorderräder, nichts berührt"});
+  feld({id: "fg17_r_stabi",gruppe: "freigaengigkeit",art: "mess",typ: 'ergebnis',label: "Voll rechts: Reifen – Stabi",grenze: "beide Vorderräder, nichts berührt"});
+  feld({id: "fg17_r_schlauch",gruppe: "freigaengigkeit",art: "mess",typ: 'ergebnis',label: "Voll rechts: Bremsschlauch frei, nicht gespannt",grenze: "beide Vorderräder"});
+  feld({id: "fg17_r_spurstange",gruppe: "freigaengigkeit",art: "mess",typ: 'ergebnis',label: "Voll rechts: Spurstange frei",grenze: "beide Seiten"});
+  feld({id: "fg17_r_anschlag",gruppe: "freigaengigkeit",art: "mess",typ: 'ergebnis',label: "Voll rechts: Lenkanschlag begrenzt den Einschlag",grenze: "nicht das Lenkgetriebe"});
   feld({id: "fg17_r_notiz",gruppe: "freigaengigkeit",art: "mess",label: "Voll rechts: engste Stelle",platzhalter: "Rad, Ort, Abstand in mm"});
   // strecke
   feld({id: "trk_strecke",gruppe: "strecke",art: "stell",typ: "text",label: "Strecke und Fahrtrichtung",platzhalter: "z. B. Pannoniaring, im Uhrzeigersinn"});

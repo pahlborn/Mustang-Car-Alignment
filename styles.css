@@ -798,6 +798,23 @@ mark.suche-treffer.aktiv { background: var(--accent); color: white; }
 .phase-banner.track { background: linear-gradient(135deg, #22543d, #38a169); }
 .anl-werkzeug { margin-top: 0.4rem; }
 
+/* Notizen je Schritt (v33), wie in jerico und gt40. */
+.notize:empty { display: none; }
+.notize { padding: 0 0.75rem 0.5rem; }
+.notiz { display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.35rem 0; border-top: 1px dotted var(--border); font-size: 0.85rem; }
+.notiz-status { width: 36px; height: 36px; min-width: 36px; border: 2px solid #f6ad55; border-radius: 8px; background: #fffaf0; color: #c05621; cursor: pointer; font-size: 1rem; }
+.notiz-status[value="wip"] { border-color: var(--warning); }
+.notiz-status[value="done"] { border-color: var(--success); background: var(--success); color: white; }
+.notiz-text { flex: 1; white-space: pre-wrap; line-height: 1.45; padding-top: 0.35rem; }
+.notiz-erledigt { color: var(--text-light); text-decoration: line-through; }
+.notiz-zeit { font-size: 0.7rem; color: var(--text-light); padding-top: 0.45rem; white-space: nowrap; }
+.notiz-weg { border: none; background: none; color: var(--danger); font-size: 1.2rem; cursor: pointer; min-width: 36px; min-height: 36px; }
+.notiz-anlegen { margin-bottom: 0.5rem; }
+.notiz-neu { border: 1px dashed #f6ad55; background: #fffaf0; color: #c05621; border-radius: 8px; padding: 0.5rem 0.8rem; font-weight: 600; cursor: pointer; min-height: 44px; width: 100%; text-align: left; }
+.notiz-eingabe { width: 100%; box-sizing: border-box; border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem; font-family: inherit; }
+.notiz-knoepfe { display: flex; gap: 0.5rem; margin-top: 0.4rem; }
+.notiz-knoepfe button { min-height: 44px; padding: 0 1rem; border-radius: 6px; border: none; cursor: pointer; }
+
 /* iOS vergroessert die Seite beim Antippen jedes Eingabefelds unter 16 px
    Schrift - mitten in der Messung (Pruefung aus Mechanikersicht, v24).
    !important, weil die Feldstile als style="...font-size:0.82rem" an elf

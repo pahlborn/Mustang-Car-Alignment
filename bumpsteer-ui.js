@@ -254,7 +254,7 @@
       + zeile('Kurve monoton?',
               kl ? (kl.monoton ? 'ja' : 'nein') : '\u2013',
               kr ? (kr.monoton ? 'ja' : 'nein') : '\u2013',
-              'ein Richtungswechsel ist ein eigener Befund')
+              'ein Richtungswechsel ist eine eigene Auffälligkeit')
       + zeile('Steigung um Null',
               kl && kl.steigungUmNull !== null ? zz(kl.steigungUmNull, 3) : '\u2013',
               kr && kr.steigungUmNull !== null ? zz(kr.steigungUmNull, 3) : '\u2013',
@@ -267,7 +267,7 @@
           ? '<div class="info-box"><strong>Symmetrie:</strong> gr&ouml;&szlig;te '
             + 'Differenz LF\u2212RF ' + zz(sym.maxDifferenz) + ' mm, Richtung '
             + (sym.gleicheRichtung ? 'gleich' : '<strong>unterschiedlich</strong>')
-            + '. Asymmetrie ist ein eigener Befund &ndash; m&ouml;gliche Ursachen: '
+            + '. Asymmetrie ist eine eigene Auff&auml;lligkeit &ndash; m&ouml;gliche Ursachen: '
             + 'Tie-Rod-Geometrie, Idler/Pitman-H&ouml;hendifferenz, Chassistoleranz, '
             + 'verbogenes Teil, unterschiedliche Ride Height.</div>'
           : '');

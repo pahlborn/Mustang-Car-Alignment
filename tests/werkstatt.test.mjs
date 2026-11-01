@@ -456,7 +456,7 @@ await test('alle Phasen erledigt, aber Bind: nicht rennstreckenbereit', async ()
   })()`);
   await p.close();
   assert(/Nicht rennstreckenbereit/i.test(r.text), 'Aussage: ' + r.text);
-  assert(/Bind-Befund/.test(r.text), 'Der Bind wird als Grund nicht genannt: ' + r.text);
+  assert(/Bind-Ergebnis/.test(r.text), 'Der Bind wird als Grund nicht genannt: ' + r.text);
   assertEqual(r.breite, '100%', 'Der Balken zaehlt die Phasen');
 });
 

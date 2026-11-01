@@ -144,7 +144,7 @@ for (const datei of SEITEN) {
     assert(r.vorhanden, 'Kein Platz fuer den Befund');
     assertEqual(r.versteckt, false, 'Die Anzeige schweigt, obwohl nichts geprueft ist');
     assert(/noch nicht durchgef\u00fchrt/i.test(r.text), 'Der offene Test wird nicht genannt: ' + r.text);
-    assert(!/Bind-Befund/.test(r.text), 'Ohne Befund darf nicht gesperrt gemeldet werden: ' + r.text);
+    assert(!/Bind-Ergebnis/.test(r.text), 'Ohne Befund darf nicht gesperrt gemeldet werden: ' + r.text);
     assert(r.verweise.includes('bind.html'), 'Kein Verweis auf die Bind-Seite: ' + r.verweise.join(', '));
   });
 }
@@ -182,7 +182,7 @@ await test('die streuende Radlast wird beziffert', async () => {
   const r = await stand(p.page);
   await p.close();
   assertEqual(r.versteckt, false, 'Die Warnung ist versteckt');
-  assert(/Bind-Befund/.test(r.text), 'Kein Sperrhinweis: ' + r.text);
+  assert(/Bind-Ergebnis/.test(r.text), 'Kein Sperrhinweis: ' + r.text);
   assert(/Radlasten streuen 1\.46 %/.test(r.text), 'Der Grund fehlt oder ist falsch: ' + r.text);
   assert(r.verweise.includes('bind.html'), 'Kein Verweis auf die Bind-Seite: ' + r.verweise.join(', '));
 });
@@ -262,7 +262,7 @@ await test('ein Reiter holt den neuen Stand beim Zurueckkommen', async () => {
   assertEqual(vorher.versteckt, false, 'Vorher war die Anzeige schon leer');
   assert(/noch nicht durchgef\u00fchrt/i.test(vorher.text), 'Vorher fehlte der offene Test');
   assertEqual(nachher.versteckt, false, 'Die Warnung ist nach dem Wechsel nicht da');
-  assert(/Bind-Befund/.test(nachher.text), 'Der neue Stand wird nicht uebernommen: ' + nachher.text);
+  assert(/Bind-Ergebnis/.test(nachher.text), 'Der neue Stand wird nicht uebernommen: ' + nachher.text);
 });
 
 // ---------------------------------------------------------------------------

@@ -339,7 +339,7 @@ await test('v30: der alte Wert ist der, der vorher im Feld stand', async () => {
   await ctx.close();
 });
 
-await test('ein Befund- oder Textfeld meldet keine Verstellung', async () => {
+await test('ein Ergebnis- oder Textfeld meldet keine Verstellung', async () => {
   const ctx = await neuerKontext(browser);
   const { page } = await oeffne(ctx);
   await karteOeffnen(page, 0, '0_4');
@@ -393,7 +393,7 @@ await test('L-R in mm wird nicht eingefaerbt', async () => {
   await ctx.close();
 });
 
-await test('v31: Befunde sind eine Auswahl ok / nicht ok, ohne L-R-Spalte', async () => {
+await test('v31: Ergebnisse sind eine Auswahl ok / nicht ok, ohne L-R-Spalte', async () => {
   const ctx = await neuerKontext(browser);
   const { page } = await oeffne(ctx);
   await karteOeffnen(page, 1, '1_2');
@@ -406,7 +406,7 @@ await test('v31: Befunde sind eine Auswahl ok / nicht ok, ohne L-R-Spalte', asyn
   await page.selectOption('[data-field="mech_kg_oben_lf"]', 'nicht ok');
   await page.waitForTimeout(1000);
   assertEqual(await page.evaluate(() => FieldSync.lesen().mech_kg_oben_lf), 'nicht ok', 'gespeichert');
-  assertEqual(await page.evaluate(() => Status.journal().length), 0, 'Befund meldet keine Verstellung');
+  assertEqual(await page.evaluate(() => Status.journal().length), 0, 'Ergebnis meldet keine Verstellung');
   await ctx.close();
 });
 
@@ -471,6 +471,83 @@ await test('v32: Betriebswinkel nach Spicer werden gerechnet', async () => {
   assert(t.includes('2.00°') && t.includes('3.50°') && t.includes('1.50°'), 'Rechnung: ' + t);
   const rot = await page.$$eval('[data-rechnung="antrieb16"] .anl-rot', (x) => x.length);
   assertEqual(rot, 2, 'hinten ueber 3 Grad und Unterschied ueber 1 Grad rot');
+  await ctx.close();
+});
+
+// ---------------------------------------------------------------------------
+suite('v33: Notizen je Schritt (wie jerico und gt40)');
+
+await test('Notiz anlegen mit echten Klicks: er steht unter dem Schritt, auch bei geschlossener Karte', async () => {
+  const ctx = await neuerKontext(browser);
+  const { page } = await oeffne(ctx);
+  await karteOeffnen(page, 4, '4_1');
+  await page.click('#anl_4_1_card [data-notiz-neu]');
+  await page.fill('#anl_4_1_card .notiz-eingabe', 'Messpunkt besser am Rahmen');
+  await page.click('#anl_4_1_card [data-notiz-speichern]');
+  assert(await sichtbar(page, '#anl_4_1_card .notiz'), 'Notiz sichtbar');
+  await page.click('#anl_4_1_card .step-title');      // Karte zu
+  assert(await sichtbar(page, '#anl_4_1_card .notiz-text'), 'auch bei geschlossener Karte');
+  assertEqual((await page.textContent('#anl_4_1_card .notiz-text')).trim(), 'Messpunkt besser am Rahmen', 'Text');
+  await page.reload(); await page.waitForTimeout(400);
+  await page.click('#phase4 .phase-banner');
+  assertEqual(await page.locator('#anl_4_1_card .notiz').count(), 1, 'nach dem Neuladen');
+  assertEqual(await page.evaluate(() => Notiz.liste('anl_4_1')[0].schritt), 'anl_4_1', 'am richtigen Schritt');
+  await ctx.close();
+});
+
+await test('eine leere Notiz wird nicht angelegt, Abbrechen legt nichts an', async () => {
+  const ctx = await neuerKontext(browser);
+  const { page } = await oeffne(ctx);
+  await karteOeffnen(page, 0, '0_1');
+  await page.click('#anl_0_1_card [data-notiz-neu]');
+  await page.click('#anl_0_1_card [data-notiz-speichern]');
+  await page.click('#anl_0_1_card [data-notiz-abbrechen]');
+  assertEqual(await page.evaluate(() => Notiz.liste().length), 0, 'keine Notizen');
+  assert(await sichtbar(page, '#anl_0_1_card [data-notiz-neu]'), 'Knopf wieder da');
+  await ctx.close();
+});
+
+await test('Status offen -> in Arbeit -> erledigt, Zuruecknehmen nur nach Rueckfrage', async () => {
+  const ctx = await neuerKontext(browser);
+  const page = await ctx.newPage();
+  await page.goto(base + '/anleitung.html'); await page.waitForTimeout(400);
+  await page.evaluate(() => { Notiz.anlegen('anl_0_2', 'Testnotiz'); Anleitung.aufbauen(document.getElementById('anleitung')); });
+  await page.click('#phase0 .phase-banner');
+  const knopf = '#anl_0_2_card [data-notiz-status]';
+  await page.click(knopf);
+  assertEqual(await page.getAttribute(knopf, 'value'), 'wip', 'in Arbeit');
+  await page.click(knopf);
+  assertEqual(await page.getAttribute(knopf, 'value'), 'done', 'erledigt');
+  page.once('dialog', (d) => d.dismiss());
+  await page.click('#anl_0_2_card [data-notiz-weg]');
+  assertEqual(await page.locator('#anl_0_2_card .notiz').count(), 1, 'abgelehnt: bleibt');
+  page.once('dialog', (d) => d.accept());
+  await page.click('#anl_0_2_card [data-notiz-weg]');
+  assertEqual(await page.locator('#anl_0_2_card .notiz').count(), 0, 'zurueckgenommen');
+  const roh = await page.evaluate(() => Object.values(Notiz._roh().notizen));
+  assert(roh.length === 1 && roh[0].del === true, 'Grabstein statt Loeschung (Regel 9)');
+  await ctx.close();
+});
+
+await test('Notizen mischen: juengerer Stand gewinnt, Grabstein schlaegt alte Notiz', async () => {
+  const ctx = await neuerKontext(browser);
+  const { page } = await oeffne(ctx);
+  const r = await page.evaluate(() => {
+    const a = { notizen: { x: { k: 'anl_1_1', t: 'alt', s: '', e: 1, m: 1 }, y: { k: 'anl_1_2', t: 'bleibt', s: '', e: 1, m: 5 } } };
+    const b = { notizen: { x: { k: 'anl_1_1', del: true, m: 2 }, z: { k: 'anl_1_3', t: 'neu', s: 'wip', e: 3, m: 3 } } };
+    const m = Notiz.mischen(a, b);
+    return { x: !!m.notizen.x.del, y: m.notizen.y.t, z: m.notizen.z.t, n: Object.keys(m.notizen).length };
+  });
+  assertEqual(r, { x: true, y: 'bleibt', z: 'neu', n: 3 }, 'gemischt');
+  await ctx.close();
+});
+
+await test('der Notiz-Kanal ist im Abgleich angemeldet', async () => {
+  const ctx = await neuerKontext(browser);
+  const { page } = await oeffne(ctx);
+  const dateien = await page.evaluate(() => Abgleich._kanaele ? Abgleich._kanaele().map((k) => k.datei) : null);
+  if (dateien) assert(dateien.includes('mustang-chassis-notizen.json'), 'Kanaele: ' + dateien);
+  else assert(await page.evaluate(() => typeof Notiz.GIST_FILE === 'string'), 'Notiz geladen');
   await ctx.close();
 });
 

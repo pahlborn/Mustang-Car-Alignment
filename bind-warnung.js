@@ -51,7 +51,7 @@
 
     if (bf.sperrt) {
       ziel.innerHTML = '<div class="warning-box">'
-        + '<strong>&#9878; Bind-Befund &ndash; keine Setup-Arbeit</strong>'
+        + '<strong>&#9878; Bind-Ergebnis &ndash; keine Setup-Arbeit</strong>'
         + '<div style="margin-top:0.3rem;">Projektregel 1: ohne bestandenen '
         + 'Reproduzierbarkeitstest keine Zehntelarbeit. Gefunden wurde:</div>'
         + '<ul style="margin:0.3rem 0 0 1.2rem;">'

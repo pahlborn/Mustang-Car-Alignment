@@ -143,7 +143,7 @@ await test('alle Phasen erledigt, Bind gefunden: nicht bereit, mit Grund', async
   const r = S.rennstreckenbereit();
   assertEqual(r.bereit, false, 'bereit trotz Bind');
   assertEqual(r.bind.sperrt, true, 'Der Testfall sperrt nicht');
-  assert(r.grund.some((g) => /^Bind-Befund: Radlasten streuen 1\.46 %/.test(g)),
+  assert(r.grund.some((g) => /^Bind-Ergebnis: Radlasten streuen 1\.46 %/.test(g)),
     'Der Bind-Grund fehlt oder ist falsch: ' + r.grund.join(', '));
 });
 

@@ -53,7 +53,7 @@
         var vier = el.getAttribute('data-raeder') === '4';
         var raeder = vier ? RAEDER4 : RAEDER2;
         var basen = liste(el, 'data-messtabelle');
-        // L-R nur, wenn es etwas zu rechnen gibt: bei Befunden (ok / nicht
+        // L-R nur, wenn es etwas zu rechnen gibt: bei Ergebnissen (ok / nicht
         // ok) und Text waere die Spalte immer leer.
         var mitDiff = !vier && basen.some(function (b) {
             var f = Messwerte.feld(b + '_lf');
@@ -306,6 +306,95 @@
         }
     });
 
+    // ==== Notizen je Schritt (notiz.js, seit v33) ====
+    //
+    // Die Liste steht unter dem Kopf der Karte und ist auch bei geschlossener
+    // Karte sichtbar - wer durchblaettert, sieht, wo etwas angemerkt ist. Der
+    // Knopf zum Anlegen sitzt in der geoeffneten Karte, damit 92 Karten nicht
+    // um je eine Zeile wachsen.
+
+    function schrittVon(karte) {
+        var b = karte.querySelector('.step-status[data-field]');
+        return b ? b.dataset.field : karte.id;
+    }
+
+    function datum(ms) {
+        var d = new Date(ms);
+        function z(n) { return (n < 10 ? '0' : '') + n; }
+        return z(d.getDate()) + '.' + z(d.getMonth() + 1) + '. ' + z(d.getHours()) + ':' + z(d.getMinutes());
+    }
+
+    var ZEICHEN = { '': '', 'wip': '\u25D0', 'done': '\u2713' };
+
+    function notizenZeichnen(root) {
+        if (typeof Notiz === 'undefined') return;
+        (root || document).querySelectorAll('#anleitung .step-card').forEach(function (k) {
+            var kopf = k.querySelector('.step-header');
+            if (!kopf) return;
+            var schritt = schrittVon(k);
+            var box = k.querySelector(':scope > .notizen');
+            if (!box) {
+                box = document.createElement('div');
+                box.className = 'notizen';
+                box.setAttribute('data-notize', schritt);
+                kopf.insertAdjacentElement('afterend', box);
+            }
+            var liste = Notiz.liste(schritt);
+            box.innerHTML = liste.map(function (b) {
+                return '<div class="notiz" data-notiz-id="' + esc(b.id) + '">'
+                    + '<button type="button" class="notiz-status" value="' + b.stufe + '" data-notiz-status="' + esc(b.id)
+                    + '" title="Notiz: ' + Notiz.LABEL[b.stufe] + '">' + ZEICHEN[b.stufe] + '</button>'
+                    + '<span class="notiz-text' + (b.stufe === 'done' ? ' notiz-erledigt' : '') + '">' + esc(b.text) + '</span>'
+                    + '<span class="notiz-zeit">' + datum(b.erstellt) + '</span>'
+                    + '<button type="button" class="notiz-weg" data-notiz-weg="' + esc(b.id) + '" title="Notiz zurücknehmen">&times;</button>'
+                    + '</div>';
+            }).join('');
+
+            var guide = k.querySelector('.step-guide');
+            if (guide && !guide.querySelector('.notiz-anlegen')) {
+                guide.insertAdjacentHTML('afterbegin', '<div class="notiz-anlegen">'
+                    + '<button type="button" class="notiz-neu" data-notiz-neu="' + esc(schritt) + '">+ Notiz zu diesem Schritt</button></div>');
+            }
+        });
+    }
+
+    document.addEventListener('click', function (e) {
+        var t = e.target;
+        if (!t.closest) return;
+        var neu = t.closest('[data-notiz-neu]');
+        if (neu) {
+            var feld = neu.parentElement;
+            feld.innerHTML = '<textarea class="notiz-eingabe" rows="3" placeholder="Was ist aufgefallen, was soll anders sein?"></textarea>'
+                + '<div class="notiz-knoepfe"><button type="button" class="btn-primary" data-notiz-speichern="'
+                + esc(neu.getAttribute('data-notiz-neu')) + '">Speichern</button>'
+                + '<button type="button" class="btn-secondary" data-notiz-abbrechen>Abbrechen</button></div>';
+            feld.querySelector('textarea').focus();
+            return;
+        }
+        var sp = t.closest('[data-notiz-speichern]');
+        if (sp) {
+            var f = sp.closest('.notiz-anlegen');
+            var text = f.querySelector('textarea').value;
+            if (Notiz.anlegen(sp.getAttribute('data-notiz-speichern'), text)) {
+                f.innerHTML = '<button type="button" class="notiz-neu" data-notiz-neu="'
+                    + esc(sp.getAttribute('data-notiz-speichern')) + '">+ Notiz zu diesem Schritt</button>';
+                notizenZeichnen();
+            }
+            return;
+        }
+        var ab = t.closest('[data-notiz-abbrechen]');
+        if (ab) {
+            var g = ab.closest('.notiz-anlegen');
+            var s = g.querySelector('[data-notiz-speichern]').getAttribute('data-notiz-speichern');
+            g.innerHTML = '<button type="button" class="notiz-neu" data-notiz-neu="' + esc(s) + '">+ Notiz zu diesem Schritt</button>';
+            return;
+        }
+        var st = t.closest('[data-notiz-status]');
+        if (st) { Notiz.statusWeiter(st.getAttribute('data-notiz-status')); notizenZeichnen(); return; }
+        var weg = t.closest('[data-notiz-weg]');
+        if (weg && confirm('Diese Notiz zurücknehmen?')) { Notiz.entfernen(weg.getAttribute('data-notiz-weg')); notizenZeichnen(); }
+    });
+
     // ==== Start ====
 
     function aufbauen(root) {
@@ -319,6 +408,7 @@
         root.querySelectorAll('.step-status[data-field]').forEach(malen);
         rechnen();
         markieren();
+        notizenZeichnen(root);
     }
 
     function init() {
@@ -354,6 +444,7 @@
         document.querySelectorAll('#anleitung .step-status[data-field]').forEach(malen);
         rechnen();
         markieren();
+        notizenZeichnen();
     });
 
     window.toggleGuide = toggleGuide;

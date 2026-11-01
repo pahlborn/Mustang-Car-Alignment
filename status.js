@@ -452,8 +452,8 @@
     var bindOk = b.bekannt && b.geprueft && !b.sperrt;
 
     var grund = [];
-    if (b.sperrt) grund.push('Bind-Befund: ' + b.gruende.join('; '));
-    else if (!b.bekannt) grund.push('Bind-Befund nicht ermittelbar');
+    if (b.sperrt) grund.push('Bind-Ergebnis: ' + b.gruende.join('; '));
+    else if (!b.bekannt) grund.push('Bind-Ergebnis nicht ermittelbar');
     else if (!b.geprueft && b.ueberholt && b.ueberholt.length) grund.push('Bind-Test (6.1) wiederholen, danach geändert: ' + ueberholtText(b.ueberholt));
     else if (!b.geprueft) grund.push('Bind-Test (6.1) nicht erfasst');
     if (f.veraltet) grund.push(f.veraltet + ' Phase(n) veraltet');

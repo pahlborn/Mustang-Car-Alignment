@@ -41,7 +41,7 @@
         bestand:   { titel: 'Bestand nach dem Umbau', icon: '\ud83d\udccb',
                      hinweis: 'Erfasst in Phase 0 der Anleitung.' },
         mechanik:  { titel: 'Mechanik geprüft',   icon: '\ud83d\udd29',
-                     hinweis: 'Befunde aus Phase 1 der Anleitung. „nicht ok“ heißt: erst reparieren.' },
+                     hinweis: 'Ergebnisse aus Phase 1 der Anleitung. „nicht ok“ heißt: erst reparieren.' },
         pad:       { titel: 'Setup Pad',          icon: '\u2b1c' },
         hinterachse: { titel: 'Hinterachse',      icon: '\ud83d\udd29' },
         antrieb:   { titel: 'Antriebsstrang',     icon: '\u2699' },
@@ -86,10 +86,10 @@
         if (f.regel) attr += ' data-validate="' + esc(f.regel) + '"';
         if (f.platzhalter) attr += ' placeholder="' + esc(f.platzhalter) + '"';
 
-        // Befund (ok / nicht ok) und Auswahl als Liste, seit v30 fuer die
+        // Ergebnis (ok / nicht ok) und Auswahl als Liste, seit v30 fuer die
         // Pruefschritte der Anleitung.
-        if (f.typ === 'befund' || f.typ === 'auswahl') {
-            var opts = f.typ === 'befund' ? ['ok', 'nicht ok'] : (f.optionen || []);
+        if (f.typ === 'ergebnis' || f.typ === 'auswahl') {
+            var opts = f.typ === 'ergebnis' ? ['ok', 'nicht ok'] : (f.optionen || []);
             return '<select' + attr + ' onchange="autoSave()" class="mb-feld">'
                 + '<option value="">&ndash;</option>'
                 + opts.map(function (o) { return '<option>' + esc(o) + '</option>'; }).join('')

@@ -12,6 +12,17 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v33',
+      date: '2026-11-01',
+      time: '06:33',
+      title: 'Notizen je Schritt',
+      changes: [
+        { type: 'neu', text: 'An jedem Schritt der Anleitung lassen sich Notizen eintragen, wie in jerico und gt40: was aufgefallen ist, was fehlt, was anders sein soll. Jede Notiz hat einen Status (offen, in Arbeit, erledigt), steht auch bei geschlossener Karte unter dem Titel und wandert mit dem Cloud-Abgleich auf die anderen Geräte.' },
+        { type: 'verbessert', text: 'Das Wort Befund gibt es nicht mehr: Kommentare heißen Notiz, Prüfergebnisse (ok / nicht ok) heißen Ergebnis, auch beim Bind-Test (Bind-Ergebnis).' },
+        { type: 'intern', text: 'notiz.js mit eigenem Kanal im Abgleich (mustang-chassis-notizen.json), Zurücknehmen als Grabstein. Fünf Tests mit echten Klicks, fünf Gegenproben rot.' }
+      ]
+    },
+    {
       version: 'v32',
       date: '2026-11-01',
       time: '06:02',

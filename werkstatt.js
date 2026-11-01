@@ -150,7 +150,7 @@
             stil = ' style="border-left-color:var(--success);"';
         } else if (b.sperrt) {
             art = 'warning-box';
-            text = '<strong>&#9878; Bind-Befund &ndash; keine Setup-Arbeit.</strong> '
+            text = '<strong>&#9878; Bind-Ergebnis &ndash; keine Setup-Arbeit.</strong> '
                 + esc(b.gruende.join('; ')) + '.';
         } else {
             text = '<strong>&#9878; Hier: Bind-Test nach 6.1</strong> &ndash; nach Phase 3, vor '
