@@ -275,6 +275,201 @@
          label: 'Erste Ausfahrt, gefahrene Strecke', einheit: 'km', regel: 'numeric:0:2000' });
   befund('nachgezogen', 'Nach der Ausfahrt nachgezogen, Lackstriche unverändert');
 
+  // ---- Anleitung, Phasen 2-22 (seit v32) ------------------------------------
+  // Uebernommen aus den Schrittkarten. Messwerte, die eine spaetere Phase
+  // erneut misst, haben eine eigene Kennung (al12_castor neben al_castor):
+  // es sind zwei Messungen, nicht ein Wert an zwei Orten. Einsteller haben
+  // eine Kennung und stehen in jeder Karte, die sie verstellt.
+  // phase-02
+  feld({id: "pad_boden_lf",gruppe: "pad",art: "mess",rad: "LF",label: "Boden tiefer als höchster Platz",einheit: "mm",regel: "numeric:0:100",grenze: "höchster Platz = 0",messmittel: "Schlauchwaage oder Richtscheit + Wasserwaage"});
+  feld({id: "pad_boden_rf",gruppe: "pad",art: "mess",rad: "RF",label: "Boden tiefer als höchster Platz",einheit: "mm",regel: "numeric:0:100",grenze: "höchster Platz = 0",messmittel: "Schlauchwaage oder Richtscheit + Wasserwaage"});
+  feld({id: "pad_boden_lr",gruppe: "pad",art: "mess",rad: "LR",label: "Boden tiefer als höchster Platz",einheit: "mm",regel: "numeric:0:100",grenze: "höchster Platz = 0",messmittel: "Schlauchwaage oder Richtscheit + Wasserwaage"});
+  feld({id: "pad_boden_rr",gruppe: "pad",art: "mess",rad: "RR",label: "Boden tiefer als höchster Platz",einheit: "mm",regel: "numeric:0:100",grenze: "höchster Platz = 0",messmittel: "Schlauchwaage oder Richtscheit + Wasserwaage"});
+  feld({id: "pad_platte_lf",gruppe: "pad",art: "stell",rad: "LF",label: "Ausgleichspaket, Gesamtdicke",einheit: "mm",regel: "numeric:0:100",groesse: "pad_ebene",messmittel: "Messschieber"});
+  feld({id: "pad_platte_rf",gruppe: "pad",art: "stell",rad: "RF",label: "Ausgleichspaket, Gesamtdicke",einheit: "mm",regel: "numeric:0:100",groesse: "pad_ebene",messmittel: "Messschieber"});
+  feld({id: "pad_platte_lr",gruppe: "pad",art: "stell",rad: "LR",label: "Ausgleichspaket, Gesamtdicke",einheit: "mm",regel: "numeric:0:100",groesse: "pad_ebene",messmittel: "Messschieber"});
+  feld({id: "pad_platte_rr",gruppe: "pad",art: "stell",rad: "RR",label: "Ausgleichspaket, Gesamtdicke",einheit: "mm",regel: "numeric:0:100",groesse: "pad_ebene",messmittel: "Messschieber"});
+  feld({id: "pad_h_drehteller",gruppe: "pad",art: "mess",label: "Höhe Drehteller CG/6",einheit: "mm",regel: "numeric:0:200",messmittel: "Messschieber, Boden bis Oberkante Teller"});
+  feld({id: "pad_h_waage",gruppe: "pad",art: "mess",label: "Höhe Longacre-Waage",einheit: "mm",regel: "numeric:0:200",messmittel: "Messschieber, Boden bis Oberkante Wiegeplatte"});
+  feld({id: "pad_h_hinten",gruppe: "pad",art: "stell",label: "Höhe hintere Unterlagen",einheit: "mm",regel: "numeric:0:200",grenze: "gleich Höhe Drehteller",groesse: "pad_ebene",messmittel: "Messschieber"});
+  feld({id: "pad_kontrolle_lf",gruppe: "pad",art: "mess",rad: "LF",label: "Höhe nach Wiederaufbau, gegen LF",einheit: "mm",regel: "numeric:-50:50",grenze: "LF = 0",messmittel: "Schlauchwaage"});
+  feld({id: "pad_kontrolle_rf",gruppe: "pad",art: "mess",rad: "RF",label: "Höhe nach Wiederaufbau, gegen LF",einheit: "mm",regel: "numeric:-50:50",grenze: "LF = 0",messmittel: "Schlauchwaage"});
+  feld({id: "pad_kontrolle_lr",gruppe: "pad",art: "mess",rad: "LR",label: "Höhe nach Wiederaufbau, gegen LF",einheit: "mm",regel: "numeric:-50:50",grenze: "LF = 0",messmittel: "Schlauchwaage"});
+  feld({id: "pad_kontrolle_rr",gruppe: "pad",art: "mess",rad: "RR",label: "Höhe nach Wiederaufbau, gegen LF",einheit: "mm",regel: "numeric:-50:50",grenze: "LF = 0",messmittel: "Schlauchwaage"});
+  feld({id: "pad_schnur",gruppe: "pad",art: "mess",typ: "befund",label: "Schnurprobe: Schnüre berühren sich ohne Druck"});
+  // phase-03
+  feld({id: "st_endlink_lf",gruppe: "stell",art: "stell",rad: "LF",label: "Stabi-Endlink, Länge",einheit: "mm",regel: "numeric:0:500",grenze: "Schraube geht ohne Kraft durch (3.2, 8.2)",groesse: "stabilisator",messmittel: "Maßband oder Messschieber, Mitte Auge bis Mitte Auge"});
+  feld({id: "st_endlink_rf",gruppe: "stell",art: "stell",rad: "RF",label: "Stabi-Endlink, Länge",einheit: "mm",regel: "numeric:0:500",grenze: "Schraube geht ohne Kraft durch (3.2, 8.2)",groesse: "stabilisator",messmittel: "Maßband oder Messschieber, Mitte Auge bis Mitte Auge"});
+  feld({id: "ha_panhard_laenge",gruppe: "hinterachse",art: "stell",label: "Panhard, Länge",einheit: "mm",regel: "numeric:0:2000",grenze: "Bolzen passt ohne Kraft (Projektregel)",groesse: "panhard_laenge",messmittel: "Maßband, Mitte Gelenk bis Mitte Gelenk"});
+  // phase-04
+  feld({id: "rh_punkt_vorn",gruppe: "ridehoehe",art: "mess",label: "Messpunkt vorn, links und rechts gleich",grenze: "fest, nicht an beweglichen Teilen (4.1)",messmittel: "Körner oder Lackstift, Foto",platzhalter: "Lage am Rahmen in Worten"});
+  feld({id: "rh_punkt_hinten",gruppe: "ridehoehe",art: "mess",label: "Messpunkt hinten, links und rechts gleich",grenze: "fest, nicht an beweglichen Teilen (4.1)",messmittel: "Körner oder Lackstift, Foto",platzhalter: "Lage am Rahmen in Worten"});
+  feld({id: "rhw_lf",gruppe: "ridehoehe",art: "mess",rad: "LF",label: "Fahrhöhe Wiederholung",einheit: "mm",regel: "numeric:0:500",grenze: "Vergleich mit 4.2; Grenze offen",messmittel: "Maßband, Bezug Aufstandsebene"});
+  feld({id: "rhw_rf",gruppe: "ridehoehe",art: "mess",rad: "RF",label: "Fahrhöhe Wiederholung",einheit: "mm",regel: "numeric:0:500",grenze: "Vergleich mit 4.2; Grenze offen",messmittel: "Maßband, Bezug Aufstandsebene"});
+  feld({id: "rhw_lr",gruppe: "ridehoehe",art: "mess",rad: "LR",label: "Fahrhöhe Wiederholung",einheit: "mm",regel: "numeric:0:500",grenze: "Vergleich mit 4.2; Grenze offen",messmittel: "Maßband, Bezug Aufstandsebene"});
+  feld({id: "rhw_rr",gruppe: "ridehoehe",art: "mess",rad: "RR",label: "Fahrhöhe Wiederholung",einheit: "mm",regel: "numeric:0:500",grenze: "Vergleich mit 4.2; Grenze offen",messmittel: "Maßband, Bezug Aufstandsebene"});
+  feld({id: "anschl_lf",gruppe: "ridehoehe",art: "mess",rad: "LF",label: "Abstand Anschlagpuffer",einheit: "mm",regel: "numeric:0:300",grenze: "Mindestabstand offen",messmittel: "Messschieber oder Stahllineal"});
+  feld({id: "anschl_rf",gruppe: "ridehoehe",art: "mess",rad: "RF",label: "Abstand Anschlagpuffer",einheit: "mm",regel: "numeric:0:300",grenze: "Mindestabstand offen",messmittel: "Messschieber oder Stahllineal"});
+  feld({id: "anschl_lr",gruppe: "ridehoehe",art: "mess",rad: "LR",label: "Abstand Anschlagpuffer",einheit: "mm",regel: "numeric:0:300",grenze: "Mindestabstand offen",messmittel: "Messschieber oder Stahllineal"});
+  feld({id: "anschl_rr",gruppe: "ridehoehe",art: "mess",rad: "RR",label: "Abstand Anschlagpuffer",einheit: "mm",regel: "numeric:0:300",grenze: "Mindestabstand offen",messmittel: "Messschieber oder Stahllineal"});
+  // phase-05
+  feld({id: "ha_radstand_l",gruppe: "hinterachse",art: "mess",label: "Radstand links",einheit: "mm",regel: "numeric:2000:3500",grenze: "Unterschied L/R offen",messmittel: "Senklot und Maßband, Radmitte zu Radmitte"});
+  feld({id: "ha_radstand_r",gruppe: "hinterachse",art: "mess",label: "Radstand rechts",einheit: "mm",regel: "numeric:2000:3500",grenze: "Unterschied L/R offen",messmittel: "Senklot und Maßband, Radmitte zu Radmitte"});
+  feld({id: "ha_bezug_l",gruppe: "hinterachse",art: "mess",label: "Rahmenpunkt vorn links bis Radmitte hinten links",einheit: "mm",regel: "numeric:500:5000",grenze: "Vergleich mit rechts",messmittel: "Senklot und Maßband"});
+  feld({id: "ha_bezug_r",gruppe: "hinterachse",art: "mess",label: "Rahmenpunkt vorn rechts bis Radmitte hinten rechts",einheit: "mm",regel: "numeric:500:5000",grenze: "Vergleich mit links",messmittel: "Senklot und Maßband"});
+  feld({id: "ha_schubwinkel",gruppe: "hinterachse",art: "mess",label: "Schubwinkel (Betrag)",einheit: "°",regel: "numeric:0:5",grenze: "offen; Richtung aus Maß links/rechts",messmittel: "gerechnet: (L − R) ÷ Spurweite hinten × 57,3"});
+  feld({id: "ha_seite_l",gruppe: "hinterachse",art: "mess",label: "Rahmen hinten links bis Radmitte links, quer",einheit: "mm",regel: "numeric:0:1000",grenze: "Versatz = (L − R) ÷ 2; Grenze offen",messmittel: "Senklot und Maßband"});
+  feld({id: "ha_seite_r",gruppe: "hinterachse",art: "mess",label: "Rahmen hinten rechts bis Radmitte rechts, quer",einheit: "mm",regel: "numeric:0:1000",grenze: "Versatz = (L − R) ÷ 2; Grenze offen",messmittel: "Senklot und Maßband"});
+  feld({id: "ha_panhard_h_chassis",gruppe: "hinterachse",art: "mess",label: "Panhard Höhe Gelenkmitte Chassisseite",einheit: "mm",regel: "numeric:0:1000",grenze: "über Aufstandsebene",messmittel: "Maßband, wie Fahrhöhe 4.2"});
+  feld({id: "ha_panhard_h_achse",gruppe: "hinterachse",art: "mess",label: "Panhard Höhe Gelenkmitte Achsseite",einheit: "mm",regel: "numeric:0:1000",grenze: "über Aufstandsebene",messmittel: "Maßband, wie Fahrhöhe 4.2"});
+  feld({id: "ha_panhard_winkel",gruppe: "hinterachse",art: "mess",label: "Panhard Winkel zur Waagerechten",einheit: "°",regel: "numeric:0:45",grenze: "Sollwert offen",messmittel: "gerechnet: arcsin(Höhenunterschied ÷ Länge)"});
+  feld({id: "dl5_getriebe",gruppe: "antrieb",art: "mess",label: "Getriebe Neigung (Phase 5)",einheit: "°",regel: "numeric:0:20",grenze: "nur Ausgangsstand, Bewertung Phase 16",messmittel: "Winkelmesser 1/4° (fehlt) oder TREMEC-App"});
+  feld({id: "dl5_getriebe_ri",gruppe: "antrieb",art: "mess",label: "Getriebe Richtung",grenze: "UP = steigt von vorn nach hinten",platzhalter: "UP oder DOWN"});
+  feld({id: "dl5_welle",gruppe: "antrieb",art: "mess",label: "Kardanwelle Neigung (Phase 5)",einheit: "°",regel: "numeric:0:20",grenze: "nur Ausgangsstand, Bewertung Phase 16",messmittel: "Winkelmesser 1/4° (fehlt) oder TREMEC-App"});
+  feld({id: "dl5_welle_ri",gruppe: "antrieb",art: "mess",label: "Kardanwelle Richtung",grenze: "UP = steigt von vorn nach hinten",platzhalter: "UP oder DOWN"});
+  feld({id: "dl5_achse",gruppe: "antrieb",art: "mess",label: "Hinterachse/Ritzel Neigung (Phase 5)",einheit: "°",regel: "numeric:0:20",grenze: "nur Ausgangsstand, Bewertung Phase 16",messmittel: "Winkelmesser 1/4° (fehlt) oder TREMEC-App"});
+  feld({id: "dl5_achse_ri",gruppe: "antrieb",art: "mess",label: "Hinterachse/Ritzel Richtung",grenze: "UP = steigt von vorn nach hinten",platzhalter: "UP oder DOWN"});
+  feld({id: "dl5_messmittel",gruppe: "antrieb",art: "mess",label: "Gemessen mit",grenze: "App ist nur Behelf",platzhalter: "Winkelmesser oder TREMEC-App"});
+  // phase-07
+  feld({id: "cw7a_lf",gruppe: "radlast",art: "mess",rad: "LF",label: "Erstes Wiegen A",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw7a_rf",gruppe: "radlast",art: "mess",rad: "RF",label: "Erstes Wiegen A",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw7a_lr",gruppe: "radlast",art: "mess",rad: "LR",label: "Erstes Wiegen A",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw7a_rr",gruppe: "radlast",art: "mess",rad: "RR",label: "Erstes Wiegen A",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw7b_lf",gruppe: "radlast",art: "mess",rad: "LF",label: "Erstes Wiegen B",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw7b_rf",gruppe: "radlast",art: "mess",rad: "RF",label: "Erstes Wiegen B",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw7b_lr",gruppe: "radlast",art: "mess",rad: "LR",label: "Erstes Wiegen B",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw7b_rr",gruppe: "radlast",art: "mess",rad: "RR",label: "Erstes Wiegen B",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw7c_lf",gruppe: "radlast",art: "mess",rad: "LF",label: "Erstes Wiegen C",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw7c_rf",gruppe: "radlast",art: "mess",rad: "RF",label: "Erstes Wiegen C",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw7c_lr",gruppe: "radlast",art: "mess",rad: "LR",label: "Erstes Wiegen C",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw7c_rr",gruppe: "radlast",art: "mess",rad: "RR",label: "Erstes Wiegen C",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  // phase-08
+  feld({id: "cw8a_lf",gruppe: "radlast",art: "mess",rad: "LF",label: "Stabi angeschlossen A",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw8a_rf",gruppe: "radlast",art: "mess",rad: "RF",label: "Stabi angeschlossen A",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw8a_lr",gruppe: "radlast",art: "mess",rad: "LR",label: "Stabi angeschlossen A",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw8a_rr",gruppe: "radlast",art: "mess",rad: "RR",label: "Stabi angeschlossen A",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw8b_lf",gruppe: "radlast",art: "mess",rad: "LF",label: "Stabi angeschlossen B",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw8b_rf",gruppe: "radlast",art: "mess",rad: "RF",label: "Stabi angeschlossen B",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw8b_lr",gruppe: "radlast",art: "mess",rad: "LR",label: "Stabi angeschlossen B",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw8b_rr",gruppe: "radlast",art: "mess",rad: "RR",label: "Stabi angeschlossen B",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw8c_lf",gruppe: "radlast",art: "mess",rad: "LF",label: "Stabi angeschlossen C",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw8c_rf",gruppe: "radlast",art: "mess",rad: "RF",label: "Stabi angeschlossen C",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw8c_lr",gruppe: "radlast",art: "mess",rad: "LR",label: "Stabi angeschlossen C",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw8c_rr",gruppe: "radlast",art: "mess",rad: "RR",label: "Stabi angeschlossen C",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  // phase-10
+  feld({id: "bump10_ref_lf",gruppe: "bumpsteer",art: "mess",rad: "LF",label: "Referenzhöhe Boden bis Messpunkt",einheit: "mm",regel: "numeric:0:600",grenze: "vor dem Anheben gemessen, Nullpunkt der Bump-Steer-Messung",messmittel: "Messband, Boden bis unteres Kugelgelenk"});
+  feld({id: "bump10_ref_rf",gruppe: "bumpsteer",art: "mess",rad: "RF",label: "Referenzhöhe Boden bis Messpunkt",einheit: "mm",regel: "numeric:0:600",grenze: "vor dem Anheben gemessen, Nullpunkt der Bump-Steer-Messung",messmittel: "Messband, Boden bis unteres Kugelgelenk"});
+  // phase-11
+  feld({id: "cg11_m50_lf",gruppe: "camberkurve",art: "mess",rad: "LF",label: "Camber bei −50 mm",einheit: "°",regel: "numeric:-10:10",grenze: "kein Sollwert",messmittel: "Dunlop CG/4"});
+  feld({id: "cg11_m50_rf",gruppe: "camberkurve",art: "mess",rad: "RF",label: "Camber bei −50 mm",einheit: "°",regel: "numeric:-10:10",grenze: "kein Sollwert",messmittel: "Dunlop CG/4"});
+  feld({id: "cg11_m25_lf",gruppe: "camberkurve",art: "mess",rad: "LF",label: "Camber bei −25 mm",einheit: "°",regel: "numeric:-10:10",grenze: "kein Sollwert",messmittel: "Dunlop CG/4"});
+  feld({id: "cg11_m25_rf",gruppe: "camberkurve",art: "mess",rad: "RF",label: "Camber bei −25 mm",einheit: "°",regel: "numeric:-10:10",grenze: "kein Sollwert",messmittel: "Dunlop CG/4"});
+  feld({id: "cg11_0_lf",gruppe: "camberkurve",art: "mess",rad: "LF",label: "Camber bei 0 mm (Fahrhöhe)",einheit: "°",regel: "numeric:-10:10",grenze: "kein Sollwert",messmittel: "Dunlop CG/4"});
+  feld({id: "cg11_0_rf",gruppe: "camberkurve",art: "mess",rad: "RF",label: "Camber bei 0 mm (Fahrhöhe)",einheit: "°",regel: "numeric:-10:10",grenze: "kein Sollwert",messmittel: "Dunlop CG/4"});
+  feld({id: "cg11_p25_lf",gruppe: "camberkurve",art: "mess",rad: "LF",label: "Camber bei +25 mm",einheit: "°",regel: "numeric:-10:10",grenze: "kein Sollwert",messmittel: "Dunlop CG/4"});
+  feld({id: "cg11_p25_rf",gruppe: "camberkurve",art: "mess",rad: "RF",label: "Camber bei +25 mm",einheit: "°",regel: "numeric:-10:10",grenze: "kein Sollwert",messmittel: "Dunlop CG/4"});
+  feld({id: "cg11_p50_lf",gruppe: "camberkurve",art: "mess",rad: "LF",label: "Camber bei +50 mm",einheit: "°",regel: "numeric:-10:10",grenze: "kein Sollwert",messmittel: "Dunlop CG/4"});
+  feld({id: "cg11_p50_rf",gruppe: "camberkurve",art: "mess",rad: "RF",label: "Camber bei +50 mm",einheit: "°",regel: "numeric:-10:10",grenze: "kein Sollwert",messmittel: "Dunlop CG/4"});
+  // phase-12
+  feld({id: "al12_castor_lf",gruppe: "alignment",art: "mess",rad: "LF",label: "Castor endgültig",einheit: "°",regel: "numeric:-15:15",grenze: "L/R max. 1/2°, bevorzugt 1/4° (Ford)",messmittel: "Dunlop CG/5 + CG/6"});
+  feld({id: "al12_castor_rf",gruppe: "alignment",art: "mess",rad: "RF",label: "Castor endgültig",einheit: "°",regel: "numeric:-15:15",grenze: "L/R max. 1/2°, bevorzugt 1/4° (Ford)",messmittel: "Dunlop CG/5 + CG/6"});
+  feld({id: "al12_camber_lf",gruppe: "alignment",art: "mess",rad: "LF",label: "Camber endgültig",einheit: "°",regel: "numeric:-10:10",grenze: "L/R max. 1/2°, bevorzugt 1/4° (Ford)",messmittel: "Dunlop CG/4"});
+  feld({id: "al12_camber_rf",gruppe: "alignment",art: "mess",rad: "RF",label: "Camber endgültig",einheit: "°",regel: "numeric:-10:10",grenze: "L/R max. 1/2°, bevorzugt 1/4° (Ford)",messmittel: "Dunlop CG/4"});
+  feld({id: "al12_kpi_lf",gruppe: "alignment",art: "mess",rad: "LF",label: "KPI endgültig",einheit: "°",regel: "numeric:-20:20",grenze: "Diagnosewert, kein Sollwert",messmittel: "Dunlop CG/5 + CG/6"});
+  feld({id: "al12_kpi_rf",gruppe: "alignment",art: "mess",rad: "RF",label: "KPI endgültig",einheit: "°",regel: "numeric:-20:20",grenze: "Diagnosewert, kein Sollwert",messmittel: "Dunlop CG/5 + CG/6"});
+  feld({id: "al12_lenkmitte",gruppe: "alignment",art: "mess",typ: "befund",label: "Lenkungsmitte: Getriebe mittig, Center Link links/rechts gleich",messmittel: "Dunlop CG/5 + CG/6"});
+  feld({id: "toe12_f",gruppe: "toe",art: "mess",label: "Spur endgültig: Abstand vorn F",einheit: "mm",regel: "numeric:0:3000",messmittel: "Longacre Toe Plates"});
+  feld({id: "toe12_r",gruppe: "toe",art: "mess",label: "Spur endgültig: Abstand hinten R",einheit: "mm",regel: "numeric:0:3000",messmittel: "Longacre Toe Plates"});
+  feld({id: "toe12_einzel_lf",gruppe: "toe",art: "mess",rad: "LF",label: "Einzelspur LF (Schnur: vorn − hinten)",einheit: "mm",regel: "numeric:-20:20",grenze: "plus = Vorspur; am Felgenhorn gemessen",messmittel: "Schnüre + Stahllineal"});
+  feld({id: "toe12_einzel_rf",gruppe: "toe",art: "mess",rad: "RF",label: "Einzelspur RF (Schnur: vorn − hinten)",einheit: "mm",regel: "numeric:-20:20",grenze: "plus = Vorspur; am Felgenhorn gemessen",messmittel: "Schnüre + Stahllineal"});
+  // phase-13
+  feld({id: "ack_aussen_rf",gruppe: "alignment",art: "mess",rad: "RF",label: "Linkskurve: RF (außen), wenn LF 20° zeigt",einheit: "°",regel: "numeric:0:45",grenze: "Sollwert Ford Part 3-6: offen",messmittel: "Dunlop CG/6 Drehteller"});
+  feld({id: "ack_aussen_lf",gruppe: "alignment",art: "mess",rad: "LF",label: "Rechtskurve: LF (außen), wenn RF 20° zeigt",einheit: "°",regel: "numeric:0:45",grenze: "Sollwert Ford Part 3-6: offen",messmittel: "Dunlop CG/6 Drehteller"});
+  // phase-14
+  feld({id: "al14_castor_lf",gruppe: "alignment",art: "mess",rad: "LF",label: "Castor Kontrolle",einheit: "°",regel: "numeric:-15:15",grenze: "Vergleich mit 12.2",messmittel: "Dunlop CG/5 + CG/6"});
+  feld({id: "al14_castor_rf",gruppe: "alignment",art: "mess",rad: "RF",label: "Castor Kontrolle",einheit: "°",regel: "numeric:-15:15",grenze: "Vergleich mit 12.2",messmittel: "Dunlop CG/5 + CG/6"});
+  feld({id: "al14_camber_lf",gruppe: "alignment",art: "mess",rad: "LF",label: "Camber Kontrolle",einheit: "°",regel: "numeric:-10:10",grenze: "Vergleich mit 12.3",messmittel: "Dunlop CG/4"});
+  feld({id: "al14_camber_rf",gruppe: "alignment",art: "mess",rad: "RF",label: "Camber Kontrolle",einheit: "°",regel: "numeric:-10:10",grenze: "Vergleich mit 12.3",messmittel: "Dunlop CG/4"});
+  feld({id: "toe14_f",gruppe: "toe",art: "mess",label: "Spur Kontrolle: Abstand vorn F",einheit: "mm",regel: "numeric:0:3000",grenze: "Vergleich mit 12.6",messmittel: "Longacre Toe Plates"});
+  feld({id: "toe14_r",gruppe: "toe",art: "mess",label: "Spur Kontrolle: Abstand hinten R",einheit: "mm",regel: "numeric:0:3000",grenze: "Vergleich mit 12.6",messmittel: "Longacre Toe Plates"});
+  // phase-15
+  feld({id: "cw15a_lf",gruppe: "radlast",art: "mess",rad: "LF",label: "Endgültig wiegen A",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw15a_rf",gruppe: "radlast",art: "mess",rad: "RF",label: "Endgültig wiegen A",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw15a_lr",gruppe: "radlast",art: "mess",rad: "LR",label: "Endgültig wiegen A",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw15a_rr",gruppe: "radlast",art: "mess",rad: "RR",label: "Endgültig wiegen A",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw15b_lf",gruppe: "radlast",art: "mess",rad: "LF",label: "Endgültig wiegen B",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw15b_rf",gruppe: "radlast",art: "mess",rad: "RF",label: "Endgültig wiegen B",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw15b_lr",gruppe: "radlast",art: "mess",rad: "LR",label: "Endgültig wiegen B",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw15b_rr",gruppe: "radlast",art: "mess",rad: "RR",label: "Endgültig wiegen B",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw15c_lf",gruppe: "radlast",art: "mess",rad: "LF",label: "Endgültig wiegen C",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw15c_rf",gruppe: "radlast",art: "mess",rad: "RF",label: "Endgültig wiegen C",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw15c_lr",gruppe: "radlast",art: "mess",rad: "LR",label: "Endgültig wiegen C",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw15c_rr",gruppe: "radlast",art: "mess",rad: "RR",label: "Endgültig wiegen C",einheit: "kg",regel: "numeric:0:1500",grenze: "Spanne je Ecke unter 0,5 % der Gesamtmasse (Projektfestlegung)",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw15_lf",gruppe: "radlast",art: "mess",rad: "LF",label: "Radlast endgültig (Mittelwert)",einheit: "kg",regel: "numeric:0:1500",grenze: "Vergleich mit dem Mittelwert aus 7.4",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw15_rf",gruppe: "radlast",art: "mess",rad: "RF",label: "Radlast endgültig (Mittelwert)",einheit: "kg",regel: "numeric:0:1500",grenze: "Vergleich mit dem Mittelwert aus 7.4",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw15_lr",gruppe: "radlast",art: "mess",rad: "LR",label: "Radlast endgültig (Mittelwert)",einheit: "kg",regel: "numeric:0:1500",grenze: "Vergleich mit dem Mittelwert aus 7.4",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "cw15_rr",gruppe: "radlast",art: "mess",rad: "RR",label: "Radlast endgültig (Mittelwert)",einheit: "kg",regel: "numeric:0:1500",grenze: "Vergleich mit dem Mittelwert aus 7.4",messmittel: "Longacre Corner-Weight-Waagen"});
+  feld({id: "rh15_lf",gruppe: "ridehoehe",art: "mess",rad: "LF",label: "Fahrhöhe endgültig",einheit: "mm",regel: "numeric:0:500",grenze: "Messpunkt aus 4.1",messmittel: "Messband"});
+  feld({id: "rh15_rf",gruppe: "ridehoehe",art: "mess",rad: "RF",label: "Fahrhöhe endgültig",einheit: "mm",regel: "numeric:0:500",grenze: "Messpunkt aus 4.1",messmittel: "Messband"});
+  feld({id: "rh15_lr",gruppe: "ridehoehe",art: "mess",rad: "LR",label: "Fahrhöhe endgültig",einheit: "mm",regel: "numeric:0:500",grenze: "Messpunkt aus 4.1",messmittel: "Messband"});
+  feld({id: "rh15_rr",gruppe: "ridehoehe",art: "mess",rad: "RR",label: "Fahrhöhe endgültig",einheit: "mm",regel: "numeric:0:500",grenze: "Messpunkt aus 4.1",messmittel: "Messband"});
+  // phase-16
+  feld({id: "dl16_getriebe",gruppe: "antrieb",art: "mess",label: "Neigung Getriebe-Ausgang",einheit: "°",regel: "numeric:-15:15",grenze: "UP = plus, DOWN = minus; auf 1/4° (Spicer)",messmittel: "Winkelmesser 1/4° (fehlt) oder TREMEC-App"});
+  feld({id: "dl16_welle",gruppe: "antrieb",art: "mess",label: "Neigung Kardanwelle",einheit: "°",regel: "numeric:-15:15",grenze: "UP = plus, DOWN = minus; auf 1/4° (Spicer)",messmittel: "Winkelmesser 1/4° (fehlt) oder TREMEC-App"});
+  feld({id: "dl16_pinion",gruppe: "antrieb",art: "mess",label: "Neigung Hinterachse (Pinion)",einheit: "°",regel: "numeric:-15:15",grenze: "UP = plus, DOWN = minus; auf 1/4° (Spicer)",messmittel: "Winkelmesser 1/4° (fehlt) oder TREMEC-App"});
+  feld({id: "dl16_wedge_grad",gruppe: "antrieb",art: "stell",label: "Keil Blattfeder–Achse",einheit: "°",regel: "numeric:0:10",grenze: "0 = kein Keil",groesse: "wedge"});
+  feld({id: "dl16_wedge_lage",gruppe: "antrieb",art: "stell",label: "Keil: dicke Seite",groesse: "wedge",platzhalter: "vorn / hinten / kein Keil"});
+  feld({id: "dl16_rpm",gruppe: "antrieb",art: "mess",label: "Höchste Drehzahl der Kardanwelle",einheit: "1/min",regel: "numeric:0:9000",grenze: "für die Spicer-Tabelle, nur nötig über 3°",messmittel: "Drehzahlmesser im direkten Gang"});
+  feld({id: "dl16_befund",gruppe: "antrieb",art: "mess",typ: "befund",label: "Antriebsstrang nach Spicer-Regeln",grenze: "je Gelenk 1/2° bis 3°, Unterschied max. 1°"});
+  // phase-17
+  feld({id: "fg17_l_kotfluegel",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll links: Reifen – Kotflügel und Innenkotflügel",grenze: "beide Vorderräder, nichts berührt"});
+  feld({id: "fg17_l_rahmen",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll links: Reifen – Rahmen",grenze: "beide Vorderräder, nichts berührt"});
+  feld({id: "fg17_l_stabi",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll links: Reifen – Stabi",grenze: "beide Vorderräder, nichts berührt"});
+  feld({id: "fg17_l_schlauch",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll links: Bremsschlauch frei, nicht gespannt",grenze: "beide Vorderräder"});
+  feld({id: "fg17_l_spurstange",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll links: Spurstange frei",grenze: "beide Seiten"});
+  feld({id: "fg17_l_anschlag",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll links: Lenkanschlag begrenzt den Einschlag",grenze: "nicht das Lenkgetriebe"});
+  feld({id: "fg17_l_notiz",gruppe: "freigaengigkeit",art: "mess",label: "Voll links: engste Stelle",platzhalter: "Rad, Ort, Abstand in mm"});
+  feld({id: "fg17_r_kotfluegel",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll rechts: Reifen – Kotflügel und Innenkotflügel",grenze: "beide Vorderräder, nichts berührt"});
+  feld({id: "fg17_r_rahmen",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll rechts: Reifen – Rahmen",grenze: "beide Vorderräder, nichts berührt"});
+  feld({id: "fg17_r_stabi",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll rechts: Reifen – Stabi",grenze: "beide Vorderräder, nichts berührt"});
+  feld({id: "fg17_r_schlauch",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll rechts: Bremsschlauch frei, nicht gespannt",grenze: "beide Vorderräder"});
+  feld({id: "fg17_r_spurstange",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll rechts: Spurstange frei",grenze: "beide Seiten"});
+  feld({id: "fg17_r_anschlag",gruppe: "freigaengigkeit",art: "mess",typ: "befund",label: "Voll rechts: Lenkanschlag begrenzt den Einschlag",grenze: "nicht das Lenkgetriebe"});
+  feld({id: "fg17_r_notiz",gruppe: "freigaengigkeit",art: "mess",label: "Voll rechts: engste Stelle",platzhalter: "Rad, Ort, Abstand in mm"});
+  // strecke
+  feld({id: "trk_strecke",gruppe: "strecke",art: "stell",typ: "text",label: "Strecke und Fahrtrichtung",platzhalter: "z. B. Pannoniaring, im Uhrzeigersinn"});
+  feld({id: "trk_bedingungen",gruppe: "strecke",art: "mess",typ: "text",label: "Wetter, Luft- und Asphalttemperatur",platzhalter: "trocken / feucht / nass, Luft … °C, Asphalt … °C"});
+  feld({id: "trk_reifensatz",gruppe: "strecke",art: "stell",typ: "text",label: "Reifensatz am Stint",platzhalter: "TYRE-…, Heat Cycles bisher …"});
+  feld({id: "trk_tank_start",gruppe: "strecke",art: "stell",label: "Tank vor dem Stint",einheit: "l",regel: "numeric:0:120",grenze: "bei A und B gleich"});
+  feld({id: "trk_shore_lf",gruppe: "strecke",art: "mess",rad: "LF",label: "Shore-Härte kalt, Mittel aus innen/Mitte/außen",einheit: "Shore A",regel: "numeric:0:100",grenze: "nur kalt vergleichen",messmittel: "Shore-A-Durometer"});
+  feld({id: "trk_shore_rf",gruppe: "strecke",art: "mess",rad: "RF",label: "Shore-Härte kalt, Mittel aus innen/Mitte/außen",einheit: "Shore A",regel: "numeric:0:100",grenze: "nur kalt vergleichen",messmittel: "Shore-A-Durometer"});
+  feld({id: "trk_shore_lr",gruppe: "strecke",art: "mess",rad: "LR",label: "Shore-Härte kalt, Mittel aus innen/Mitte/außen",einheit: "Shore A",regel: "numeric:0:100",grenze: "nur kalt vergleichen",messmittel: "Shore-A-Durometer"});
+  feld({id: "trk_shore_rr",gruppe: "strecke",art: "mess",rad: "RR",label: "Shore-Härte kalt, Mittel aus innen/Mitte/außen",einheit: "Shore A",regel: "numeric:0:100",grenze: "nur kalt vergleichen",messmittel: "Shore-A-Durometer"});
+  feld({id: "trk_shore_temp",gruppe: "strecke",art: "mess",label: "Lufttemperatur bei der Shore-Messung",einheit: "°C",regel: "numeric:-20:60"});
+  feld({id: "trk_verzoegerung",gruppe: "strecke",art: "mess",label: "Anhalten bis erste Druckmessung",einheit: "s",regel: "numeric:0:1800",grenze: "jedes Mal möglichst gleich"});
+  feld({id: "trk_reifenbild_lf",gruppe: "strecke",art: "mess",rad: "LF",typ: "text",label: "Reifenbild",platzhalter: "innen / Mitte / außen, Auffälligkeiten"});
+  feld({id: "trk_reifenbild_rf",gruppe: "strecke",art: "mess",rad: "RF",typ: "text",label: "Reifenbild",platzhalter: "innen / Mitte / außen, Auffälligkeiten"});
+  feld({id: "trk_reifenbild_lr",gruppe: "strecke",art: "mess",rad: "LR",typ: "text",label: "Reifenbild",platzhalter: "innen / Mitte / außen, Auffälligkeiten"});
+  feld({id: "trk_reifenbild_rr",gruppe: "strecke",art: "mess",rad: "RR",typ: "text",label: "Reifenbild",platzhalter: "innen / Mitte / außen, Auffälligkeiten"});
+  feld({id: "trk_rundenzeiten",gruppe: "strecke",art: "mess",typ: "text",label: "Rundenzeiten des Stints",platzhalter: "Runde 2: 2:01,4 · Runde 3: 1:59,8 · …"});
+  feld({id: "trk_beste_runde",gruppe: "strecke",art: "mess",typ: "text",label: "Beste Runde",platzhalter: "m:ss,s"});
+  feld({id: "trk_tank_ende",gruppe: "strecke",art: "mess",label: "Tank nach dem Stint",einheit: "l",regel: "numeric:0:120"});
+  feld({id: "trk_gefuehl_bremsen",gruppe: "strecke",art: "mess",typ: "text",label: "Fahrgefühl: Bremsen",platzhalter: "stabil? zieht? Heck unruhig?"});
+  feld({id: "trk_gefuehl_einlenken",gruppe: "strecke",art: "mess",typ: "text",label: "Fahrgefühl: Einlenken und Kurveneingang",platzhalter: "spontan? träge? schiebt? Heck kommt?"});
+  feld({id: "trk_gefuehl_mitte",gruppe: "strecke",art: "mess",typ: "text",label: "Fahrgefühl: Kurvenmitte",platzhalter: "untersteuert / übersteuert / neutral"});
+  feld({id: "trk_gefuehl_ausgang",gruppe: "strecke",art: "mess",typ: "text",label: "Fahrgefühl: Gasgeben und Kurvenausgang",platzhalter: "Traktion? schiebt? Heck kommt?"});
+  feld({id: "trk_gefuehl_schnell",gruppe: "strecke",art: "mess",typ: "text",label: "Fahrgefühl: schnelle Kurven und Geraden",platzhalter: "stabil? nervös? Lenkkorrekturen?"});
+  feld({id: "trk_gefuehl_kerbs",gruppe: "strecke",art: "mess",typ: "text",label: "Fahrgefühl: Kerbs und Bodenwellen",platzhalter: "versetzt? springt? Lenkrad schlägt?"});
+  feld({id: "trk_gefuehl_lenkkraft",gruppe: "strecke",art: "mess",typ: "text",label: "Fahrgefühl: Lenkkraft",platzhalter: "leicht / gut / am Ende des Stints anstrengend"});
+  feld({id: "trk_plan_aenderung",gruppe: "strecke",art: "mess",typ: "text",label: "Geplante Änderung (genau eine)",platzhalter: "was, wo, von … auf …"});
+  feld({id: "trk_plan_erwartung",gruppe: "strecke",art: "mess",typ: "text",label: "Was erwartest du?",platzhalter: "z. B. weniger Schieben in der Kurvenmitte"});
+  feld({id: "trk_plan_neben",gruppe: "strecke",art: "mess",typ: "text",label: "Mögliche Nebenwirkung",platzhalter: "was könnte schlechter werden"});
+  feld({id: "trk_plan_erfolg",gruppe: "strecke",art: "mess",typ: "text",label: "Woran erkennst du Erfolg?",platzhalter: "Messgröße: Temperatur, Rundenzeit, Fahrgefühl in Kurve …"});
+  feld({id: "trk_aenderung_ist",gruppe: "strecke",art: "mess",typ: "text",label: "Tatsächlich verstellt",platzhalter: "was, Wert vorher → Wert nachher, Uhrzeit"});
+  feld({id: "trk_ab_bedingungen",gruppe: "strecke",art: "mess",typ: "text",label: "Was war bei B anders als bei A?",platzhalter: "Reifen, Tank, Wetter, Verkehr, Runden, Fahrer"});
+  feld({id: "trk_ab_ergebnis",gruppe: "strecke",art: "mess",typ: "auswahl",label: "A/B-Ergebnis",optionen: ["besser","schlechter","neutral","nicht aussagekräftig"]});
+  feld({id: "trk_ab_begruendung",gruppe: "strecke",art: "mess",typ: "text",label: "Begründung",platzhalter: "woran festgemacht: Messgröße aus 21.1"});
+
   var _nachId = {};
   for (var i = 0; i < FELDER.length; i++) _nachId[FELDER[i].id] = FELDER[i];
 

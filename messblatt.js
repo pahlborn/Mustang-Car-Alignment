@@ -42,6 +42,13 @@
                      hinweis: 'Erfasst in Phase 0 der Anleitung.' },
         mechanik:  { titel: 'Mechanik geprüft',   icon: '\ud83d\udd29',
                      hinweis: 'Befunde aus Phase 1 der Anleitung. „nicht ok“ heißt: erst reparieren.' },
+        pad:       { titel: 'Setup Pad',          icon: '\u2b1c' },
+        hinterachse: { titel: 'Hinterachse',      icon: '\ud83d\udd29' },
+        antrieb:   { titel: 'Antriebsstrang',     icon: '\u2699' },
+        bumpsteer: { titel: 'Bump Steer, Bezug',  icon: '\ud83d\udcc8' },
+        camberkurve: { titel: 'Camber-Kurve',     icon: '\ud83d\udcc9' },
+        freigaengigkeit: { titel: 'Freigängigkeit', icon: '\u21bb' },
+        strecke:   { titel: 'Strecke',            icon: '\ud83c\udfc1' },
         konstanten:{ titel: 'Fahrzeugkonstanten', icon: '\ud83d\udcd0',
                      hinweis: 'Einmal messen, dann stehenlassen. Aus diesen Werten '
                             + 'ergibt sich die Balanceverteilung. Drei davon f&uuml;hrt '

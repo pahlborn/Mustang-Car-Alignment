@@ -129,19 +129,40 @@ await test('jedes Feld, das eine Karte nennt, gibt es in messwerte.js', async ()
   await ctx.close();
 });
 
-await test('kein Feld steht zweimal auf der Seite', async () => {
-  // Zwei Felder mit derselben Kennung schreiben gegeneinander - wer zuletzt
-  // gesammelt wird, gewinnt, und das ist nicht das, in das getippt wurde.
+await test('nur Einsteller stehen in mehreren Karten, Messwerte genau einmal', async () => {
+  // Ein Einsteller steht in der Karte, die ihn erfasst, und in jeder, die
+  // ihn verstellt - die App spiegelt ihn. Ein Messwert dagegen gehoert zu
+  // genau einer Messung; misst eine spaetere Phase erneut, hat sie eine
+  // eigene Kennung (al12_castor neben al_castor).
   const ctx = await neuerKontext(browser);
   const { page } = await oeffne(ctx);
   const doppelt = await page.evaluate(() => {
     const n = {};
-    document.querySelectorAll('[data-field]').forEach((el) => {
+    document.querySelectorAll('#anleitung [data-field]').forEach((el) => {
       n[el.dataset.field] = (n[el.dataset.field] || 0) + 1;
     });
-    return Object.keys(n).filter((k) => n[k] > 1);
+    return Object.keys(n).filter((k) => n[k] > 1)
+      .filter((k) => { const f = Messwerte.feld(k); return !f || f.art !== 'stell'; });
   });
-  assertEqual(doppelt, [], 'doppelte data-field');
+  assertEqual(doppelt, [], 'doppelt, aber kein Einsteller');
+  await ctx.close();
+});
+
+await test('ein Einsteller in mehreren Karten zeigt ueberall denselben Wert', async () => {
+  const ctx = await neuerKontext(browser);
+  const { page } = await oeffne(ctx);
+  const n = await page.locator('#anleitung [data-field="st_shim_vorn_lf"]').count();
+  assert(n >= 2, 'Shim vorn LF steht in ' + n + ' Karten');
+  await karteOeffnen(page, 6, '6_3');
+  await page.click('#anl_6_3_card [data-field="st_shim_vorn_lf"]');
+  await page.keyboard.type('4,8');
+  await page.keyboard.press('Tab');
+  const werte = await page.$$eval('#anleitung [data-field="st_shim_vorn_lf"]', (els) => els.map((e) => e.value));
+  // validation.js schreibt beim Verlassen 4,8 als 4.8 - gleich muessen sie sein.
+  assert(werte.every((w) => w === werte[0] && /^4[.,]8$/.test(w)), 'Werte: ' + werte);
+  await page.waitForTimeout(1000);
+  assertEqual(await page.evaluate(() => FieldSync.lesen().st_shim_vorn_lf), werte[0], 'gespeichert');
+  assertEqual(await page.evaluate(() => Status.journal().length), 1, 'eine Verstellung, nicht mehrere');
   await ctx.close();
 });
 
@@ -419,6 +440,37 @@ await test('"neu messen" am Schritt folgt aus der veralteten Phase', async () =>
   assert(await sichtbar(page, '#t1 .anl-neu-messen'), 'Camber-Schritt traegt "neu messen"');
   assertEqual(await page.locator('#t2 .anl-neu-messen').count(), 0, 'KPI-Schritt nicht');
   assert((await page.textContent('#test-phase .phase-abschluss')).includes('veraltet'), 'Abschluss sagt veraltet');
+  await ctx.close();
+});
+
+await test('v32: die Werkzeuge der App stecken in ihren Karten und arbeiten dort', async () => {
+  const ctx = await neuerKontext(browser);
+  const { page, fehler } = await oeffne(ctx);
+  await karteOeffnen(page, 3, '3_3');
+  assert(await sichtbar(page, '#anl_3_3_card #bindListe input'), 'Bind-Test in 3.3');
+  await karteOeffnen(page, 10, '10_4');
+  assert(await sichtbar(page, '#anl_10_4_card #bsListe input'), 'Bump Steer in 10.4');
+  await page.click('#phase19 .phase-banner').catch(() => {});
+  await page.click('#phase20 .phase-banner');
+  await page.click('#anl_20_1_card .step-title');
+  assert(await sichtbar(page, '#anl_20_1_card #symptomWahl'), 'Diagnose in 20.1');
+  const opts = await page.$$eval('#symptomWahl option', (o) => o.length);
+  assert(opts > 3, 'Symptome geladen: ' + opts);
+  assertEqual(fehler, [], 'Skriptfehler');
+  await ctx.close();
+});
+
+await test('v32: Betriebswinkel nach Spicer werden gerechnet', async () => {
+  const ctx = await neuerKontext(browser);
+  const { page } = await oeffne(ctx);
+  await karteOeffnen(page, 16, '16_1');
+  await page.fill('[data-field="dl16_getriebe"]', '-3');
+  await page.fill('[data-field="dl16_welle"]', '-1');
+  await page.fill('[data-field="dl16_pinion"]', '2,5');
+  const t = await page.textContent('[data-rechnung="antrieb16"]');
+  assert(t.includes('2.00°') && t.includes('3.50°') && t.includes('1.50°'), 'Rechnung: ' + t);
+  const rot = await page.$$eval('[data-rechnung="antrieb16"] .anl-rot', (x) => x.length);
+  assertEqual(rot, 2, 'hinten ueber 3 Grad und Unterschied ueber 1 Grad rot');
   await ctx.close();
 });
 

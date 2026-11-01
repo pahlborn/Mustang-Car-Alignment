@@ -794,6 +794,9 @@ mark.suche-treffer.aktiv { background: var(--accent); color: white; }
 .phase-abschluss { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 0.6rem 0.75rem; margin-bottom: 0.5rem; font-size: 0.85rem; }
 .anl-weiter { display: block; width: 100%; background: var(--success); color: white; border: none; border-radius: 10px; padding: 0.8rem 0.9rem; font-size: 0.95rem; font-weight: 700; text-align: left; cursor: pointer; margin: 0.6rem 0; min-height: 44px; }
 .anl-weiter small { display: block; font-weight: 400; opacity: 0.9; font-size: 0.75rem; }
+.anl-teil { font-size: 1.05rem; color: var(--primary); margin: 1.4rem 0 0.2rem; padding-bottom: 0.3rem; border-bottom: 2px solid var(--primary); }
+.phase-banner.track { background: linear-gradient(135deg, #22543d, #38a169); }
+.anl-werkzeug { margin-top: 0.4rem; }
 
 /* iOS vergroessert die Seite beim Antippen jedes Eingabefelds unter 16 px
    Schrift - mitten in der Messung (Pruefung aus Mechanikersicht, v24).

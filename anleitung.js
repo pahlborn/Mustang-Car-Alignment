@@ -112,6 +112,30 @@
             if (b > 0.5 + 1e-9) { z.classList.add('anl-rot'); z.title = 'über 1/2° – Grenze überschritten (Ford)'; }
             else if (b > 0.25 + 1e-9) { z.classList.add('anl-gelb'); z.title = 'über 1/4° – Ford empfiehlt höchstens 1/4°'; }
         });
+        // Betriebswinkel der Kreuzgelenke (Phase 16). Spicer: je Gelenk
+        // mindestens 1/2 Grad, hoechstens 3 Grad, beide innerhalb 1 Grad
+        // gleich (A-12). Vorzeichen: UP = plus, DOWN = minus.
+        document.querySelectorAll('[data-rechnung="antrieb16"]').forEach(function (el) {
+            var g = Messwerte.zahl(wert('dl16_getriebe')), w = Messwerte.zahl(wert('dl16_welle')),
+                p = Messwerte.zahl(wert('dl16_pinion'));
+            if (g === null || w === null || p === null) {
+                el.innerHTML = '<div class="spec-item"><span class="spec-label">Betriebswinkel</span>'
+                    + '<span class="spec-value">&ndash; (alle drei Neigungen eintragen)</span></div>';
+                return;
+            }
+            var vorn = Math.abs(g - w), hinten = Math.abs(w - p), diff = Math.abs(vorn - hinten);
+            function zeile(name, v, ok, regel) {
+                return '<div class="spec-item"><span class="spec-label">' + name + '<br><span style="font-size:0.7rem;">'
+                    + regel + '</span></span><span class="spec-value' + (ok ? '' : ' anl-rot') + '">' + zz(v) + '°'
+                    + (ok ? '' : ' &ndash; außerhalb') + '</span></div>';
+            }
+            var gelenk = function (v) { return v >= 0.5 - 1e-9 && v <= 3 + 1e-9; };
+            el.innerHTML = zeile('Vorderes Gelenk = |Getriebe − Welle|', vorn, gelenk(vorn), 'mindestens 1/2°, höchstens 3°')
+                + zeile('Hinteres Gelenk = |Welle − Achse|', hinten, gelenk(hinten), 'mindestens 1/2°, höchstens 3°')
+                + zeile('Unterschied der beiden', diff, diff <= 1 + 1e-9, 'höchstens 1°')
+                + '<p style="font-size:0.72rem;margin:0.3rem 0 0;">Regeln nach Spicer'
+                + '<span class="src src-a" title="Spicer/Dana, Driveline Operating Angle Calculator (Quelle A-12)">A</span></p>';
+        });
         document.querySelectorAll('[data-anl-toe]').forEach(function (el) {
             var p = el.getAttribute('data-anl-toe') || 'toe';
             var tt = Messwerte.totalToe(wert(p + '_f'), wert(p + '_r'));
@@ -303,11 +327,27 @@
         if (root) aufbauen(root);
     }
 
+    /**
+     * Ein Einsteller darf in mehreren Karten stehen - in der, die ihn erfasst,
+     * und in jeder, die ihn verstellt (Shims in 6.3, 6.5, 12.2). Es bleibt ein
+     * Wert: Was in einer Karte getippt wird, steht sofort in allen anderen.
+     * FieldSync sammelt dann ueberall denselben Wert ein.
+     */
+    function spiegeln(el) {
+        var root = document.getElementById('anleitung');
+        if (!root || !root.contains(el)) return;
+        root.querySelectorAll('[data-field="' + el.dataset.field + '"]').forEach(function (x) {
+            if (x === el) return;
+            if (x.type === 'checkbox') x.checked = el.checked;
+            else if (x.value !== el.value) x.value = el.value;
+        });
+    }
+
     document.addEventListener('input', function (e) {
-        if (e.target && e.target.dataset && e.target.dataset.field) rechnen();
+        if (e.target && e.target.dataset && e.target.dataset.field) { spiegeln(e.target); rechnen(); }
     });
     document.addEventListener('change', function (e) {
-        if (e.target && e.target.dataset && e.target.dataset.field) rechnen();
+        if (e.target && e.target.dataset && e.target.dataset.field) { spiegeln(e.target); rechnen(); }
     });
     document.addEventListener('status-geaendert', markieren);
     document.addEventListener('daten-abgeglichen', function () {

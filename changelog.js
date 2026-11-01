@@ -12,6 +12,19 @@
   // Neueste Version zuerst.
   var RELEASES = [
     {
+      version: 'v32',
+      date: '2026-11-01',
+      time: '06:02',
+      title: 'Anleitung komplett zum Durchsehen: Phasen 0 bis 18 und die Strecke',
+      changes: [
+        { type: 'neu', text: 'Die Anleitung enthält jetzt alle Werkstattphasen 0 bis 18 (81 Schritte) und darunter die Strecke 19 bis 22 (11 Schritte). Ein Durchgang zum Durchsehen der Gesamtfolge: Jede Karte hat Ziel, Werkzeug, Handgriffe, Felder, Fertig wenn, Wenn nicht und Zeitbedarf. Was keine Quelle hat, steht als offen da.' },
+        { type: 'neu', text: 'Die Werkzeuge der App stecken in ihren Karten: der Bind-Test in 3.3, die Bump-Steer-Messung in 10.4, die Diagnose in 20.1. Die Betriebswinkel der Kreuzgelenke (16.2) rechnet die App nach den Spicer-Regeln.' },
+        { type: 'neu', text: 'Ein Einsteller (Shims, LCA-Platte, Strut Rod, Distanzstapel, Endlinks, Panhard-Loch) steht in jeder Karte, die ihn erfasst oder verstellt, und zeigt überall denselben Wert.' },
+        { type: 'neu', text: 'Bausteine für wiederkehrende Abläufe: Auto setzen, auf der Waage wippen, Dunlop CG/4, CG/5, CG/6, Schnüre spannen, BGR310, Pyrometer.' },
+        { type: 'intern', text: '174 neue Felder in messwerte.js (eigene Kennungen je Messphase, z. B. al12_castor), Messblatt-Gruppen dazu. Die Reiter Werkstatt, Messblatt, Bind, Bump Steer und Diagnose bleiben, bis Peter die Gesamtfolge abgenommen hat. tests/anleitung.test.mjs prüft die Kartenregeln an allen 92 Karten.' }
+      ]
+    },
+    {
       version: 'v31',
       date: '2026-10-31',
       time: '18:31',
